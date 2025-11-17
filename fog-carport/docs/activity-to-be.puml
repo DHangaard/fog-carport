@@ -1,0 +1,71 @@
+@startuml
+|Kunde|
+start
+repeat
+  if (Har konto?) then (Ja)
+    :Log ind;
+  else (Nej)
+    :Opret bruger;
+    :Log ind;
+  endif
+repeat while (Logget ind?) is (Nej) not (Ja)
+:Indtast mål på carport / vælg specifikationer;
+:Valider input samt kunde kontaktinformation;
+:Send forespørgsel;
+
+|Fog Web Applikation|
+partition fil #LightGreen {
+:Forespørgsel;
+}
+:Send bekræftelse til kunde;
+
+|Kunde|
+partition mail #LightSkyBlue {
+:Bekræftelse for modtagelse af forespørgsel;
+}
+
+|Fog Web Applikation|
+repeat :Beregn carport
+:Generer stykliste;
+:Generer .svg tegning;
+:Generer tilbud;
+
+|Sælger|
+partition fil #LightGreen {
+:Tilbud;
+}
+:Håndter / valider tilbud;
+backward :Ret specifikationer;
+repeat while (Valid?) is (nej) not (ja)
+:Fremlæg tilbud for kunde;
+:Tilføj eventuel rabat;
+
+|Kunde|
+partition mail #LightSkyBlue {
+:Notifikation: Tilbud uden stykliste modtaget på "din side";
+}
+partition fil #LightGreen {
+:Tilbud;
+:Tegning;
+}
+if (Accepter tilbud?) is (Nej) then
+  stop
+else (Ja)
+  |Fog Web Applikation|
+  :Modtag betaling;
+  :Send ordre ordrebekræftelse;
+
+  |Kunde|
+  partition mail #LightSkyBlue {
+  :Notifikation: Ordrebekræftelse inkl. stykliste modtaget på "din side";
+  }
+  partition fil #LightGreen {
+  :Ordrebekræftelse;
+  :Stykliste;
+  :Tegning;
+  }
+endif
+|Kunde|
+stop
+@enduml
+
