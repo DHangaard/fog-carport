@@ -1,0 +1,150 @@
+@startuml
+
+class Account
+{
+email
+password
+address
+zip
+city
+phone
+}
+
+class Customer
+{
+}
+
+class Seller
+{
+}
+
+class Shed
+{
+}
+
+class Price
+{
+cost price
+coverage/margin
+total price
+}
+
+class Roof
+{
+roofType
+}
+
+class Measurements
+{
+length
+width
+}
+
+class BillOfMaterials
+{
+}
+
+class MaterialType
+{
+wood
+metal
+plastic
+roofing
+}
+
+class Material
+{
+quantity
+description
+use
+unit price
+}
+
+class MaterialCatalog
+{
+}
+
+class Inquiry
+{
+requestDate
+inquiryStatus
+}
+
+class OfferStatus
+{
+accepted
+rejected
+expired
+}
+
+class OrderStatus
+{
+paid
+cancelled
+}
+
+class Offer
+{
+description
+expirationDate
+createdDate
+}
+
+class Order
+{
+orderDateTime
+}
+
+class Carport
+{
+}
+
+class CarportDrawing
+{
+top2DModel
+side2DModel
+}
+
+class Notification
+{
+type
+status
+message
+timestamp
+}
+
+Account <|-- Customer
+Account <|-- Seller
+
+Customer "1" -- "0..*" Inquiry : places
+Inquiry "1" -- "1" Carport : contains
+Inquiry "1" -- "0..1" Offer : generates
+Seller "1" -- "0..*" Offer : handles/edits
+Seller "1" -- "0..*" MaterialCatalog : manages
+
+Customer "1" -- "0..*" Notification : receives
+Inquiry "1" -- "0..*" Notification : triggers
+Offer "1" -- "0..*" Notification : triggers
+
+Offer "0..*" -- "1" Customer : sent to
+Offer "1" -- "0..1" Order : becomes (if accepted)
+Offer "1" -- "1" Price
+Offer "1" -- "1" CarportDrawing
+Offer "1" -- "1" OfferStatus
+
+Order "0..*" -- "1" Customer : belongs to
+Order "1" -- "1" OrderStatus
+Order "1" -- "1" BillOfMaterials : includes
+
+Carport "1" -- "1" Measurements
+Carport "1" -- "0..1" Shed
+Carport "1" -- "1" Roof
+Shed "0..1" -- "1" Measurements
+Shed "0..1" - "1" Material : uses
+Roof "1" -- "1" Material : uses
+Material "1" -- "1" MaterialType : is type of
+Material "0..*" -- "1" MaterialCatalog : contains
+
+BillOfMaterials "1" -- "1..*" Material : contains
+
+@enduml
