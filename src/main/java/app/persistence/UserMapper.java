@@ -16,7 +16,7 @@ public class UserMapper
         this.connectionPool = connectionPool;
     }
 
-    public User createUser(String firstName, String lastName, String email, String hashedPassword, String phoneNumber, String street, int zipcode, String city) throws DatabaseException
+    public User createUser(String firstName, String lastName, String email, String hashedPassword, String phoneNumber, String street, int zipcode) throws DatabaseException
     {
         String sql = "INSERT INTO users (first_name, last_name, email, hashed_password, phone_number, street, zip_code, role)" +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING user_id";
