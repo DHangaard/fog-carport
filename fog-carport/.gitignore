@@ -11,18 +11,6 @@
 .idea/**/usage.statistics.xml
 .idea/**/dictionaries
 .idea/**/shelf
-.idea/**/dataSources.xml
-.idea/**/vcs.xml
-
-
-.idea/misc.xml
-.idea/name.xml
-
-# AWS User-specific
-.idea/**/aws.xml
-
-# Generated files
-.idea/**/contentModel.xml
 
 # Sensitive or high-churn files
 .idea/**/dataSources/
@@ -33,6 +21,12 @@
 .idea/**/uiDesigner.xml
 .idea/**/dbnavigator.xml
 
+# AWS User-specific
+.idea/**/aws.xml
+
+# Generated files
+.idea/**/contentModel.xml
+
 # Gradle
 .idea/**/gradle.xml
 .idea/**/libraries
@@ -42,10 +36,6 @@
 # since they will be recreated, and may cause churn.  Uncomment if using
 # auto-import.
 .idea/artifacts
-.idea/compiler.xml
-.idea/jarRepositories.xml
-.idea/modules.xml
-.idea/*.iml
 .idea/modules
 *.iml
 *.ipr
