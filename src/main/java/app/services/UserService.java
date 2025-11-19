@@ -9,7 +9,6 @@ import app.persistence.UserMapper;
 import app.persistence.ZipCodeMapper;
 import app.util.PasswordUtil;
 import app.util.ValidationUtil;
-
 import java.util.List;
 import java.util.stream.Collectors;
 

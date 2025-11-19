@@ -3,7 +3,6 @@ package app.services;
 import app.dto.CreateUserRequestDTO;
 import app.dto.UserDTO;
 import app.exceptions.DatabaseException;
-
 import java.util.List;
 
 public interface IUserService
