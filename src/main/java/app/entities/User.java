@@ -3,6 +3,7 @@ package app.entities;
 import app.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+
 @AllArgsConstructor
 @Data
 public class User
