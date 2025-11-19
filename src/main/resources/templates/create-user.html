@@ -1,10 +1,91 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8"/>
+    <title>Fog - Opret bruger</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="/public/css/stylesheet.css" th:href="@{/css/stylesheet.css}"/>
 </head>
 <body>
-$END$
+
+<div th:replace="~{fragments :: headerFragment}"></div>
+
+<main>
+    <div class="form-container">
+        <h1>Opret bruger</h1>
+
+        <form th:action="@{/create-user}" method="post" class="form">
+
+            <div class="form-field">
+                <label for="email">Email</label>
+                <input class="form-input" type="email" id="email" name="email"
+                       th:value="${email}" placeholder="din@email.dk" required>
+            </div>
+
+            <div class="form-field">
+                <label for="password1">Kodeord</label>
+                <input class="form-input" type="password" id="password1" name="password1"
+                       placeholder="⁕⁕⁕⁕⁕⁕⁕⁕" required>
+                <div class="form-tooltip">
+                    Kodeord skal indeholde:<br>
+                    • Min. 8 karakterer<br>
+                    • Min. 1 stort bogstav<br>
+                    • Min. 1 tal
+                </div>
+            </div>
+
+            <div class="form-field">
+                <label for="password2">Gentag kodeord</label>
+                <input class="form-input" type="password" id="password2" name="password2"
+                       placeholder="⁕⁕⁕⁕⁕⁕⁕⁕" required>
+            </div>
+
+            <div class="form-field">
+                <label for="firstname">Fornavn</label>
+                <input class="form-input" type="text" id="firstname" name="firstName"
+                       th:value="${firstName}" placeholder="Fornavn" required>
+            </div>
+
+            <div class="form-field">
+                <label for="lastname">Efternavn</label>
+                <input class="form-input" type="text" id="lastname" name="lastName"
+                       th:value="${lastName}" placeholder="Efternavn" required>
+            </div>
+
+            <div class="form-field">
+                <label for="street">Gade</label>
+                <input class="form-input" type="text" id="street" name="street"
+                       th:value="${street}" placeholder="Gade/Vej" required>
+            </div>
+
+            <div class="form-field">
+                <label for="zipcode">Postnummer</label>
+                <input class="form-input" type="text" id="zipcode" name="zipCode"
+                       th:value="${zipCode}" placeholder="Postnummer" required>
+            </div>
+
+            <div class="form-field">
+                <label for="phone">Telefon</label>
+                <input class="form-input" type="text" id="phone" name="phoneNumber"
+                       th:value="${phoneNumber}" placeholder="12 34 56 78" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Opret Bruger</button>
+
+        </form>
+
+        <div th:if="${errorMessage != null}" class="message message-error">
+            <p th:text="${errorMessage}"></p>
+        </div>
+
+        <div th:if="${session.successMessage}" class="message message-success">
+            <p th:text="${session.successMessage}"></p>
+        </div>
+
+    </div>
+</main>
+
+<div th:replace="~{fragments :: footerFragment}"></div>
+
 </body>
 </html>
