@@ -343,7 +343,7 @@ public class MaterialMapper
         }
         catch (SQLException e)
         {
-            throw new DatabaseException("Fejl ved sletning af materiale variant med id: " + materialId + e.getMessage());
+            throw new DatabaseException("Fejl ved sletning af materiale variant med id: " + materialVariantId + e.getMessage());
         }
     }
 
