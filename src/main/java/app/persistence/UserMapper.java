@@ -3,6 +3,7 @@ package app.persistence;
 import app.entities.User;
 import app.enums.Role;
 import app.exceptions.DatabaseException;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,7 @@ public class UserMapper
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING user_id";
 
         try (Connection connection = connectionPool.getConnection();
-             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS))
+             PreparedStatement ps = connection.prepareStatement(sql))
         {
             ps.setString(1, firstName);
             ps.setString(2, lastName);
@@ -33,19 +34,14 @@ public class UserMapper
             ps.setInt(7, zipcode);
             ps.setString(8, "CUSTOMER");
 
-            int rowsAffected = ps.executeUpdate();
-
-            if (rowsAffected == 1)
+            ResultSet rs = ps.executeQuery();
+            if (rs.next())
             {
-                ResultSet rs = ps.getGeneratedKeys();
-                if(rs.next())
-                {
-                    int userId = rs.getInt(1);
-                    return getUserById(userId);
-                }
+                int userId = rs.getInt(1);
+                return getUserById(userId);
             }
-                throw new DatabaseException("Kunne ikke oprette bruger");
 
+            throw new DatabaseException("Kunne ikke oprette bruger");
         }
         catch (SQLException e)
         {
@@ -134,7 +130,13 @@ public class UserMapper
 
     public List<User> getAllUsers() throws DatabaseException
     {
-        String sql = "SELECT users.*, zip_code.city FROM users JOIN zip_code ON users.zip_code = zip_codes.zip_code";
+        String sql = """
+                SELECT users.*, zip_code.city 
+                FROM users 
+                JOIN zip_code 
+                ON users.zip_code = zip_code.zip_code
+                """;
+
         List<User> users = new ArrayList<>();
 
         try (Connection connection = connectionPool.getConnection();

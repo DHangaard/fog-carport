@@ -113,7 +113,7 @@ class UserMapperTest
                 phoneNumber, street, zipcode);
 
         assertNotNull(user);
-        assertTrue(user.getUserId() ==  4);
+        assertTrue(user.getUserId() ==  3);
         assertEquals(firstName, user.getFirstName());
         assertEquals(lastName, user.getLastName());
         assertEquals(email.toLowerCase(), user.getEmail());
