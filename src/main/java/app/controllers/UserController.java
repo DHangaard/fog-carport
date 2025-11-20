@@ -22,8 +22,8 @@ public class UserController
         app.get("/", ctx -> showHomepage(ctx));
         app.get("/login", ctx -> showLoginPage(ctx));
         app.get("/register", ctx -> showCreateUserPage(ctx));
-        app.get("/logout", ctx -> logOut(ctx));
 
+        app.post("/logout", ctx -> logOut(ctx));
         app.post("/register", ctx -> handleCreateUser(ctx));
         app.post("/login", ctx -> handleUserLogin(ctx));
     }

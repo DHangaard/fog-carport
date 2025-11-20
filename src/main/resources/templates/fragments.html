@@ -2,7 +2,7 @@
 <div th:fragment="headerFragment">
     <header>
         <nav class="header-nav">
-            <!-- LEFT SECTION: Logo + Links -->
+            <!-- LEFT SECTION -->
             <div class="header-left">
                 <a href="index.html" th:href="@{/}" class="logo-link">
                     <img src="/images/logo.svg"
@@ -11,10 +11,11 @@
                 </a>
 
                 <!-- Sales links (conditional) -->
-                <div th:if="${session.currentUser != null and session.currentUser.role.name() == 'SALESREP'}" class="admin-links">
-                    <a href="orders.html" th:href="@{/requests}" class="nav-link">Forespørgsler</a>
-                    <a href="customers.html" th:href="@{/offers}" class="nav-link">Tilbud</a>
-                    <a href="cupcakes.html" th:href="@{/orders}" class="nav-link">Ordrer</a>
+                <div th:if="${session.currentUser != null and session.currentUser.role.name() == 'SALESREP'}"
+                     class="admin-links">
+                    <a href="requests.html" th:href="@{/requests}" class="nav-link">Forespørgsler</a>
+                    <a href="offers.html" th:href="@{/offers}" class="nav-link">Tilbud</a>
+                    <a href="orders.html" th:href="@{/orders}" class="nav-link">Ordrer</a>
                 </div>
             </div>
 
@@ -24,24 +25,26 @@
                 <a th:if="${session.currentUser == null}"
                    href="login.html"
                    th:href="@{/login}"
-                   class="icon-link">
+                   class="icon-link-vertical">
                     <img src="/images/profile.svg" alt="Login" th:src="@{/images/profile.svg}">
-                    <span>Login</span>
+                    <span>Fog konto</span>
                 </a>
 
                 <!-- Logged in -->
                 <div th:if="${session.currentUser != null}" class="user-actions">
-                    <!-- EMAIL here -->
-                    <span class="username" th:text="${session.currentUser.email}"></span>
-                    <a href="mypage.html" th:href="@{/user/orders}" class="icon-link">
+                    <span class="username" th:text="${session.currentUser.email}">user@example.com</span>
+
+                    <a href="profile.html" th:href="@{/profile}" class="icon-link-vertical">
                         <img src="/images/profile.svg" alt="Min side" th:src="@{/images/profile.svg}">
                         <span>Min side</span>
                     </a>
 
-                    <a href="index.html" th:href="@{/logout}" class="icon-link">
-                        <img src="/images/logout.svg" alt="Log ud" th:src="@{/images/logout.svg}">
-                        <span>Log ud</span>
-                    </a>
+                    <form th:action="@{/logout}" method="post">
+                        <button type="submit" class="icon-link-vertical logout-btn">
+                            <img src="/images/logout.svg" alt="Log ud" th:src="@{/images/logout.svg}">
+                            <span>Log ud</span>
+                        </button>
+                    </form>
                 </div>
             </div>
         </nav>
@@ -51,9 +54,8 @@
 <!-- Footer Fragment -->
 <div th:fragment="footerFragment">
     <footer>
-        <!-- LEFT SECTION: Contact info -->
         <address class="footer-contact">
-            <p class="footer-title">Johannes fog</p>
+            <p class="footer-title">Johannes Fog</p>
             <p>Firskovsvej 12, 2800 Kongens Lyngby</p>
             <a href="mailto:kontakt@fog.dk">kontakt@fog.dk</a>
             <a href="tel:+4512345678">+45 1234 5678</a>
