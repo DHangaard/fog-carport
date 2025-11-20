@@ -1,7 +1,12 @@
 package app;
 
 import app.config.ThymeleafConfig;
+import app.controllers.UserController;
 import app.persistence.ConnectionPool;
+import app.persistence.UserMapper;
+import app.persistence.ZipCodeMapper;
+import app.services.IUserService;
+import app.services.UserService;
 import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinThymeleaf;
 
@@ -34,6 +39,12 @@ public class Main
             config.staticFiles.add("/templates");
         }).start(7070);
 
-        app.get("/", ctx -> ctx.render("/index"));
+        UserMapper userMapper = new UserMapper(connectionPool);
+        ZipCodeMapper zipCodeMapper = new ZipCodeMapper(connectionPool);
+        IUserService userService = new UserService(userMapper, zipCodeMapper);
+
+        UserController userController = new UserController(userService);
+
+        userController.addRoutes(app);
     }
 }

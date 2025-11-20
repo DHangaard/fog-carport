@@ -6,6 +6,7 @@ import app.exceptions.DatabaseException;
 import app.services.IUserService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+import org.jetbrains.annotations.NotNull;
 
 public class UserController
 {
@@ -18,12 +19,18 @@ public class UserController
 
     public void addRoutes(Javalin app)
     {
+        app.get("/", ctx -> showHomepage(ctx));
         app.get("/login", ctx -> showLoginPage(ctx));
         app.get("/register", ctx -> showCreateUserPage(ctx));
         app.get("/logout", ctx -> logOut(ctx));
 
         app.post("/register", ctx -> handleCreateUser(ctx));
         app.post("/login", ctx -> handleUserLogin(ctx));
+    }
+
+    private void showHomepage(Context ctx)
+    {
+        ctx.render("index");
     }
 
     private void logOut(Context ctx)
