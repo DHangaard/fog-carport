@@ -47,6 +47,7 @@ class UserMapperTest
                 stmt.execute("CREATE SEQUENCE test.users_user_id_seq");
                 stmt.execute("ALTER TABLE test.users ALTER COLUMN user_id SET DEFAULT nextval('test.users_user_id_seq')");
 
+                stmt.execute("ALTER TABLE test.users ADD CONSTRAINT users_email_key UNIQUE (email)");
                 stmt.execute("ALTER TABLE test.users ADD CONSTRAINT users_zip_code_fk " +
                         "FOREIGN KEY (zip_code) REFERENCES test.zip_code (zip_code)");
             }
@@ -113,7 +114,7 @@ class UserMapperTest
                 phoneNumber, street, zipcode);
 
         assertNotNull(user);
-        assertTrue(user.getUserId() ==  4);
+        assertTrue(user.getUserId() ==  3);
         assertEquals(firstName, user.getFirstName());
         assertEquals(lastName, user.getLastName());
         assertEquals(email.toLowerCase(), user.getEmail());

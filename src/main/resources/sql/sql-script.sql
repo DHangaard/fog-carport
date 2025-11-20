@@ -97,9 +97,10 @@ CREATE TABLE IF NOT EXISTS public.users
     first_name character varying(50) COLLATE pg_catalog."default" NOT NULL,
     last_name character varying(50) COLLATE pg_catalog."default" NOT NULL,
     email character varying(100) COLLATE pg_catalog."default" NOT NULL,
+    phone_number character varying(20) COLLATE pg_catalog."default" NOT NULL,
     hashed_password character varying(150) COLLATE pg_catalog."default" NOT NULL,
     zip_code integer NOT NULL,
-    address character varying(100) COLLATE pg_catalog."default" NOT NULL,
+    street character varying(100) COLLATE pg_catalog."default" NOT NULL,
     role character varying COLLATE pg_catalog."default" NOT NULL DEFAULT 'CUSTOMER'::character varying,
     CONSTRAINT users_pkey PRIMARY KEY (user_id),
     CONSTRAINT users_email_key UNIQUE (email)
@@ -188,5 +189,7 @@ ALTER TABLE IF EXISTS public.users
     REFERENCES public.zip_code (zip_code) MATCH SIMPLE
     ON UPDATE CASCADE
        ON DELETE RESTRICT;
+
+CREATE SCHEMA IF NOT EXISTS test;
 
 END;
