@@ -1,5 +1,7 @@
 package app.entities;
 
+import app.enums.MaterialCategory;
+import app.enums.MaterialType;
 import lombok.Data;
 
 @Data
