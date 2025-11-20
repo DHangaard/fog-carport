@@ -55,8 +55,15 @@ public class Material
             description.append(materialWidth).append("x");
             description.append(materialHeight).append(" mm. ");
         }
+        else if (this.materialWidth != null && this.materialHeight == null)
+        {
+            description.append(materialWidth).append(" mm. ");
+        }
+        else if (this.materialWidth == null && this.materialHeight != null)
+        {
+            description.append(materialHeight).append(" mm. ");
+        }
         description.append(name);
         return description.toString();
     }
-
 }
