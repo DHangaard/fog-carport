@@ -19,7 +19,7 @@ public class UserMapper
     public User createUser(String firstName, String lastName, String email, String hashedPassword, String phoneNumber, String street, int zipcode) throws DatabaseException
     {
         String sql = "INSERT INTO users (first_name, last_name, email, hashed_password, phone_number, street, zip_code, role)" +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING user_id";
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING user_id";
 
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS))
@@ -33,16 +33,19 @@ public class UserMapper
             ps.setInt(7, zipcode);
             ps.setString(8, "CUSTOMER");
 
-            ResultSet rs = ps.executeQuery();
-            if (rs.next())
+            int rowsAffected = ps.executeUpdate();
+
+            if (rowsAffected == 1)
             {
-                int userId = rs.getInt(1);
-                return getUserById(userId);
+                ResultSet rs = ps.getGeneratedKeys();
+                if(rs.next())
+                {
+                    int userId = rs.getInt(1);
+                    return getUserById(userId);
+                }
             }
-            else
-            {
                 throw new DatabaseException("Kunne ikke oprette bruger");
-            }
+
         }
         catch (SQLException e)
         {
@@ -59,8 +62,8 @@ public class UserMapper
 
     public User getUserById(int userId) throws DatabaseException
     {
-        String sql = "SELECT u.user_id, u.first_name, u.last_name, u.email, u.phone_number, " +
-                "u.street, u.zip_code, z.city, u.role" +
+        String sql = "SELECT u.user_id, u.first_name, u.last_name, u.email, u.phone_number, u.hashed_password," +
+                "u.street, u.zip_code, z.city, u.role " +
                 "FROM users u " +
                 "JOIN zip_code z ON u.zip_code = z.zip_code " +
                 "WHERE u.user_id = ?";
@@ -131,7 +134,7 @@ public class UserMapper
 
     public List<User> getAllUsers() throws DatabaseException
     {
-        String sql = "SELECT users.*, zip_codes.city FROM users JOIN zip_codes ON users.zip_code = zip_codes.zip_code";
+        String sql = "SELECT users.*, zip_code.city FROM users JOIN zip_code ON users.zip_code = zip_codes.zip_code";
         List<User> users = new ArrayList<>();
 
         try (Connection connection = connectionPool.getConnection();
