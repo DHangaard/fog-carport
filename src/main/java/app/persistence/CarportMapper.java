@@ -13,10 +13,10 @@ public class CarportMapper
     private ConnectionPool connectionPool;
     private ShedMapper shedMapper;
 
-    public CarportMapper (ConnectionPool connectionPool, ShedMapper shedMapper)
+    public CarportMapper (ConnectionPool connectionPool)
     {
         this.connectionPool = connectionPool;
-        this.shedMapper = shedMapper;
+        this.shedMapper = new ShedMapper(connectionPool);
     }
 
     public Carport createCarport(Carport carport) throws DatabaseException
@@ -36,7 +36,7 @@ public class CarportMapper
                 """;
 
         try (Connection connection = connectionPool.getConnection();
-             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS))
+             PreparedStatement ps = connection.prepareStatement(sql))
         {
             ps.setInt(1, carport.getLength());
             ps.setInt(2, carport.getWidth());
@@ -56,7 +56,7 @@ public class CarportMapper
 
             if (rs.next())
             {
-                int carportId = rs.getInt(1);
+                int carportId = rs.getInt("carport_id");
                 return getCarportById(carportId);
             }
             else
@@ -76,7 +76,7 @@ public class CarportMapper
                 SELECT c.carport_id, c.length, c.width, c.shed_id, c.roof_type,
                        s.shed_id, s.length AS shed_length, s.width AS shed_width, s.shed_placement
                 FROM carport c
-                JOIN shed s ON c.shed_id = s.shed_id
+                LEFT JOIN shed s ON c.shed_id = s.shed_id
                 WHERE c.carport_id = ?
                 """;
 
@@ -106,10 +106,19 @@ public class CarportMapper
     {
         Integer shedId = null;
 
+
         if (carport.getShed() != null)
         {
-            shedMapper.updateShed(carport.getShed());
-            shedId = carport.getShed().getShedId();
+            if (carport.getShed().getShedId() > 0)
+            {
+                shedMapper.updateShed(carport.getShed());
+                shedId = carport.getShed().getShedId();
+            }
+            else
+            {
+                Shed createdShed = shedMapper.createShed(carport.getShed());
+                shedId = createdShed.getShedId();
+            }
         }
 
         String sql = """
