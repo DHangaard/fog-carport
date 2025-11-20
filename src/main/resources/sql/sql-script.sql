@@ -29,10 +29,13 @@ CREATE TABLE IF NOT EXISTS public.carport
 CREATE TABLE IF NOT EXISTS public.material
 (
     material_id serial NOT NULL,
-    material_type_id integer NOT NULL,
-    variant_length integer,
+    name character varying(100) COLLATE pg_catalog."default" NOT NULL,
+    category character varying COLLATE pg_catalog."default" NOT NULL,
+    type character varying COLLATE pg_catalog."default" NOT NULL,
+    material_width integer,
+    material_height integer,
+    unit character varying(20) COLLATE pg_catalog."default" NOT NULL,
     usage character varying COLLATE pg_catalog."default",
-    unit_price double precision NOT NULL,
     CONSTRAINT material_pkey PRIMARY KEY (material_id)
     );
 
@@ -46,17 +49,13 @@ CREATE TABLE IF NOT EXISTS public.material_line
     CONSTRAINT material_line_pkey PRIMARY KEY (material_line_id)
     );
 
-CREATE TABLE IF NOT EXISTS public.material_type
+CREATE TABLE IF NOT EXISTS public.material_variant
 (
-    material_type_id serial NOT NULL,
-    name character varying(100) COLLATE pg_catalog."default" NOT NULL,
-    description text COLLATE pg_catalog."default",
-    category character varying COLLATE pg_catalog."default" NOT NULL,
-    type character varying COLLATE pg_catalog."default" NOT NULL,
-    material_width integer,
-    material_height integer,
-    unit character varying(20) COLLATE pg_catalog."default" NOT NULL,
-    CONSTRAINT material_type_pkey PRIMARY KEY (material_type_id)
+    material_variant_id serial NOT NULL,
+    material_id integer NOT NULL,
+    variant_length integer,
+    unit_price double precision NOT NULL,
+    CONSTRAINT material_variant_pkey PRIMARY KEY (material_variant_id)
     );
 
 CREATE TABLE IF NOT EXISTS public.offer
@@ -131,13 +130,6 @@ CREATE INDEX IF NOT EXISTS carport_shed_id_unique
     ON public.carport(shed_id);
 
 
-ALTER TABLE IF EXISTS public.material
-    ADD CONSTRAINT material_material_type_fk FOREIGN KEY (material_type_id)
-    REFERENCES public.material_type (material_type_id) MATCH SIMPLE
-    ON UPDATE CASCADE
-       ON DELETE RESTRICT;
-
-
 ALTER TABLE IF EXISTS public.material_line
     ADD CONSTRAINT material_line_bom_fk FOREIGN KEY (bom_id)
     REFERENCES public.bill_of_materials (bom_id) MATCH SIMPLE
@@ -148,8 +140,17 @@ ALTER TABLE IF EXISTS public.material_line
 ALTER TABLE IF EXISTS public.material_line
     ADD CONSTRAINT material_line_material_fk FOREIGN KEY (material_id)
     REFERENCES public.material (material_id) MATCH SIMPLE
-    ON UPDATE CASCADE
-       ON DELETE RESTRICT;
+    ON UPDATE NO ACTION
+       ON DELETE NO ACTION
+    NOT VALID;
+
+
+ALTER TABLE IF EXISTS public.material_variant
+    ADD CONSTRAINT material_variant_material_fk FOREIGN KEY (material_id)
+    REFERENCES public.material (material_id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+       ON DELETE NO ACTION
+    NOT VALID;
 
 
 ALTER TABLE IF EXISTS public.offer
