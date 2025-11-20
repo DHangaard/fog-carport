@@ -91,7 +91,7 @@ public class MaterialMapper
                     materialVariantId,
                     variantLength,
                     unitPrice
-                    );
+            );
         }
         catch (SQLException e)
         {
@@ -169,7 +169,7 @@ public class MaterialMapper
         ArrayList<Material> materials = new ArrayList<>();
 
         try (Connection connection = connectionPool.getConnection();
-        PreparedStatement ps = connection.prepareStatement(sql))
+             PreparedStatement ps = connection.prepareStatement(sql))
         {
             ps.setString(1, materialType.name());
             try (ResultSet rs = ps.executeQuery())
@@ -262,7 +262,7 @@ public class MaterialMapper
                 """;
 
         try (Connection connection = connectionPool.getConnection();
-        PreparedStatement ps = connection.prepareStatement(sql))
+             PreparedStatement ps = connection.prepareStatement(sql))
         {
             ps.setString(1, material.getName());
             ps.setString(2, material.getMaterialCategory().name());
@@ -307,6 +307,46 @@ public class MaterialMapper
         }
     }
 
+    public boolean deleteMaterial(int materialId) throws DatabaseException
+    {
+        String sql = """
+                DELETE FROM material
+                WHERE material_id = ?
+                """;
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql))
+        {
+            ps.setInt(1, materialId);
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected == 1;
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl ved sletning af materiale med id: " + materialId + e.getMessage());
+        }
+    }
+
+    public boolean deleteMaterialVariant(int materialVariantId) throws DatabaseException
+    {
+        String sql = """
+                DELETE FROM material_variant
+                WHERE material_variant_id = ?
+                """;
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql))
+        {
+            ps.setInt(1, materialVariantId);
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected == 1;
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl ved sletning af materiale variant med id: " + materialId + e.getMessage());
+        }
+    }
+
     private Material buildMaterialFromResultSet(ResultSet rs) throws SQLException
     {
         return new Material(
@@ -321,6 +361,6 @@ public class MaterialMapper
                 rs.getInt("material_variant_id"),
                 (Integer) rs.getObject("variant_length"),
                 rs.getDouble("unit_price")
-                );
+        );
     }
 }
