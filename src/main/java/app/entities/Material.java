@@ -15,12 +15,12 @@ public class Material
     private Integer materialHeight;
     private String unit;
     private String usage;
-    private Integer materialVariantId;
+    private int materialVariantId;
+    private Integer variantLength;
     private double unitPrice;
-    private int variantLength;
     private String description;
 
-    Material(int materialId,
+    public Material(int materialId,
              String name,
              MaterialCategory materialCategory,
              MaterialType materialType,
@@ -29,8 +29,8 @@ public class Material
              String unit,
              String usage,
              Integer materialVariantId,
-             double unitPrice,
-             int variantLength)
+             int variantLength,
+             double unitPrice)
     {
         this.materialId = materialId;
         this.name = name;
@@ -41,8 +41,8 @@ public class Material
         this.unit = unit;
         this.usage = usage;
         this.materialVariantId = materialVariantId;
-        this.unitPrice = unitPrice;
         this.variantLength = variantLength;
+        this.unitPrice = unitPrice;
 
         this.description = generateDescription();
     }
