@@ -1,5 +1,6 @@
 package app.entities;
 
+import app.enums.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
