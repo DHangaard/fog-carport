@@ -16,5 +16,4 @@ public class Offer
     private BillOfMaterials billOfMaterials;
     private String customerComment;
     private OfferStatus offerStatus;
-    private double coveragePercentage;
 }
