@@ -1,26 +1,44 @@
 package app.persistence;
 
 import app.entities.Offer;
+import app.entities.OfferDate;
 import app.enums.OfferStatus;
+import app.exceptions.DatabaseException;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 public class OfferMapper
 {
     private ConnectionPool connectionPool;
-    private BomMapper bomMapper;
-    private CarportMapper carportMapper;
 
     public OfferMapper(ConnectionPool connectionPool)
     {
         this.connectionPool = connectionPool;
-        this.bomMapper = new BomMapper(connectionPool);
-        this.carportMapper = new CarportMapper(connectionPool);
     }
 
-    public Offer createOffer(Offer offer)
+    public Offer createOffer(Connection connection, int customerId, int carportId, String customerComment) throws DatabaseException
     {
+        String sql = """
+                INSERT INTO offer (customer_id, carport_id, customer_comment)
+                VALUES (?, ?, ?)
+                RETURNING offer_id
+                """;
+        try
+        {
+            PreparedStatement ps = connection.prepareStatement(sql);
+
+            ps.setInt(1, customerId);
+
+            ResultSet rs = ps.executeQuery();
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Kunne ikke oprette tilbudet");
+        }
         return null;
     }
 
