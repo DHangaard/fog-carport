@@ -3,6 +3,8 @@ package app.entities;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 public class BillOfMaterials
@@ -24,7 +26,7 @@ public class BillOfMaterials
     {
         if(materialLine != null)
         {
-            materialLine.remove(materialLine);
+            materialLines.remove(materialLine);
         }
     }
 
