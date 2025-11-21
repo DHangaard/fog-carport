@@ -3,7 +3,7 @@ package app.enums;
 public enum OrderStatus
 {
     PAID("Betalt"),
-    CANCELLED("Afmeldt");
+    CANCELLED("Annulleret");
 
     private final String displayCategory;
 
