@@ -2,5 +2,11 @@ package app.enums;
 
 public enum RoofType
 {
-    FLAT;
+    FLAT("Fladt tag");
+
+    private final String displayName;
+
+    RoofType(String displayName) {
+        this.displayName = displayName;
+    }
 }

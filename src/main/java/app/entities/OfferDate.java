@@ -1,0 +1,25 @@
+package app.entities;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+import java.sql.Timestamp;
+
+@Data
+@AllArgsConstructor
+public class OfferDate
+{
+    private Timestamp createdAt;
+    private Timestamp expirationDate;
+    private final Timestamp OFFER_PERIODE;
+
+    public boolean isExpired()
+    {
+        return false;
+    }
+
+    public void calculateExpirationDate()
+    {
+        //TODO implement body
+    }
+}
