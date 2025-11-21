@@ -150,7 +150,7 @@ ALTER TABLE IF EXISTS public.material_variant
     ADD CONSTRAINT material_variant_material_fk FOREIGN KEY (material_id)
     REFERENCES public.material (material_id) MATCH SIMPLE
     ON UPDATE NO ACTION
-       ON DELETE NO ACTION
+       ON DELETE CASCADE
     NOT VALID;
 
 
