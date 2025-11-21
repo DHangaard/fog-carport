@@ -12,7 +12,6 @@ public class Order
 {
     private int orderId;
     private Offer offer;
-    private BillOfMaterials billOfMaterials;
     private Timestamp orderDateTime;
     private OrderStatus status;
     private boolean paymentConfirmed;
