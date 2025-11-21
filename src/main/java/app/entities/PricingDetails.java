@@ -8,7 +8,6 @@ import lombok.Data;
 public class PricingDetails
 {
     private double costPrice;
-    private double coveragePercentage;
     private double priceWithOutVat;
     private double totalPrice;
 }
