@@ -13,6 +13,7 @@ public class Offer
     private User customer;
     private Carport carport;
     private OfferDate offerDate;
+    private BillOfMaterials billOfMaterials;
     private String customerComment;
     private OfferStatus offerStatus;
     private double coveragePercentage;

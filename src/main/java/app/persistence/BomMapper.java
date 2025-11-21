@@ -1,6 +1,9 @@
 package app.persistence;
 
 import app.entities.BillOfMaterials;
+import app.entities.Offer;
+
+import java.sql.ResultSet;
 
 public class BomMapper
 {
@@ -33,6 +36,11 @@ public class BomMapper
     public boolean deleteBillOfMaterials(int bomId)
     {
         return false;
+    }
+
+    private BillOfMaterials buildBomFromResultSet(ResultSet rs)
+    {
+        return null;
     }
 
 
