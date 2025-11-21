@@ -22,7 +22,7 @@ public class MaterialLineMapper
 
     public MaterialLine createMaterialLine(MaterialLine materialLine) throws DatabaseException
     {
-        String sql = """
+        /*String sql = """
                 INSERT INTO material_line (bom_id, material_id, quantity, line_total)
                 VALUES  (?, ?, ?, ?)
                 RETURNING material_line_id
@@ -41,6 +41,8 @@ public class MaterialLineMapper
         {
             throw new DatabaseException("");
         }
+        return null;
+         */
         return null;
     }
 

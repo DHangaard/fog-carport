@@ -14,7 +14,7 @@ public class BomMapper
     public BomMapper(ConnectionPool connectionPool)
     {
         this.connectionPool = connectionPool;
-        this.materialLineMapper = new MaterialMapper(connectionPool);
+        this.materialLineMapper = new MaterialLineMapper(connectionPool);
     }
 
     public BillOfMaterials createBillOfMaterials(BillOfMaterials billOfMaterials)
