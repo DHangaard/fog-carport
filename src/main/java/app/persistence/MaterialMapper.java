@@ -6,6 +6,7 @@ import app.enums.MaterialType;
 import app.exceptions.DatabaseException;
 
 import java.sql.*;
+import java.util.List;
 import java.util.ArrayList;
 
 public class MaterialMapper
@@ -156,7 +157,7 @@ public class MaterialMapper
         }
     }
 
-    public ArrayList<Material> getMaterialsByType(MaterialType materialType) throws DatabaseException
+    public List<Material> getMaterialsByType(MaterialType materialType) throws DatabaseException
     {
         String sql = """
                 SELECT m.material_id, m.name, m.category, m.type, m.material_width, m.material_height, 
@@ -166,7 +167,7 @@ public class MaterialMapper
                 WHERE m.type = ?
                 """;
 
-        ArrayList<Material> materials = new ArrayList<>();
+        List<Material> materials = new ArrayList<>();
 
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql))
@@ -187,7 +188,7 @@ public class MaterialMapper
         }
     }
 
-    public ArrayList<Material> getMaterialsByCategory(MaterialCategory materialCategory) throws DatabaseException
+    public List<Material> getMaterialsByCategory(MaterialCategory materialCategory) throws DatabaseException
     {
         String sql = """
                 SELECT m.material_id, m.name, m.category, m.type, m.material_width, m.material_height, 
@@ -197,7 +198,7 @@ public class MaterialMapper
                 WHERE m.category = ?
                 """;
 
-        ArrayList<Material> materials = new ArrayList<>();
+        List<Material> materials = new ArrayList<>();
 
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql))
@@ -218,7 +219,7 @@ public class MaterialMapper
         }
     }
 
-    public ArrayList<Material> getAllMaterials() throws DatabaseException
+    public List<Material> getAllMaterials() throws DatabaseException
     {
         String sql = """
                 SELECT m.material_id, m.name, m.category, m.type, m.material_width, m.material_height, 
@@ -227,7 +228,7 @@ public class MaterialMapper
                 JOIN material_variant mv ON m.material_id = mv.material_id
                 """;
 
-        ArrayList<Material> materials = new ArrayList<>();
+        List<Material> materials = new ArrayList<>();
 
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql))
