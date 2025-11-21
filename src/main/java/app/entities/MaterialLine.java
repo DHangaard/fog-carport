@@ -7,7 +7,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class MaterialLine
 {
-    private int materialLineId;
+    private Material material;
     private int bomId;
     private int materialId;
     private int quantity;
