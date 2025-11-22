@@ -12,7 +12,6 @@ public class OfferDate
     private Timestamp customerRequestCreatedAt;
     private Timestamp createdAt;
     private Timestamp expirationDate;
-    private final Timestamp OFFER_PERIODE;
 
     public boolean isExpired()
     {

@@ -154,7 +154,9 @@ public class BomMapper
     public boolean deleteBillOfMaterials(int bomId) throws DatabaseException
     {
 
-        String sql = "DELETE FROM bill_of_materials WHERE bom_id = ?";
+        String sql = """
+               DELETE FROM bill_of_materials WHERE bom_id = ?
+               """;
 
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql))
