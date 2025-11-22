@@ -1,10 +1,8 @@
 package app.persistence;
 
-import app.Main;
 import app.entities.User;
 import app.enums.Role;
 import app.exceptions.DatabaseException;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,8 +11,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
-import java.util.Locale;
-import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.*;
 

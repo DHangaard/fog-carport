@@ -22,8 +22,8 @@ public class BomMapper
     public BillOfMaterials createBillOfMaterials(Connection connection, int offerId, double costPrice, double coveragePercentage, double priceWithoutVat, double totalPrice) throws DatabaseException
     {
         String sql = """
-                    INSERT INTO bill_of_materials (offer_id, cost_price, coverage_percentage, price_without_vat, total_price) " +
-                    VALUES (?, ?, ?, ?, ?) " +
+                    INSERT INTO bill_of_materials (offer_id, cost_price, coverage_percentage, price_without_vat, total_price)
+                    VALUES (?, ?, ?, ?, ?)
                     RETURNING bom_id
                     """;
 
@@ -38,10 +38,24 @@ public class BomMapper
 
             ResultSet rs = ps.executeQuery();
 
+
             if (rs.next())
             {
                 int bomId = rs.getInt("bom_id");
-                return getBillOfMaterialsById(bomId);
+
+                PricingDetails pricingDetails = new PricingDetails(
+                        costPrice,
+                        priceWithoutVat,
+                        totalPrice
+                );
+
+                return new BillOfMaterials(
+                        bomId,
+                        offerId,
+                        new ArrayList<>(),
+                        pricingDetails,
+                        coveragePercentage
+                );
             }
 
             throw new DatabaseException("Kunne ikke oprette stykliste");
@@ -57,7 +71,7 @@ public class BomMapper
     {
 
         String sql = """
-                SELECT b.bom_id, b.offer_id, b.cost_price, b.coverage_percentage, b.price_without_vat, b.total_price, ml.*, m.*
+                SELECT b.bom_id, b.offer_id, b.cost_price, b.coverage_percentage, b.price_without_vat, b.total_price, ml.*, m.*, mv.*
                 FROM bill_of_materials b
                 LEFT JOIN material_line ml ON b.bom_id = ml.bom_id
                 LEFT JOIN material m ON ml.material_id = m.material_id
@@ -91,7 +105,7 @@ public class BomMapper
     {
 
         String sql = """
-                SELECT b.bom_id, b.offer_id, b.cost_price, b.coverage_percentage, b.price_without_vat, b.total_price, ml.*, m.*
+                SELECT b.bom_id, b.offer_id, b.cost_price, b.coverage_percentage, b.price_without_vat, b.total_price, ml.*, m.*, mv.*
                 FROM bill_of_materials b
                 LEFT JOIN material_line ml ON b.bom_id = ml.bom_id
                 LEFT JOIN material m ON ml.material_id = m.material_id
@@ -126,8 +140,7 @@ public class BomMapper
 
         String sql = """
             UPDATE bill_of_materials
-            SET cost_price = ?, coverage_percentage = ?, 
-            price_without_vat = ?, total_price = ?
+            SET cost_price = ?, coverage_percentage = ?, price_without_vat = ?, total_price = ?
             WHERE bom_id = ?
             """;
 
@@ -183,31 +196,43 @@ public class BomMapper
         double priceWithoutVat = rs.getDouble("price_without_vat");
         double totalPrice = rs.getDouble("total_price");
 
+        int lastMaterialLineId = -1;
+
         do
         {
-            Material material = new Material(
-                    rs.getInt("material_id"),
-                    rs.getString("name"),
-                    MaterialCategory.valueOf(rs.getString("category")),
-                    MaterialType.valueOf(rs.getString("type")),
-                    (Integer) rs.getObject("material_width"),
-                    (Integer) rs.getObject("material_height"),
-                    rs.getString("unit"),
-                    rs.getString("usage"),
-                    rs.getInt("material_variant_id"),
-                    (Integer) rs.getObject("variant_length"),
-                    rs.getDouble("unit_price")
-            );
+            if (rs.getObject("material_line_id") != null) {
 
-            MaterialLine materialLine = new MaterialLine(
-                    rs.getInt("material_line_id"),
-                    rs.getInt("bom_id"),
-                    material,
-                    rs.getInt("quantity"),
-                    rs.getDouble("line_total")
-            );
+                int currentMaterialLineId = rs.getInt("material_line_id");
 
-            materialLines.add(materialLine);
+                if (currentMaterialLineId != lastMaterialLineId) {
+
+                    Material material = new Material(
+                            rs.getInt("material_id"),
+                            rs.getString("name"),
+                            MaterialCategory.valueOf(rs.getString("category")),
+                            MaterialType.valueOf(rs.getString("type")),
+                            (Integer) rs.getObject("material_width"),
+                            (Integer) rs.getObject("material_height"),
+                            rs.getString("unit"),
+                            rs.getString("usage"),
+                            rs.getInt("material_variant_id"),
+                            rs.getInt("variant_length"),
+                            rs.getDouble("unit_price")
+                    );
+
+                    MaterialLine materialLine = new MaterialLine(
+                            currentMaterialLineId,
+                            rs.getInt("bom_id"),
+                            material,
+                            rs.getInt("quantity"),
+                            rs.getDouble("line_total")
+                    );
+
+                    materialLines.add(materialLine);
+
+                    lastMaterialLineId = currentMaterialLineId;
+                }
+            }
 
         } while (rs.next());
 
