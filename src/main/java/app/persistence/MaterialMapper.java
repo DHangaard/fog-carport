@@ -61,7 +61,7 @@ public class MaterialMapper
                 ResultSet rs = ps.executeQuery();
                 if (rs.next())
                 {
-                    materialId = rs.getInt("material_id");
+                    materialId = rs.getInt(1);
                 }
             }
 
@@ -74,7 +74,7 @@ public class MaterialMapper
                 ResultSet rs = ps.executeQuery();
                 if (rs.next())
                 {
-                    materialVariantId = rs.getInt("material_variant_id");
+                    materialVariantId = rs.getInt(1);
                 }
             }
 
@@ -123,6 +123,51 @@ public class MaterialMapper
                     throw new DatabaseException("Fejl ved oprettelse af materiale: " + e.getMessage());
                 }
             }
+        }
+    }
+
+    public Material createMaterialVariant(int materialId, Integer variantLength, double unitPrice) throws DatabaseException
+    {
+        String materialVariantSql = """
+                INSERT INTO material_variant (material_id, variant_length, unit_price) 
+                VALUES (?, ?, ?)
+                RETURNING material_variant_id
+                """;
+
+        Material material = getMaterialById(materialId);
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(materialVariantSql))
+        {
+            ps.setInt(1, materialId);
+            ps.setObject(2, variantLength);
+            ps.setDouble(3, unitPrice);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next())
+            {
+                int materialVariantId = rs.getInt(1);
+
+                return new Material(
+                        material.getMaterialId(),
+                        material.getName(),
+                        material.getMaterialCategory(),
+                        material.getMaterialType(),
+                        material.getMaterialWidth(),
+                        material.getMaterialHeight(),
+                        material.getUnit(),
+                        material.getUsage(),
+                        materialVariantId,
+                        variantLength,
+                        unitPrice
+                );
+            }
+            throw new DatabaseException("Fejl ved oprettelse af materiale variant.");
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl ved oprettelse af materiale variant: " + e.getMessage());
         }
     }
 
