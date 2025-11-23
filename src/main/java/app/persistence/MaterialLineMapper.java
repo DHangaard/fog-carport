@@ -50,7 +50,7 @@ public class MaterialLineMapper
         }
         catch (SQLException e)
         {
-            throw new DatabaseException("Fejl ved oprettelse af materialelinje" + e.getMessage());
+            throw new DatabaseException("Fejl ved oprettelse af materialelinje: " + e.getMessage());
         }
     }
 
@@ -75,11 +75,11 @@ public class MaterialLineMapper
                 return buildMaterialLineFromResultSet(rs);
             }
 
-            throw new DatabaseException("Materialelinje med ID " materialLineId + " blev ikke fundet i databasen.");
+            throw new DatabaseException("Materialelinje med ID " + materialLineId + " blev ikke fundet i databasen.");
         }
         catch (SQLException e)
         {
-            throw new DatabaseException("Fejl ved hentning af materialelinje med ID " + materialLineId + e.getMessage());
+            throw new DatabaseException("Fejl ved hentning af materialelinje: " + e.getMessage());
         }
     }
 
@@ -110,13 +110,37 @@ public class MaterialLineMapper
         }
         catch (SQLException e)
         {
-            throw new DatabaseException("Fejl ved hentning af materialelinjer" + e.getMessage());
+            throw new DatabaseException("Fejl ved hentning af materialelinjer: " + e.getMessage());
         }
     }
 
-    public boolean updateMaterialLine(MaterialLine materialLineId) throws DatabaseException
+    public boolean updateMaterialLine(MaterialLine materialLine) throws DatabaseException
     {
-        return false;
+        String sql = """
+                UPDATE material_line
+                SET bom_id = ?,
+                material_id = ?,
+                quantity = ?,
+                line_total = ?,
+                WHERE material_line_id = ?
+                """;
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql))
+        {
+            ps.setInt(1, materialLine.getBomId());
+            ps.setInt(2, materialLine.getMaterial().getMaterialId());
+            ps.setInt(3, materialLine.getQuantity());
+            ps.setDouble(4, materialLine.getLineTotal());
+            ps.setInt(5, materialLine.getMaterialLineId());
+
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected == 1;
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl ved opdatering af materialelinje: " + e.getMessage());
+        }
     }
 
     public boolean deleteMaterialLine(int materialLineId) throws DatabaseException
