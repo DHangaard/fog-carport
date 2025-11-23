@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -74,8 +76,9 @@ class MaterialMapperTest
                         "(1, 'trykimp. Stolpe', 'WOOD_AND_ROOFING', 'POST', 97, 97, 'stk', 'Stolper nedgraves 90 cm. i jord'), " +
                         "(2, 'spærtræ ubh.', 'WOOD_AND_ROOFING', 'BEAM', 45, 195, 'stk', 'Remme i sider, sadles ned i stolper'), " +
                         "(3, 'spærtræ ubh.', 'WOOD_AND_ROOFING', 'RAFTER', 45, 195, 'stk', 'Spær, monteres på rem'), " +
-                        "(4, 'Plastmo Ecolite blåtonet', 'WOOD_AND_ROOFING', 'ROOF', 109, 5, 'stk', 'Tagplader monteres på spær')");
-                // TODO Insert MATERIAL with null values
+                        "(4, 'Plastmo Ecolite blåtonet', 'WOOD_AND_ROOFING', 'ROOF', 109, 5, 'stk', 'Tagplader monteres på spær'), " +
+                        "(5, 'Plastmo Bundskruer', 'FITTINGS_AND_FASTENERS', 'FASTENER', null, null, 'stk', 'Skruer til tagplader'), " +
+                        "(6, 'trykimp. Stolpe', 'WOOD_AND_ROOFING', 'POST', 45, 45, 'stk', 'Stolper nedgraves 90 cm. i jord')");
 
                 stmt.execute("INSERT INTO test.material_variant (material_variant_id, material_id, variant_length, unit_price) VALUES " +
                         "(1, 1, 300, 221.85), " +
@@ -83,7 +86,9 @@ class MaterialMapperTest
                         "(3, 2, 360, 190.61), " +
                         "(4, 2, 600, 479.70), " +
                         "(5, 3, 600, 479.70), " +
-                        "(6, 4, 360, 199.00)");
+                        "(6, 4, 360, 199.00), " +
+                        "(7, 5, null, 199.00), " +
+                        "(8, 6, 300, 179.95)");
 
                 stmt.execute("SELECT setval('test.material_material_id_seq', COALESCE((SELECT MAX(material_id) + 1 FROM test.material), 1), false)");
                 stmt.execute("SELECT setval('test.material_variant_material_variant_id_seq', COALESCE((SELECT MAX(material_variant_id) + 1 FROM test.material_variant), 1), false)");
@@ -118,7 +123,7 @@ class MaterialMapperTest
        );
 
        assertNotNull(material);
-       assertEquals(5, material.getMaterialId());
+       assertEquals(7, material.getMaterialId());
        assertEquals("Test", material.getName());
        assertEquals(MaterialCategory.FITTINGS_AND_FASTENERS, material.getMaterialCategory());
        assertEquals(MaterialType.FASTENER, material.getMaterialType());
@@ -155,23 +160,93 @@ class MaterialMapperTest
     }
 
     @Test
-    void testGetMaterialById()
+    void testGetMaterialByIdWithDefaultVariant() throws DatabaseException
     {
+        Material material = materialMapper.getMaterialById(2);
+
+        assertNotNull(material);
+        assertEquals(2, material.getMaterialId());
+        assertEquals("spærtræ ubh.", material.getName());
+        assertEquals(MaterialCategory.WOOD_AND_ROOFING, material.getMaterialCategory());
+        assertEquals(MaterialType.BEAM, material.getMaterialType());
+        assertEquals(45, material.getMaterialWidth());
+        assertEquals(195, material.getMaterialHeight());
+        assertEquals("stk", material.getUnit());
+        assertEquals("Remme i sider, sadles ned i stolper", material.getUsage());
+        assertEquals(3, material.getMaterialVariantId());
+        assertEquals(360, material.getVariantLength());
+        assertEquals(190.61, material.getUnitPrice());
     }
 
     @Test
-    void testGetMaterialsByType()
+    void testGetMaterialByIdWithSpecificVariant() throws DatabaseException
     {
+        Material material = materialMapper.getMaterialById(2, 4);
+
+        assertNotNull(material);
+        assertEquals(2, material.getMaterialId());
+        assertEquals("spærtræ ubh.", material.getName());
+        assertEquals(MaterialCategory.WOOD_AND_ROOFING, material.getMaterialCategory());
+        assertEquals(MaterialType.BEAM, material.getMaterialType());
+        assertEquals(45, material.getMaterialWidth());
+        assertEquals(195, material.getMaterialHeight());
+        assertEquals("stk", material.getUnit());
+        assertEquals("Remme i sider, sadles ned i stolper", material.getUsage());
+        assertEquals(4, material.getMaterialVariantId());
+        assertEquals(600, material.getVariantLength());
+        assertEquals(479.70, material.getUnitPrice());
     }
 
     @Test
-    void testGetMaterialsByCategory()
+    void testGetMaterialsByType() throws DatabaseException
     {
+        List<Material> materials = materialMapper.getMaterialsByType(MaterialType.POST);
+
+        assertNotNull(materials);
+        assertEquals(2, materials.size());
+        assertEquals(1, materials.get(0).getMaterialId());
+        assertEquals(6, materials.get(1).getMaterialId());
     }
 
     @Test
-    void testGetAllMaterials()
+    void testGetMaterialsByCategory() throws DatabaseException
     {
+        List<Material> materials = materialMapper.getMaterialsByCategory(MaterialCategory.WOOD_AND_ROOFING);
+
+        List<Integer> materialIds = new ArrayList<>();
+        for (Material material : materials)
+        {
+            materialIds.add(material.getMaterialId());
+        }
+
+        assertNotNull(materials);
+        assertEquals(5, materials.size());
+        assertTrue(materialIds.contains(1));
+        assertTrue(materialIds.contains(2));
+        assertTrue(materialIds.contains(3));
+        assertTrue(materialIds.contains(4));
+        assertTrue(materialIds.contains(6));
+    }
+
+    @Test
+    void testGetAllMaterials() throws DatabaseException
+    {
+        List<Material> materials = materialMapper.getAllMaterials();
+
+        List<Integer> materialIds = new ArrayList<>();
+        for (Material material : materials)
+        {
+            materialIds.add(material.getMaterialId());
+        }
+
+        assertNotNull(materials);
+        assertEquals(6, materials.size());
+        assertTrue(materialIds.contains(1));
+        assertTrue(materialIds.contains(2));
+        assertTrue(materialIds.contains(3));
+        assertTrue(materialIds.contains(4));
+        assertTrue(materialIds.contains(5));
+        assertTrue(materialIds.contains(6));
     }
 
     @Test
