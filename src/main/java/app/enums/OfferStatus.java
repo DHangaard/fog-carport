@@ -3,6 +3,7 @@ package app.enums;
 public enum OfferStatus
 {
     PENDING("Afventer"),
+    READY("Klar"),
     ACCEPTED("Accepteret"),
     REJECTED("Afvist"),
     EXPIRED("Udløbet");

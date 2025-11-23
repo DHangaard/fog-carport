@@ -11,35 +11,24 @@ import java.sql.*;
 public class CarportMapper
 {
     private ConnectionPool connectionPool;
-    private ShedMapper shedMapper;
 
     public CarportMapper (ConnectionPool connectionPool)
     {
         this.connectionPool = connectionPool;
-        this.shedMapper = new ShedMapper(connectionPool);
     }
 
-    public Carport createCarport(Carport carport) throws DatabaseException
+    public Carport createCarport(Connection connection, int length, int width, Integer shedId, RoofType roofType) throws DatabaseException
     {
-        Integer shedId = null;
-
-        if (carport.getShed() != null)
-        {
-            Shed createdShed = shedMapper.createShed(carport.getShed());
-            shedId = createdShed.getShedId();
-        }
-
         String sql  = """
                 INSERT INTO carport (length, width, shed_id, roof_type)
                 VALUES (?, ?, ?, ?)
                 RETURNING carport_id;
                 """;
 
-        try (Connection connection = connectionPool.getConnection();
-             PreparedStatement ps = connection.prepareStatement(sql))
+        try (PreparedStatement ps = connection.prepareStatement(sql))
         {
-            ps.setInt(1, carport.getLength());
-            ps.setInt(2, carport.getWidth());
+            ps.setInt(1, length);
+            ps.setInt(2, width);
 
             if (shedId != null)
             {
@@ -50,14 +39,20 @@ public class CarportMapper
                 ps.setNull(3, Types.INTEGER);
             }
 
-            ps.setString(4, carport.getRoofType().name());
+            ps.setString(4, roofType.name());
 
             ResultSet rs = ps.executeQuery();
 
             if (rs.next())
             {
                 int carportId = rs.getInt("carport_id");
-                return getCarportById(carportId);
+                return new Carport(
+                        carportId,
+                        length,
+                        width,
+                        roofType,
+                        null
+                );
             }
             else
             {
@@ -104,23 +99,6 @@ public class CarportMapper
 
     public boolean updateCarport(Carport carport) throws DatabaseException
     {
-        Integer shedId = null;
-
-
-        if (carport.getShed() != null)
-        {
-            if (carport.getShed().getShedId() > 0)
-            {
-                shedMapper.updateShed(carport.getShed());
-                shedId = carport.getShed().getShedId();
-            }
-            else
-            {
-                Shed createdShed = shedMapper.createShed(carport.getShed());
-                shedId = createdShed.getShedId();
-            }
-        }
-
         String sql = """
                 UPDATE carport 
                 SET length = ?, 
@@ -137,9 +115,9 @@ public class CarportMapper
             ps.setInt(1, carport.getLength());
             ps.setInt(2, carport.getWidth());
 
-            if (shedId != null)
+            if (carport.getShed() != null)
             {
-                ps.setInt(3, shedId);
+                ps.setInt(3, carport.getShed().getShedId());
             }
             else
             {
@@ -158,7 +136,6 @@ public class CarportMapper
             throw new DatabaseException("Fejl ved opdatering af carport: " + e.getMessage());
         }
     }
-
 
     private Carport buildCarportFromResultSet(ResultSet rs) throws SQLException
     {

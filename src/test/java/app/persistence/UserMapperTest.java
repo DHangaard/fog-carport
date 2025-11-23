@@ -1,10 +1,8 @@
 package app.persistence;
 
-import app.Main;
 import app.entities.User;
 import app.enums.Role;
 import app.exceptions.DatabaseException;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,14 +11,11 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
-import java.util.Locale;
-import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class UserMapperTest
 {
-
     private static final String USER = "postgres";
     private static final String PASSWORD = "postgres";
     private static final String URL = "jdbc:postgresql://localhost:5432/%s?currentSchema=test";
@@ -167,7 +162,6 @@ class UserMapperTest
     @Test
     void testGetUserByEmail() throws DatabaseException
     {
-
         User user = userMapper.getUserByEmail("anna@fog.com");
 
         assertNotNull(user);
@@ -181,7 +175,6 @@ class UserMapperTest
     @Test
     void testGetUserByEmailIsNotCaseInsensitive() throws DatabaseException
     {
-
         User user1 = userMapper.getUserByEmail("JOHN@GMAIL.COM");
         User user2 = userMapper.getUserByEmail("john@gmail.com");
 
@@ -193,7 +186,6 @@ class UserMapperTest
     @Test
     void testGetUserByEmailNotFound()
     {
-
         assertThrows(DatabaseException.class, () -> {
             userMapper.getUserByEmail("notfound@example.com");
         });
