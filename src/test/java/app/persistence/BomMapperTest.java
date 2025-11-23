@@ -30,7 +30,6 @@ class BomMapperTest
         {
             try (Statement stmt = connection.createStatement())
             {
-
                 stmt.execute("DROP TABLE IF EXISTS test.material_line CASCADE");
                 stmt.execute("DROP TABLE IF EXISTS test.bill_of_materials CASCADE");
                 stmt.execute("DROP TABLE IF EXISTS test.offer CASCADE");
@@ -172,7 +171,6 @@ class BomMapperTest
         assertEquals(24375.00, bom.getPricingDetails().getTotalPrice(), 0.01);
     }
 
-
     @Test
     void testGetBillOfMaterialsById() throws DatabaseException
     {
@@ -226,7 +224,6 @@ class BomMapperTest
 
         assertTrue(exception.getMessage().contains("ikke fundet"));
     }
-
 
     @Test
     void testUpdatePriceInBillOfMaterials() throws DatabaseException

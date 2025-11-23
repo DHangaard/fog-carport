@@ -16,7 +16,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class UserMapperTest
 {
-
     private static final String USER = "postgres";
     private static final String PASSWORD = "postgres";
     private static final String URL = "jdbc:postgresql://localhost:5432/%s?currentSchema=test";
@@ -163,7 +162,6 @@ class UserMapperTest
     @Test
     void testGetUserByEmail() throws DatabaseException
     {
-
         User user = userMapper.getUserByEmail("anna@fog.com");
 
         assertNotNull(user);
@@ -177,7 +175,6 @@ class UserMapperTest
     @Test
     void testGetUserByEmailIsNotCaseInsensitive() throws DatabaseException
     {
-
         User user1 = userMapper.getUserByEmail("JOHN@GMAIL.COM");
         User user2 = userMapper.getUserByEmail("john@gmail.com");
 
@@ -189,7 +186,6 @@ class UserMapperTest
     @Test
     void testGetUserByEmailNotFound()
     {
-
         assertThrows(DatabaseException.class, () -> {
             userMapper.getUserByEmail("notfound@example.com");
         });

@@ -297,7 +297,7 @@ class OfferMapperTest
 
         offer.setOfferStatus(OfferStatus.EXPIRED);
         boolean updated = offerMapper.updateOffer(offer);
-        
+
         assertTrue(updated);
 
         Offer expiredOffer = offerMapper.getOfferById(2);
