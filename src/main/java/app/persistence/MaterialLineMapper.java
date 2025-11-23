@@ -52,11 +52,10 @@ public class MaterialLineMapper
         }
     }
 
-    // TODO Make this private
-    public MaterialLine getMaterialLineById(int materialLineId) throws DatabaseException
+    private MaterialLine getMaterialLineById(int materialLineId) throws DatabaseException
     {
         String sql = """
-                SELECT ml.*, m.*
+                SELECT ml.material_line_id, ml.bom_id, ml.quantity, ml.line_total, m.*
                 FROM material_line ml
                 JOIN material m
                 ON ml.material_id = m.material_id 
@@ -67,7 +66,12 @@ public class MaterialLineMapper
              PreparedStatement ps = connection.prepareStatement(sql))
         {
             ps.setInt(1, materialLineId);
-            // TODO Finish method
+            ResultSet rs = ps.executeQuery();;
+
+            if (rs.next())
+            {
+                return buildMaterialLineFromResultSet(rs);
+            }
         }
         return null;
     }
