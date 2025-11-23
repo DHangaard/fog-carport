@@ -145,7 +145,22 @@ public class MaterialLineMapper
 
     public boolean deleteMaterialLine(int materialLineId) throws DatabaseException
     {
-        return false;
+        String sql = """
+                DELETE FROM material
+                WHERE material_line_id = ?
+                """;
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql))
+        {
+            ps.setInt(1, materialLineId);
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected == 1;
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl ved sletning af materialeline: " + e.getMessage());
+        }
     }
 
     private MaterialLine buildMaterialLineFromResultSet(ResultSet rs) throws SQLException
