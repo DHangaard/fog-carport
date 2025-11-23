@@ -99,7 +99,6 @@ public class CarportMapper
 
     public boolean updateCarport(Carport carport) throws DatabaseException
     {
-
         String sql = """
                 UPDATE carport 
                 SET length = ?, 

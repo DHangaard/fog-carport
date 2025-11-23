@@ -99,7 +99,6 @@ public class OfferMapper
 
     public List<Offer> getAllOffers() throws DatabaseException
     {
-
         String sql = """
                 SELECT offer_id, customer_id, seller_id, carport_id, request_created_at, created_date, expiration_date,
                 customer_comment, offer_status
@@ -258,7 +257,6 @@ public class OfferMapper
 
     private Offer buildOfferFromResultSet(ResultSet rs) throws SQLException
     {
-
         OfferDate offerDate = new OfferDate(
                 rs.getTimestamp("request_created_at"),
                 rs.getTimestamp("created_date"),

@@ -4,7 +4,6 @@ import app.entities.*;
 import app.enums.MaterialCategory;
 import app.enums.MaterialType;
 import app.exceptions.DatabaseException;
-import com.fasterxml.jackson.databind.ext.SqlBlobSerializer;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -200,8 +199,8 @@ public class BomMapper
 
         do
         {
-            if (rs.getObject("material_line_id") != null) {
-
+            if (rs.getObject("material_line_id") != null)
+            {
                 int currentMaterialLineId = rs.getInt("material_line_id");
 
                 if (currentMaterialLineId != lastMaterialLineId) {
