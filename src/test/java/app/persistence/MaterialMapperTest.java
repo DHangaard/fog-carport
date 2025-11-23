@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javax.xml.crypto.Data;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -250,13 +251,49 @@ class MaterialMapperTest
     }
 
     @Test
-    void testUpdateMaterial()
+    void testUpdateMaterial() throws DatabaseException
     {
+        Material material = new Material(
+                1,
+                "Trykimp. Stolpe",
+                MaterialCategory.WOOD_AND_ROOFING,
+                MaterialType.POST,
+                95,
+                95,
+                "stk",
+                "Opdateret beskrivelse",
+                1,
+                300,
+                221.85);
+
+        boolean updated = materialMapper.updateMaterial(material);
+
+        assertTrue(updated);
+        Material updatedMaterial = materialMapper.getMaterialById(1);
+        assertEquals("Opdateret beskrivelse", updatedMaterial.getUsage());
     }
 
     @Test
-    void testUpdateMaterialVariant()
+    void testUpdateMaterialVariant() throws DatabaseException
     {
+        Material material = new Material(
+                1,
+                "Trykimp. Stolpe",
+                MaterialCategory.WOOD_AND_ROOFING,
+                MaterialType.POST,
+                95,
+                95,
+                "stk",
+                "Stolper nedgraves 90 cm. i jord",
+                1,
+                300,
+                249.95);
+
+        boolean updated = materialMapper.updateMaterial(material);
+
+        assertTrue(updated);
+        Material updatedMaterial = materialMapper.getMaterialById(1);
+        assertEquals(249.95, updatedMaterial.getUnitPrice());
     }
 
     @Test
