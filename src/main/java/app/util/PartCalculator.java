@@ -1,6 +1,10 @@
 package app.util;
 
+import app.dto.BeamCalculationDTO;
 import app.dto.RafterCalculationDTO;
+import app.entities.Material;
+
+import java.util.List;
 
 public class PartCalculator
 {
@@ -26,6 +30,15 @@ public class PartCalculator
         return numberOfPosts;
     }
 
+    public static BeamCalculationDTO calculateBeam(int lenght, List<Material> beamMaterials)
+    {
+        return new BeamCalculationDTO(3, List.of());
+    }
+
+    {
+
+    }
+
     public static RafterCalculationDTO calculateRafters(int length, double rafterWidth, int maxSpacing)
     {
         int numberOfMiddleRafters = length / maxSpacing;
@@ -42,4 +55,5 @@ public class PartCalculator
 
         return new RafterCalculationDTO(totalNumberOfRafters, roundedSpacing);
     }
+
 }
