@@ -11,6 +11,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MaterialLineMapper
 {
@@ -21,7 +23,7 @@ public class MaterialLineMapper
         this.connectionPool = connectionPool;
     }
 
-    public MaterialLine createMaterialLine(MaterialLine materialLine) throws DatabaseException
+    public MaterialLine createMaterialLine(Connection connection, int bomId, int materialId, int quantity, double lineTotal) throws DatabaseException
     {
         String sql = """
                 INSERT INTO material_line (bom_id, material_id, quantity, line_total)
@@ -29,19 +31,19 @@ public class MaterialLineMapper
                 RETURNING material_line_id
                 """;
 
-        try (Connection connection = connectionPool.getConnection();
-             PreparedStatement ps = connection.prepareStatement(sql))
+        try (PreparedStatement ps = connection.prepareStatement(sql))
         {
-            ps.setInt(1, materialLine.getBomId());
-            ps.setInt(2, materialLine.getMaterial().getMaterialId());
-            ps.setInt(3, materialLine.getQuantity());
-            ps.setDouble(4, materialLine.getLineTotal());
+            ps.setInt(1, bomId);
+            ps.setInt(2, materialId);
+            ps.setInt(3, quantity);
+            ps.setDouble(4, lineTotal);
 
             ResultSet rs = ps.executeQuery();
+
             if (rs.next())
             {
                 int materialLineId = rs.getInt(1);
-                return getMaterialLineById(materialLineId);
+                return new MaterialLine(materialLineId, bomId, null, quantity, lineTotal);
             }
 
             throw new DatabaseException("Kunne ikke oprette ordrelinje");
@@ -52,7 +54,7 @@ public class MaterialLineMapper
         }
     }
 
-    private MaterialLine getMaterialLineById(int materialLineId) throws DatabaseException
+    public MaterialLine getMaterialLineById(int materialLineId) throws DatabaseException
     {
         String sql = """
                 SELECT ml.material_line_id, ml.bom_id, ml.quantity, ml.line_total, m.*
@@ -72,13 +74,44 @@ public class MaterialLineMapper
             {
                 return buildMaterialLineFromResultSet(rs);
             }
+
+            throw new DatabaseException("Materialelinje med ID " materialLineId + " blev ikke fundet i databasen.");
         }
-        return null;
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl ved hentning af materialelinje med ID " + materialLineId + e.getMessage());
+        }
     }
 
-    public MaterialLine getMaterialLinesByBomId(int bomId) throws DatabaseException
+    public List<MaterialLine> getMaterialLinesByBomId(int bomId) throws DatabaseException
     {
+        String sql = """
+                SELECT ml.material_line_id, ml.bom_id, ml.quantity, ml.line_total, m.*
+                FROM material_line ml
+                JOIN material m
+                ON ml.material_id = m.material_id 
+                WHERE bom_id = ?
+                """;
 
+        List<MaterialLine> materialLines = new ArrayList<>();
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql))
+        {
+            ps.setInt(1, bomId);
+            try (ResultSet rs = ps.executeQuery())
+            {
+                while (rs.next())
+                {
+                    materialLines.add(buildMaterialLineFromResultSet(rs));
+                }
+            }
+            return materialLines;
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl ved hentning af materialelinjer" + e.getMessage());
+        }
     }
 
     public boolean updateMaterialLine(MaterialLine materialLineId) throws DatabaseException
