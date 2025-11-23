@@ -6,7 +6,6 @@ import app.enums.OfferStatus;
 import app.exceptions.DatabaseException;
 
 import java.sql.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,8 +21,8 @@ public class OfferMapper
     public Offer createOffer(Connection connection, int customerId, int carportId, String customerComment) throws DatabaseException
     {
         String sql = """
-                INSERT INTO offer (customer_id, carport_id, customer_comment, offer_status, request_created_at)
-                VALUES (?, ?, ?, 'PENDING', CURENT_TIMESTAMP)
+                INSERT INTO offer (customer_id, carport_id, customer_comment)
+                VALUES (?, ?, ?)
                 RETURNING offer_id
                 """;
         try
@@ -40,8 +39,24 @@ public class OfferMapper
             if(rs.next())
             {
                 int offerId = rs.getInt("offer_id");
-                return getOfferById(offerId);
+
+                OfferDate offerDate = new OfferDate(
+                        new Timestamp(System.currentTimeMillis()),
+                        null,
+                        null
+                );
+
+                return new Offer(
+                        offerId,
+                        customerId,
+                        null,
+                        carportId,
+                        offerDate,
+                        customerComment,
+                        OfferStatus.PENDING
+                );
             }
+
             throw new DatabaseException("Kunne ikke oprette tilbuddet");
         }
         catch (SQLException e)
@@ -154,7 +169,7 @@ public class OfferMapper
                 SELECT offer_id, customer_id, seller_id, carport_id, request_created_at, created_date, expiration_date,
                 customer_comment, offer_status
                 FROM offer
-                WHERE customer_id = ?
+                WHERE offer_status = ?
                 ORDER BY request_created_at DESC
                 """;
 
@@ -185,30 +200,38 @@ public class OfferMapper
     public boolean updateOffer(Offer offer) throws DatabaseException
     {
         String sql = """
-            UPDATE offer
-            SET seller_id = ?, carport_id = ?, created_at = ?, expiration_date, customer_comment, offer_status = ?
-            WHERE offer_id = ?
+        UPDATE offer
+        SET seller_id = ?, carport_id = ?, created_date = ?, expiration_date = ?, customer_comment = ?, offer_status = ?
+        WHERE offer_id = ?
             """;
 
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql))
         {
 
-            ps.setInt(1, offer.getSellerId());
+            Integer sellerId = offer.getSellerId();
+            if (sellerId != null)
+            {
+                ps.setInt(1, sellerId);
+            }
+            else
+            {
+                ps.setNull(1, Types.INTEGER);
+            }
+
             ps.setInt(2, offer.getCarportId());
             ps.setTimestamp(3, offer.getOfferDate().getCreatedAt());
-            ps.setTimestamp(3, offer.getOfferDate().getExpirationDate());
+            ps.setTimestamp(4, offer.getOfferDate().getExpirationDate());
             ps.setString(5, offer.getCustomerComment());
             ps.setString(6, offer.getOfferStatus().name());
             ps.setInt(7, offer.getOfferId());
-
             int rowsAffected = ps.executeUpdate();
             return rowsAffected == 1;
 
         }
         catch (SQLException e)
         {
-            throw new DatabaseException("Fejl ved opdatering af stykliste: " + e.getMessage());
+            throw new DatabaseException("Fejl ved opdatering af tilbuddet: " + e.getMessage());
         }
     }
 

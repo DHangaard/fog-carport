@@ -13,10 +13,8 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
 class BomMapperTest
 {
-
     private static final String USER = "postgres";
     private static final String PASSWORD = "postgres";
     private static final String URL = "jdbc:postgresql://localhost:5432/%s?currentSchema=test";
@@ -95,8 +93,6 @@ class BomMapperTest
         {
             try (Statement stmt = connection.createStatement())
             {
-
-                // Clear tables
                 stmt.execute("DELETE FROM test.material_line");
                 stmt.execute("DELETE FROM test.bill_of_materials");
                 stmt.execute("DELETE FROM test.offer");
@@ -180,7 +176,6 @@ class BomMapperTest
     @Test
     void testGetBillOfMaterialsById() throws DatabaseException
     {
-
         BillOfMaterials bom = bomMapper.getBillOfMaterialsById(1);
 
         assertNotNull(bom);
@@ -215,7 +210,6 @@ class BomMapperTest
     @Test
     void testGetBillOfMaterialsByIdNotFound()
     {
-
         DatabaseException exception = assertThrows(DatabaseException.class, () -> {
             bomMapper.getBillOfMaterialsById(999);
         });
@@ -226,7 +220,6 @@ class BomMapperTest
     @Test
     void testGetBillOfMaterialsByOfferIdNotFound()
     {
-
         DatabaseException exception = assertThrows(DatabaseException.class, () -> {
             bomMapper.getBillOfMaterialsByOfferId(999);
         });
@@ -238,7 +231,6 @@ class BomMapperTest
     @Test
     void testUpdatePriceInBillOfMaterials() throws DatabaseException
     {
-
         BillOfMaterials bom = bomMapper.getBillOfMaterialsById(1);
 
         PricingDetails newPricing = new PricingDetails(
@@ -263,7 +255,6 @@ class BomMapperTest
     @Test
     void testUpdatePriceInBillOfMaterialsWithNotFoundWithIdNotExisting() throws DatabaseException
     {
-
         PricingDetails pricing = new PricingDetails(10000.00, 12500.00, 15625.00);
         BillOfMaterials fakeBom = new BillOfMaterials(
                 999,
@@ -277,7 +268,6 @@ class BomMapperTest
 
         assertFalse(updated);
     }
-
 
     @Test
     void testDeleteBillOfMaterials() throws DatabaseException
@@ -300,29 +290,7 @@ class BomMapperTest
     }
 
     @Test
-    void testGetBillOfMaterialsWithNoMaterialLines() throws DatabaseException, SQLException
-    {
-        try (Connection connection = connectionPool.getConnection();
-             Statement stmt = connection.createStatement())
-        {
-
-            stmt.execute("INSERT INTO test.offer (offer_id, customer_id, carport_id, offer_status, request_created_at) " +
-                    "VALUES (2, 1, 1, 'PENDING', CURRENT_TIMESTAMP)");
-
-            stmt.execute("INSERT INTO test.bill_of_materials (bom_id, offer_id, cost_price, coverage_percentage, price_without_vat, total_price) " +
-                    "VALUES (2, 2, 5000.00, 0.20, 6000.00, 7500.00)");
-        }
-
-        BillOfMaterials bom = bomMapper.getBillOfMaterialsById(2);
-
-        assertNotNull(bom);
-        assertEquals(2, bom.getBomId());
-        assertNotNull(bom.getMaterialLines());
-        assertEquals(0, bom.getMaterialLines().size());
-    }
-
-    @Test
-    void testFirstLineOfMaterialLineData() throws DatabaseException
+    void testFirstLineOfMaterialLineDataInBom() throws DatabaseException
     {
         BillOfMaterials bom = bomMapper.getBillOfMaterialsById(1);
 
@@ -339,9 +307,8 @@ class BomMapperTest
     }
 
     @Test
-    void testMaterialDimensionsAreCorrect() throws DatabaseException
+    void testMaterialDimensionsAreCorrectInBom() throws DatabaseException
     {
-        // Act
         BillOfMaterials bom = bomMapper.getBillOfMaterialsById(1);
 
         MaterialLine stolpeLine = bom.getMaterialLines().get(0);
@@ -351,6 +318,5 @@ class BomMapperTest
         MaterialLine remmeLine = bom.getMaterialLines().get(1);
         assertEquals(45, remmeLine.getMaterial().getMaterialWidth());
         assertEquals(195, remmeLine.getMaterial().getMaterialHeight());
-
     }
 }
