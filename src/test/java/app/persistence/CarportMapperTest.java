@@ -13,8 +13,8 @@ import java.sql.Statement;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-class CarportMapperTest {
-
+class CarportMapperTest
+{
     private static final String USER = "postgres";
     private static final String PASSWORD = "postgres";
     private static final String URL = "jdbc:postgresql://localhost:5432/%s?currentSchema=test";
@@ -96,11 +96,15 @@ class CarportMapperTest {
     }
 
     @Test
-    void testCreateCarportWithoutShed() throws DatabaseException
+    void testCreateCarportWithoutShed() throws DatabaseException, SQLException
     {
-        Carport carport = new Carport(0, 600, 500, RoofType.FLAT, null);
+        Connection connection = connectionPool.getConnection();
+        connection.setAutoCommit(false);
 
-        Carport createdCarport = carportMapper.createCarport(carport);
+        Carport createdCarport = carportMapper.createCarport(connection,600,500, null, RoofType.FLAT);
+
+        connection.commit();
+        connection.close();
 
         assertNotNull(createdCarport);
         assertTrue(createdCarport.getCarportId() == 3);
@@ -111,14 +115,20 @@ class CarportMapperTest {
     }
 
     @Test
-    void testCreateCarportWithShed() throws DatabaseException
+    void testCreateCarportWithShed() throws DatabaseException, SQLException
     {
-        Shed shed = new Shed(0, 250, 500, ShedPlacement.LEFT);
-        Carport carport = new Carport(0, 690, 600, RoofType.FLAT, shed);
+        Connection connection = connectionPool.getConnection();
+        connection.setAutoCommit(false);
+        Shed createdShed = shedMapper.createShed(connection, 250, 500, ShedPlacement.LEFT);
+        Carport createdCarport = carportMapper.createCarport(connection,690,600, null, RoofType.FLAT);
 
-        Carport createdCarport = carportMapper.createCarport(carport);
+        connection.commit();
+        connection.close();
 
+        assertNotNull(createdShed);
         assertNotNull(createdCarport);
+        createdCarport.setShed(createdShed);
+
         assertTrue(createdCarport.getCarportId() == 3);
         assertEquals(690, createdCarport.getLength());
         assertEquals(600, createdCarport.getWidth());
@@ -191,10 +201,18 @@ class CarportMapperTest {
     }
 
     @Test
-    void testUpdateCarportWithAddedShed() throws DatabaseException
+    void testUpdateCarportWithAddedShed() throws DatabaseException, SQLException
     {
         Carport carport = carportMapper.getCarportById(2);
-        Shed newShed = new Shed(0, 200, 400, ShedPlacement.RIGHT);
+
+        Connection connection = connectionPool.getConnection();
+        connection.setAutoCommit(false);
+
+        Shed newShed = shedMapper.createShed(connection, 200, 400, ShedPlacement.RIGHT);
+
+        connection.commit();
+        connection.close();
+
         carport.setShed(newShed);
 
         boolean updated = carportMapper.updateCarport(carport);
@@ -229,5 +247,4 @@ class CarportMapperTest {
 
         assertFalse(updated);
     }
-
 }

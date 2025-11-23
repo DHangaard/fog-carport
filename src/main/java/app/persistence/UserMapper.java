@@ -19,8 +19,11 @@ public class UserMapper
 
     public User createUser(String firstName, String lastName, String email, String hashedPassword, String phoneNumber, String street, int zipcode) throws DatabaseException
     {
-        String sql = "INSERT INTO users (first_name, last_name, email, hashed_password, phone_number, street, zip_code, role)" +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING user_id";
+        String sql = """
+                INSERT INTO users (first_name, last_name, email, hashed_password, phone_number, street, zip_code, role)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?) 
+                RETURNING user_id
+                """;
 
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql))
@@ -58,11 +61,12 @@ public class UserMapper
 
     public User getUserById(int userId) throws DatabaseException
     {
-        String sql = "SELECT u.user_id, u.first_name, u.last_name, u.email, u.phone_number, u.hashed_password," +
-                "u.street, u.zip_code, z.city, u.role " +
-                "FROM users u " +
-                "JOIN zip_code z ON u.zip_code = z.zip_code " +
-                "WHERE u.user_id = ?";
+        String sql = """
+                SELECT u.user_id, u.first_name, u.last_name, u.email, u.phone_number, u.hashed_password, u.street, u.zip_code, z.city, u.role
+                FROM users u
+                JOIN zip_code z ON u.zip_code = z.zip_code
+                WHERE u.user_id = ?
+                """;
 
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql))
@@ -87,7 +91,12 @@ public class UserMapper
 
     public User getUserByEmail(String email) throws DatabaseException
     {
-        String sql = "SELECT * FROM users u JOIN zip_code z ON u.zip_code = z.zip_code WHERE email = ?";
+        String sql = """
+                SELECT * 
+                FROM users u 
+                JOIN zip_code z ON u.zip_code = z.zip_code 
+                WHERE email = ?
+                """;
 
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql))
@@ -112,7 +121,11 @@ public class UserMapper
 
     public boolean deleteUser(int userId) throws DatabaseException
     {
-        String sql = "DELETE FROM users WHERE user_id = ?";
+        String sql = """
+                DELETE 
+                FROM users 
+                WHERE user_id = ?
+                """;
 
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql))
@@ -126,7 +139,6 @@ public class UserMapper
             throw new DatabaseException("Fejl ved sletning af bruger med id: " + userId);
         }
     }
-
 
     public List<User> getAllUsers() throws DatabaseException
     {
