@@ -244,6 +244,7 @@ public class MaterialMapper
                 FROM material m
                 JOIN material_variant mv ON m.material_id = mv.material_id
                 WHERE m.type = ?
+                ORDER BY m.material_id
                 """;
 
         List<Material> materials = new ArrayList<>();
@@ -275,6 +276,7 @@ public class MaterialMapper
                 FROM material m
                 JOIN material_variant mv ON m.material_id = mv.material_id
                 WHERE m.category = ?
+                ORDER BY m.material_id
                 """;
 
         List<Material> materials = new ArrayList<>();
@@ -305,6 +307,7 @@ public class MaterialMapper
                        m.unit, m.usage, mv.material_variant_id, mv.variant_length, mv.unit_price
                 FROM material m
                 JOIN material_variant mv ON m.material_id = mv.material_id
+                ORDER BY m.material_id
                 """;
 
         List<Material> materials = new ArrayList<>();
