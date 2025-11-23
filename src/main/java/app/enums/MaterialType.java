@@ -4,7 +4,7 @@ public enum MaterialType
 {
     POST("Stolpe"),
     RAFTER("Spær"),
-    WALL_PLATE("Rem"),
+    BEAM("Rem"),
     ROOF("Tag"),
     BOARD("Bræt"),
     FASTENER("Skrue"),
