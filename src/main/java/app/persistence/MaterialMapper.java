@@ -153,7 +153,7 @@ public class MaterialMapper
         }
         catch (SQLException e)
         {
-            throw new DatabaseException("Fejl ved hentning af materiale med ID " + materialId + ": " + e.getMessage());
+            throw new DatabaseException("Fejl ved hentning af materiale: " + e.getMessage());
         }
     }
 
@@ -184,7 +184,7 @@ public class MaterialMapper
         }
         catch (SQLException e)
         {
-            throw new DatabaseException("Kunne ikke hente materialer med typen " + materialType.getDisplayCategory() + e.getMessage());
+            throw new DatabaseException("Kunne ikke hente materialer med typen " + materialType.getDisplayCategory() + ": " + e.getMessage());
         }
     }
 
@@ -215,7 +215,7 @@ public class MaterialMapper
         }
         catch (SQLException e)
         {
-            throw new DatabaseException("Kunne ikke hente materialer med kategorien " + materialCategory.getDisplayCategory() + e.getMessage());
+            throw new DatabaseException("Kunne ikke hente materialer med kategorien " + materialCategory.getDisplayCategory() + ": " + e.getMessage());
         }
     }
 
@@ -244,7 +244,7 @@ public class MaterialMapper
         }
         catch (SQLException e)
         {
-            throw new DatabaseException("Kunne ikke hente alle materialer fra databasen" + e.getMessage());
+            throw new DatabaseException("Kunne ikke hente alle materialer fra databasen: " + e.getMessage());
         }
     }
 
