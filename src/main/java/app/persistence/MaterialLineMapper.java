@@ -152,7 +152,7 @@ public class MaterialLineMapper
         }
     }
 
-    public boolean updateMaterialLine(MaterialLine materialLine) throws DatabaseException
+    public boolean updateMaterialLine(Connection connection, MaterialLine materialLine) throws DatabaseException
     {
         String sql = """
                 UPDATE material_line
@@ -160,8 +160,7 @@ public class MaterialLineMapper
                 WHERE material_line_id = ?
                 """;
 
-        try (Connection connection = connectionPool.getConnection();
-             PreparedStatement ps = connection.prepareStatement(sql))
+        try (PreparedStatement ps = connection.prepareStatement(sql))
         {
             ps.setInt(1, materialLine.getMaterialVariant().getMaterialVariantId());
             ps.setInt(2, materialLine.getQuantity());
@@ -179,7 +178,7 @@ public class MaterialLineMapper
     public boolean deleteMaterialLine(int materialLineId) throws DatabaseException
     {
         String sql = """
-                DELETE FROM material
+                DELETE FROM material_line
                 WHERE material_line_id = ?
                 """;
 

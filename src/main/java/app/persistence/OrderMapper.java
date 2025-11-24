@@ -21,7 +21,7 @@ public class OrderMapper
     public Order createOrder(Connection connection, int customerId, int carportId, String customerComment, double coveragePercentage, double costPrice) throws DatabaseException
     {
         String sql = """
-            INSERT INTO "order" (customer_id, carport_id, customer_comment, order_status, coverage_percentage, cost_price)
+            INSERT INTO "orders" (customer_id, carport_id, customer_comment, order_status, coverage_percentage, cost_price)
             VALUES (?, ?, ?, 'PENDING', ?, ?)
             RETURNING order_id, requested_created_at
                 """;
@@ -79,7 +79,7 @@ public class OrderMapper
     {
         String sql = """
                 SELECT order_id, customer_id, seller_id, carport_id, request_created_at, created_at, offer_valid_days, order_status, customer_comment, coverage_percentage, cost_price
-                FROM order 
+                FROM orders 
                 WHERE order_id = ?
                 """;
 
@@ -92,7 +92,7 @@ public class OrderMapper
 
             if (rs.next())
             {
-                return buildOfferFromResultSet(rs);
+                return buildOrderFromResultSet(rs);
             }
             else
             {
@@ -110,7 +110,7 @@ public class OrderMapper
     {
         String sql = """
                 SELECT order_id, customer_id, seller_id, carport_id, request_created_at, created_at, offer_valid_days, order_status, customer_comment, coverage_percentage, cost_price
-                FROM order 
+                FROM orders
                 ORDER BY request_created_at DESC
                 """;
 
@@ -124,7 +124,7 @@ public class OrderMapper
 
             while (rs.next())
             {
-                orders.add(buildOfferFromResultSet(rs));
+                orders.add(buildOrderFromResultSet(rs));
             }
 
             return orders;
@@ -140,7 +140,7 @@ public class OrderMapper
     {
         String sql = """
                 SELECT order_id, customer_id, seller_id, carport_id, request_created_at, created_at, offer_valid_days, order_status, customer_comment, coverage_percentage, cost_price
-                FROM order
+                FROM orders
                 WHERE customer_id = ?
                 ORDER BY request_created_at DESC
                 """;
@@ -156,7 +156,7 @@ public class OrderMapper
 
             while (rs.next())
             {
-                orders.add(buildOfferFromResultSet(rs));
+                orders.add(buildOrderFromResultSet(rs));
             }
 
             return orders;
@@ -173,8 +173,8 @@ public class OrderMapper
     {
         String sql = """
                 SELECT order_id, customer_id, seller_id, carport_id, request_created_at, created_at, offer_valid_days, order_status, customer_comment, coverage_percentage, cost_price
-                FROM order
-                WHERE offer_status = ?
+                FROM orders
+                WHERE order_status = ?
                 ORDER BY request_created_at DESC
                 """;
 
@@ -189,7 +189,7 @@ public class OrderMapper
 
             while (rs.next())
             {
-                orders.add(buildOfferFromResultSet(rs));
+                orders.add(buildOrderFromResultSet(rs));
             }
 
             return orders;
@@ -202,36 +202,49 @@ public class OrderMapper
     }
 
 
-    public boolean updateOffer(Order order) throws DatabaseException
+    public boolean updateOrder(Connection connection, Order order) throws DatabaseException
     {
         String sql = """
-        UPDATE order
+        UPDATE orders
         SET seller_id = ?, carport_id = ?, created_at = ?, offer_valid_days = ?, customer_comment = ?, offer_status = ?, coverage_percentage = ?, cost_price = ?
         WHERE order_id = ?
             """;
 
-        try (Connection connection = connectionPool.getConnection();
-             PreparedStatement ps = connection.prepareStatement(sql))
+        try (PreparedStatement ps = connection.prepareStatement(sql))
         {
 
-            Integer sellerId = order.getSellerId();
-            if (sellerId != null)
+            if (order.getSellerId() != null)
             {
-                ps.setInt(1, sellerId);
+                ps.setInt(1, order.getSellerId());
             }
             else
             {
                 ps.setNull(1, Types.INTEGER);
             }
 
-            ps.setInt(2, order.getCarportId());
-            ps.setTimestamp(3, order.getCreatedAt());
-            ps.setInt(4, order.getOfferValidDays());
-            ps.setString(5, order.getCustomerComment());
-            ps.setString(6, order.getOrderStatus().name());
-            ps.setDouble(7, order.getPricingDetails().getCoveragePercentage());
-            ps.setDouble(8, order.getPricingDetails().getCostPrice());
-            ps.setInt(9, order.getOrderId());
+            if (order.getCreatedAt() != null)
+            {
+                ps.setTimestamp(2, order.getCreatedAt());
+            }
+            else
+            {
+                ps.setNull(2, Types.TIMESTAMP);
+            }
+
+            if (order.getOfferValidDays() != null)
+            {
+                ps.setInt(3, order.getOfferValidDays());
+            }
+            else
+            {
+                ps.setNull(3, Types.INTEGER);
+            }
+
+            ps.setString(4, order.getCustomerComment());
+            ps.setString(5, order.getOrderStatus().name());
+            ps.setDouble(6, order.getPricingDetails().getCoveragePercentage());
+            ps.setDouble(7, order.getPricingDetails().getCostPrice());
+            ps.setInt(8, order.getOrderId());
 
             int rowsAffected = ps.executeUpdate();
             return rowsAffected == 1;
@@ -243,10 +256,10 @@ public class OrderMapper
         }
     }
 
-    public boolean deleteOffer(int orderId) throws DatabaseException
+    public boolean deleteOrder(int orderId) throws DatabaseException
     {
         String sql = """
-               DELETE FROM offer WHERE order_id = ?
+               DELETE FROM orders WHERE order_id = ?
                """;
 
         try (Connection connection = connectionPool.getConnection();
@@ -264,12 +277,17 @@ public class OrderMapper
         }
     }
 
-    private Order buildOfferFromResultSet(ResultSet rs) throws SQLException
+    private Order buildOrderFromResultSet(ResultSet rs) throws SQLException
     {
-        PricingDetails pricingDetails = new PricingDetails(
-                rs.getDouble("coverage_percentage"),
-                rs.getDouble("cost_price")
-        );
+        Double coveragePercentage = (Double) rs.getObject("coverage_percentage");
+        Double costPrice = (Double) rs.getObject("cost_price");
+
+        PricingDetails pricingDetails = null;
+
+        if (coveragePercentage != null && costPrice != null)
+        {
+            pricingDetails = new PricingDetails(coveragePercentage, costPrice);
+        }
 
         return new Order(
                 rs.getInt("order_id"),
