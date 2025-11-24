@@ -5,12 +5,11 @@ import lombok.Data;
 @Data
 public class PricingDetails
 {
-    private final double costPrice;
-    private final double coveragePercentage;
+    private double costPrice;
+    private double coveragePercentage;
     private final double priceWithoutVat;
     private final double vatAmount;
     private final double totalPrice;
-
 
     public PricingDetails(double costPrice, double coveragePercentage)
     {

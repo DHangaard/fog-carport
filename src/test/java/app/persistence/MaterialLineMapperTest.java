@@ -114,17 +114,6 @@ class MaterialLineMapperTest
         assertNotNull(connectionPool.getConnection());
     }
 
-    @Test
-    void createMaterialLine() throws DatabaseException, SQLException
-    {
-        Connection connection = connectionPool.getConnection();
-        MaterialLine materialLine = materialLineMapper.createMaterialLine(connection, 1, 1, 5, 1100.00);
-        assertNotNull(materialLine);
-        assertEquals(1, materialLine.getBomId());
-        assertEquals(1, materialLine.getMaterial().getMaterialId());
-        assertEquals(5, materialLine.getQuantity());
-        assertEquals(1100.00, materialLine.getLineTotal());
-    }
 
     @Test
     void getMaterialLineById()
