@@ -1,0 +1,22 @@
+package app.entities;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class MaterialVariant
+{
+    private int materialVariantId;
+    private int materialId;
+    private Integer variantLength;
+    private double unitPrice;
+    private Material material;
+
+    public MaterialVariant(int materialVariantId, int materialId, Integer variantLength, double unitPrice)
+    {
+        this(materialVariantId, materialId, variantLength, unitPrice, null);
+    }
+}

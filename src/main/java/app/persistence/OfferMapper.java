@@ -42,7 +42,6 @@ public class OfferMapper
 
                 OrderTimeLine orderTimeLine = new OrderTimeLine(
                         new Timestamp(System.currentTimeMillis()),
-                        null,
                         null
                 );
 

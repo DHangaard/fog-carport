@@ -1,8 +1,6 @@
 package app.persistence;
 
-import app.entities.Offer;
 import app.entities.Order;
-import app.entities.OrderTimeLine;
 import app.entities.PricingDetails;
 import app.enums.OrderStatus;
 import app.exceptions.DatabaseException;
@@ -20,12 +18,12 @@ public class OrderMapper
         this.connectionPool = connectionPool;
     }
 
-    public Order createOrder(Connection connection, int customerId, int carportId, String customerComment) throws DatabaseException
+    public Order createOrder(Connection connection, int customerId, int carportId, String customerComment, double coveragePercentage, double costPrice) throws DatabaseException
     {
         String sql = """
             INSERT INTO "order" (customer_id, carport_id, customer_comment, order_status, coverage_percentage, cost_price)
-            VALUES (?, ?, ?, 'PENDING')
-            RETURNING order_id, requested_at
+            VALUES (?, ?, ?, 'PENDING', ?, ?)
+            RETURNING order_id, requested_created_at
                 """;
         try
         {
@@ -43,6 +41,9 @@ public class OrderMapper
                 ps.setNull(3, Types.VARCHAR);
             }
 
+            ps.setDouble(4,coveragePercentage);
+            ps.setDouble(5,costPrice);
+
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
@@ -57,11 +58,11 @@ public class OrderMapper
                         rs.getInt("customer_id"),
                         null,
                         rs.getInt("carport_id"),
-                        rs.getTimestamp("requested_at"),
+                        rs.getTimestamp("requested_created_at"),
                         null,
                         null,
                         rs.getString("customer_comment"),
-                        OrderStatus.valueOf(rs.getString("status")),
+                        OrderStatus.valueOf(rs.getString("order_status")),
                         pricingDetails
                         );
             }
@@ -135,7 +136,7 @@ public class OrderMapper
         }
     }
 
-    public List<Offer> getAllOffersByCustomerId(int customerId) throws DatabaseException
+    public List<Order> getAllOrdersByCustomerId(int customerId) throws DatabaseException
     {
         String sql = """
                 SELECT order_id, customer_id, seller_id, carport_id, request_created_at, created_at, offer_valid_days, order_status, customer_comment, coverage_percentage, cost_price
@@ -229,7 +230,7 @@ public class OrderMapper
             ps.setString(5, order.getCustomerComment());
             ps.setString(6, order.getOrderStatus().name());
             ps.setDouble(7, order.getPricingDetails().getCoveragePercentage());
-            ps.setDouble(8, order.getPricingDetails().getTotalCostPrice());
+            ps.setDouble(8, order.getPricingDetails().getCostPrice());
             ps.setInt(9, order.getOrderId());
 
             int rowsAffected = ps.executeUpdate();
@@ -263,22 +264,24 @@ public class OrderMapper
         }
     }
 
-    private Offer buildOfferFromResultSet(ResultSet rs) throws SQLException
+    private Order buildOfferFromResultSet(ResultSet rs) throws SQLException
     {
-        OrderTimeLine orderTimeLine = new OrderTimeLine(
-                rs.getTimestamp("request_created_at"),
-                rs.getTimestamp("created_date"),
-                rs.getTimestamp("expiration_date")
+        PricingDetails pricingDetails = new PricingDetails(
+                rs.getDouble("coverage_percentage"),
+                rs.getDouble("cost_price")
         );
 
-        return new Offer(
-                rs.getInt("offer_id"),
+        return new Order(
+                rs.getInt("order_id"),
                 rs.getInt("customer_id"),
                 (Integer) rs.getObject("seller_id"),
                 rs.getInt("carport_id"),
-                orderTimeLine,
+                rs.getTimestamp("requested_at"),
+                rs.getTimestamp("created_at"),
+                (Integer) rs.getObject("offer_valid_days"),
                 rs.getString("customer_comment"),
-                OrderStatus.valueOf(rs.getString("offer_status"))
+                OrderStatus.valueOf(rs.getString("order_status")),
+                pricingDetails
         );
     }
 }
