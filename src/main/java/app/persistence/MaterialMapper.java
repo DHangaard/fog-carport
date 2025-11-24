@@ -253,13 +253,11 @@ public class MaterialMapper
              PreparedStatement ps = connection.prepareStatement(sql))
         {
             ps.setString(1, materialType.name());
-            try (ResultSet rs = ps.executeQuery())
-            {
+            ResultSet rs = ps.executeQuery();
                 while (rs.next())
                 {
                     materials.add(buildMaterialFromResultSet(rs));
                 }
-            }
             return materials;
         }
         catch (SQLException e)
@@ -285,13 +283,12 @@ public class MaterialMapper
              PreparedStatement ps = connection.prepareStatement(sql))
         {
             ps.setString(1, materialCategory.name());
-            try (ResultSet rs = ps.executeQuery())
-            {
+            ResultSet rs = ps.executeQuery();
                 while (rs.next())
                 {
                     materials.add(buildMaterialFromResultSet(rs));
                 }
-            }
+
             return materials;
         }
         catch (SQLException e)
@@ -315,13 +312,11 @@ public class MaterialMapper
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql))
         {
-            try (ResultSet rs = ps.executeQuery())
-            {
+            ResultSet rs = ps.executeQuery();
                 while (rs.next())
                 {
                     materials.add(buildMaterialFromResultSet(rs));
                 }
-            }
             return materials;
         }
         catch (SQLException e)
