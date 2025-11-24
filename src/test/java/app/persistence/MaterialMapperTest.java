@@ -51,7 +51,6 @@ class MaterialMapperTest
                 stmt.execute("ALTER TABLE test.material_variant ADD PRIMARY KEY (material_variant_id)");
                 stmt.execute("ALTER TABLE test.material_variant ADD CONSTRAINT material_variant_material_fk " +
                         "FOREIGN KEY (material_id) REFERENCES test.material (material_id)");
-
             }
         }
         catch (SQLException e)
@@ -242,9 +241,9 @@ class MaterialMapperTest
         }
 
         assertNotNull(materials);
-        assertEquals(6, materials.size());
-        assertTrue(materialIds.contains(1));
-        assertTrue(materialIds.contains(2));
+        assertEquals(8, materials.size());
+        assertTrue(materialIds.contains(1)); // Contains two variants
+        assertTrue(materialIds.contains(2)); // Contains two variants
         assertTrue(materialIds.contains(3));
         assertTrue(materialIds.contains(4));
         assertTrue(materialIds.contains(5));
