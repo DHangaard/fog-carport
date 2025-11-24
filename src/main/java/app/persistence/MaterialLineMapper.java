@@ -128,7 +128,6 @@ public class MaterialLineMapper
             JOIN material_variant mv ON ml.material_variant_id = mv.material_variant_id
             JOIN material m ON mv.material_id = m.material_id
             WHERE ml.order_id = ?
-            ORDER BY m.category, m.type, ml.material_line_id
             """;
 
         List<MaterialLine> materialLines = new ArrayList<>();
