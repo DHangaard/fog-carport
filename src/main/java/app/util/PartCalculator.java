@@ -3,31 +3,38 @@ package app.util;
 import app.dto.BeamCalculationDTO;
 import app.dto.RafterCalculationDTO;
 import app.entities.Material;
+import app.enums.ShedPlacement;
 
 import java.util.List;
 
 public class PartCalculator
 {
-    public static int calculateNumberOfPosts(int length, boolean hasShed)
+    private static final int SHED_FULL_SIZE_POSTS = 5;
+    private static final int SHED_NOT_FULL_SIZE_POSTS = 4;
+
+    public static int calculateNumberOfPostsWithShed(int length, ShedPlacement shedPlacement)
     {
-        final int CORNER_POSTS = 4;
-        final int POSTS_PER_ADDITION = 2;
-        final double MAX_POST_SPACING_CM = 310.0;
-        final int SHED_EXTRA_POSTS = 3;
+        int totalPosts = calculateNumberOfPostsWithOutShed(length);
+        totalPosts += getShedPosts(shedPlacement);
 
-        int numberOfPosts = CORNER_POSTS;
+        return totalPosts;
+    }
 
-        for (double position = MAX_POST_SPACING_CM; position < length; position += MAX_POST_SPACING_CM)
+
+    public static int calculateNumberOfPostsWithOutShed(int length)
+    {
+        final double ROOF_LENGTH_PER_POST_CM = 310.0;
+        final int ROWS = 2;
+        final int MINIMUM_POSTS_PER_ROW = 2;
+
+        int postsPerRow = (int) Math.ceil((double) length / ROOF_LENGTH_PER_POST_CM);
+
+        if (postsPerRow < MINIMUM_POSTS_PER_ROW)
         {
-            numberOfPosts += POSTS_PER_ADDITION;
+            postsPerRow = MINIMUM_POSTS_PER_ROW;
         }
 
-        if (hasShed)
-        {
-            numberOfPosts += SHED_EXTRA_POSTS;
-        }
-
-        return numberOfPosts;
+        return postsPerRow * ROWS;
     }
 
     public static BeamCalculationDTO calculateBeam(int lenght, List<Material> beamMaterials)
@@ -56,4 +63,15 @@ public class PartCalculator
         return new RafterCalculationDTO(totalNumberOfRafters, roundedSpacing);
     }
 
+    private static int getShedPosts(ShedPlacement shedPlacement)
+    {
+        if(shedPlacement.equals(ShedPlacement.FULL_WIDTH))
+        {
+            return  SHED_FULL_SIZE_POSTS;
+        }
+        else
+        {
+            return SHED_NOT_FULL_SIZE_POSTS;
+        }
+    }
 }

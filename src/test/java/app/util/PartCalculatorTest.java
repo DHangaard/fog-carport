@@ -1,6 +1,7 @@
 package app.util;
 
 import app.dto.RafterCalculationDTO;
+import app.enums.ShedPlacement;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -11,22 +12,22 @@ class PartCalculatorTest
     @Test
     void calculatePost()
     {
-        int numberOfPostWith780 = PartCalculator.calculateNumberOfPosts(780, true);
+        int numberOfPostWith780 = PartCalculator.calculateNumberOfPostsWithShed(780, ShedPlacement.FULL_WIDTH);
         assertEquals(11, numberOfPostWith780);
 
-        int numberOfPostWith750 = PartCalculator.calculateNumberOfPosts(750, true);
-        assertEquals(11, numberOfPostWith750);
+        int numberOfPostWith750 = PartCalculator. calculateNumberOfPostsWithShed(750,  ShedPlacement.LEFT);
+        assertEquals(10, numberOfPostWith750);
 
-        int numberOfPostWith780NoShed = PartCalculator.calculateNumberOfPosts(780, false);
-        assertEquals(8, numberOfPostWith780NoShed);
+        int numberOfPostWith780NoShed = PartCalculator.calculateNumberOfPostsWithOutShed(780);
+        assertEquals(6, numberOfPostWith780NoShed);
 
-        int numberOfPostWith750NoShed = PartCalculator.calculateNumberOfPosts(750, false);
-        assertEquals(8, numberOfPostWith750NoShed);
+        int numberOfPostWith750NoShed = PartCalculator.calculateNumberOfPostsWithOutShed(750);
+        assertEquals(6, numberOfPostWith750NoShed);
 
-        int numberOfPostWith600WithShed = PartCalculator.calculateNumberOfPosts(600, true);
+        int numberOfPostWith600WithShed = PartCalculator.calculateNumberOfPostsWithShed(600,  ShedPlacement.FULL_WIDTH);
         assertEquals(9, numberOfPostWith600WithShed);
 
-        int numberOfPostWith300NoShed = PartCalculator.calculateNumberOfPosts(300, false);
+        int numberOfPostWith300NoShed = PartCalculator.calculateNumberOfPostsWithOutShed(300);
         assertEquals(4, numberOfPostWith300NoShed);
     }
 
