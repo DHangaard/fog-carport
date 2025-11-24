@@ -27,7 +27,7 @@ public class Main
             System.getenv("JDBC_CONNECTION_STRING") : "jdbc:postgresql://localhost:5432/%s?currentSchema=public";
 
     private static final String DB = System.getenv("JDBC_DB") != null ?
-            System.getenv("JDBC_DB") : "carport";
+            System.getenv("JDBC_DB") : "carport1";
 
     private static final ConnectionPool connectionPool = ConnectionPool.getInstance(USER, PASSWORD, URL, DB);
 
