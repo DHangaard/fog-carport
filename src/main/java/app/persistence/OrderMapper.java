@@ -18,17 +18,16 @@ public class OrderMapper
         this.connectionPool = connectionPool;
     }
 
-    public Order createOrder(Connection connection, int customerId, int carportId, String customerComment, double coveragePercentage, double costPrice) throws DatabaseException
+    public Order createOrder(Connection connection, int customerId, int carportId, String customerComment, PricingDetails pricingDetails) throws DatabaseException
     {
         String sql = """
             INSERT INTO "orders" (customer_id, carport_id, customer_comment, order_status, coverage_percentage, cost_price)
             VALUES (?, ?, ?, 'PENDING', ?, ?)
-            RETURNING order_id, requested_created_at
+            RETURNING order_id, request_created_at, order_status
                 """;
-        try
-        {
-            PreparedStatement ps = connection.prepareStatement(sql);
 
+        try (PreparedStatement ps = connection.prepareStatement(sql))
+        {
             ps.setInt(1, customerId);
             ps.setInt(2, carportId);
 
@@ -41,27 +40,22 @@ public class OrderMapper
                 ps.setNull(3, Types.VARCHAR);
             }
 
-            ps.setDouble(4,coveragePercentage);
-            ps.setDouble(5,costPrice);
+            ps.setDouble(4,pricingDetails.getCoveragePercentage());
+            ps.setDouble(5,pricingDetails.getCostPrice());
 
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
 
-                PricingDetails pricingDetails = new PricingDetails(
-                        rs.getDouble("coverage_percentage"),
-                        rs.getDouble("cost_price")
-                );
-
                 return new Order(
                         rs.getInt("order_id"),
-                        rs.getInt("customer_id"),
+                        customerId,
                         null,
-                        rs.getInt("carport_id"),
-                        rs.getTimestamp("requested_created_at"),
+                        carportId,
+                        rs.getTimestamp("request_created_at"),
                         null,
                         null,
-                        rs.getString("customer_comment"),
+                        customerComment,
                         OrderStatus.valueOf(rs.getString("order_status")),
                         pricingDetails
                         );
@@ -206,13 +200,12 @@ public class OrderMapper
     {
         String sql = """
         UPDATE orders
-        SET seller_id = ?, carport_id = ?, created_at = ?, offer_valid_days = ?, customer_comment = ?, offer_status = ?, coverage_percentage = ?, cost_price = ?
+        SET seller_id = ?, created_at = ?, offer_valid_days = ?, customer_comment = ?, order_status = ?, coverage_percentage = ?, cost_price = ?
         WHERE order_id = ?
             """;
 
         try (PreparedStatement ps = connection.prepareStatement(sql))
         {
-
             if (order.getSellerId() != null)
             {
                 ps.setInt(1, order.getSellerId());
@@ -286,7 +279,7 @@ public class OrderMapper
 
         if (coveragePercentage != null && costPrice != null)
         {
-            pricingDetails = new PricingDetails(coveragePercentage, costPrice);
+            pricingDetails = new PricingDetails(costPrice, coveragePercentage);
         }
 
         return new Order(
@@ -294,7 +287,7 @@ public class OrderMapper
                 rs.getInt("customer_id"),
                 (Integer) rs.getObject("seller_id"),
                 rs.getInt("carport_id"),
-                rs.getTimestamp("requested_at"),
+                rs.getTimestamp("request_created_at"),
                 rs.getTimestamp("created_at"),
                 (Integer) rs.getObject("offer_valid_days"),
                 rs.getString("customer_comment"),

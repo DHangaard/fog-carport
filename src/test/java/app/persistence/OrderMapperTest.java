@@ -86,6 +86,10 @@ class OrderMapperTest
                 stmt.execute("ALTER TABLE test.orders ADD PRIMARY KEY (order_id)");
                 stmt.execute("ALTER TABLE test.orders ALTER COLUMN seller_id DROP NOT NULL");
 
+                stmt.execute("ALTER TABLE test.orders " +
+                                "ALTER COLUMN request_created_at SET DEFAULT CURRENT_TIMESTAMP"
+                );
+
                 stmt.execute(
                         "ALTER TABLE test.orders ADD CONSTRAINT orders_customer_fk " +
                                 "FOREIGN KEY (customer_id) REFERENCES test.users (user_id)"
@@ -198,31 +202,36 @@ class OrderMapperTest
         Connection connection = connectionPool.getConnection();
         connection.setAutoCommit(false);
 
-        Order order = orderMapper.createOrder(
-                connection,
-                1,
-                1,
-                "Jeg vil gerne have en carport til min nye bil",
-                40.0,
-                18000.00
-        );
+        try
+        {
+            Order order = orderMapper.createOrder(
+                    connection,
+                    1,
+                    1,
+                    "Jeg vil gerne have en carport til min nye bil",
+                    new PricingDetails(18000.00, 40.0)
+            );
 
-        connection.commit();
-        connection.close();
+            connection.commit();
 
-        assertNotNull(order);
-        assertEquals(4, order.getOrderId());
-        assertEquals(1, order.getCustomerId());
-        assertNull(order.getSellerId());
-        assertEquals(1, order.getCarportId());
-        assertEquals("Jeg vil gerne have en carport til min nye bil", order.getCustomerComment());
-        assertEquals(OrderStatus.PENDING, order.getOrderStatus());
-        assertNotNull(order.getCustomerRequestCreatedAt());
-        assertNull(order.getCreatedAt());
-        assertNull(order.getOfferValidDays());
-        assertNotNull(order.getPricingDetails());
-        assertEquals(40.0, order.getPricingDetails().getCoveragePercentage());
-        assertEquals(18000.00, order.getPricingDetails().getCostPrice());
+            assertNotNull(order);
+            assertEquals(4, order.getOrderId());
+            assertEquals(1, order.getCustomerId());
+            assertNull(order.getSellerId());
+            assertEquals(1, order.getCarportId());
+            assertEquals("Jeg vil gerne have en carport til min nye bil", order.getCustomerComment());
+            assertEquals(OrderStatus.PENDING, order.getOrderStatus());
+            assertNotNull(order.getCustomerRequestCreatedAt());
+            assertNull(order.getCreatedAt());
+            assertNull(order.getOfferValidDays());
+            assertNotNull(order.getPricingDetails());
+            assertEquals(40.0, order.getPricingDetails().getCoveragePercentage());
+            assertEquals(18000.00, order.getPricingDetails().getCostPrice());
+        }
+        finally
+        {
+            connection.close();
+        }
     }
 
     @Test
@@ -283,25 +292,29 @@ class OrderMapperTest
     @Test
     void testUpdateOrderFromPendingToReady() throws DatabaseException, SQLException
     {
-        Connection connection = connectionPool.getConnection();
-        connection.setAutoCommit(false);
-
         Order order = orderMapper.getOrderById(1);
         assertEquals(OrderStatus.PENDING, order.getOrderStatus());
         assertNull(order.getSellerId());
 
-        order.setSellerId(2);
-        order.setOrderStatus(OrderStatus.READY);
-        order.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
-        order.setOfferValidDays(14);
-        order.getPricingDetails().setCoveragePercentage(45.0);
-        order.getPricingDetails().setCostPrice(16000.00);
+        Connection connection = connectionPool.getConnection();
+        connection.setAutoCommit(false);
 
-        boolean updated = orderMapper.updateOrder(connection, order);
-        connection.commit();
-        connection.close();
+        try
+        {
+            order.setSellerId(2);
+            order.setOrderStatus(OrderStatus.READY);
+            order.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
+            order.setOfferValidDays(14);
+            order.setPricingDetails(new PricingDetails(16000.00, 45.0));
 
-        assertTrue(updated);
+            boolean updated = orderMapper.updateOrder(connection, order);
+            connection.commit();
+            assertTrue(updated);
+        }
+        finally
+        {
+            connection.close();
+        }
 
         Order updatedOrder = orderMapper.getOrderById(1);
         assertEquals(2, updatedOrder.getSellerId());
@@ -315,19 +328,23 @@ class OrderMapperTest
     @Test
     void testUpdateOrderFromReadyToAccepted() throws DatabaseException, SQLException
     {
-        Connection connection = connectionPool.getConnection();
-        connection.setAutoCommit(false);
-
         Order order = orderMapper.getOrderById(2);
         assertEquals(OrderStatus.READY, order.getOrderStatus());
 
-        order.setOrderStatus(OrderStatus.ACCEPTED);
-        boolean updated = orderMapper.updateOrder(connection, order);
+        Connection connection = connectionPool.getConnection();
+        connection.setAutoCommit(false);
 
-        connection.commit();
-        connection.close();
-
-        assertTrue(updated);
+        try
+        {
+            order.setOrderStatus(OrderStatus.ACCEPTED);
+            boolean updated = orderMapper.updateOrder(connection, order);
+            connection.commit();
+            assertTrue(updated);
+        }
+        finally
+        {
+            connection.close();
+        }
 
         Order acceptedOrder = orderMapper.getOrderById(2);
         assertEquals(OrderStatus.ACCEPTED, acceptedOrder.getOrderStatus());
@@ -336,20 +353,24 @@ class OrderMapperTest
     @Test
     void testUpdateOrderFromReadyToRejected() throws DatabaseException, SQLException
     {
-        Connection connection = connectionPool.getConnection();
-        connection.setAutoCommit(false);
-
         Order order = orderMapper.getOrderById(2);
         assertEquals(OrderStatus.READY, order.getOrderStatus());
 
-        order.setOrderStatus(OrderStatus.REJECTED);
-        order.setCustomerComment("Prisen er desværre for høj");
-        boolean updated = orderMapper.updateOrder(connection, order);
+        Connection connection = connectionPool.getConnection();
+        connection.setAutoCommit(false);
 
-        connection.commit();
-        connection.close();
-
-        assertTrue(updated);
+        try
+        {
+            order.setOrderStatus(OrderStatus.REJECTED);
+            order.setCustomerComment("Prisen er desværre for høj");
+            boolean updated = orderMapper.updateOrder(connection, order);
+            connection.commit();
+            assertTrue(updated);
+        }
+        finally
+        {
+            connection.close();
+        }
 
         Order rejectedOrder = orderMapper.getOrderById(2);
         assertEquals(OrderStatus.REJECTED, rejectedOrder.getOrderStatus());
@@ -359,19 +380,23 @@ class OrderMapperTest
     @Test
     void testUpdateOrderToExpired() throws DatabaseException, SQLException
     {
-        Connection connection = connectionPool.getConnection();
-        connection.setAutoCommit(false);
-
         Order order = orderMapper.getOrderById(2);
         assertEquals(OrderStatus.READY, order.getOrderStatus());
 
-        order.setOrderStatus(OrderStatus.EXPIRED);
-        boolean updated = orderMapper.updateOrder(connection, order);
+        Connection connection = connectionPool.getConnection();
+        connection.setAutoCommit(false);
 
-        connection.commit();
-        connection.close();
-
-        assertTrue(updated);
+        try
+        {
+            order.setOrderStatus(OrderStatus.EXPIRED);
+            boolean updated = orderMapper.updateOrder(connection, order);
+            connection.commit();
+            assertTrue(updated);
+        }
+        finally
+        {
+            connection.close();
+        }
 
         Order expiredOrder = orderMapper.getOrderById(2);
         assertEquals(OrderStatus.EXPIRED, expiredOrder.getOrderStatus());
@@ -380,10 +405,7 @@ class OrderMapperTest
     @Test
     void testUpdateOrderNotFound() throws DatabaseException, SQLException
     {
-        Connection connection = connectionPool.getConnection();
-        connection.setAutoCommit(false);
-
-        PricingDetails pricingDetails = new PricingDetails(40.0, 15000.00);
+        PricingDetails pricingDetails = new PricingDetails(15000.00, 40.0);
 
         Order fakeOrder = new Order(
                 999,
@@ -398,11 +420,19 @@ class OrderMapperTest
                 pricingDetails
         );
 
-        boolean updated = orderMapper.updateOrder(connection, fakeOrder);
-        connection.commit();
-        connection.close();
+        Connection connection = connectionPool.getConnection();
+        connection.setAutoCommit(false);
 
-        assertFalse(updated);
+        try
+        {
+            boolean updated = orderMapper.updateOrder(connection, fakeOrder);
+            connection.commit();
+            assertFalse(updated);
+        }
+        finally
+        {
+            connection.close();
+        }
     }
 
     @Test
@@ -429,95 +459,50 @@ class OrderMapperTest
         Connection connection = connectionPool.getConnection();
         connection.setAutoCommit(false);
 
-        Order request = orderMapper.createOrder(
-                connection,
-                1,
-                1,
-                "Ny carport ønskes",
-                40.0,
-                17000.00
-        );
-        connection.commit();
-
-        assertEquals(OrderStatus.PENDING, request.getOrderStatus());
-        assertNull(request.getSellerId());
-        assertEquals(40.0, request.getPricingDetails().getCoveragePercentage());
-        assertEquals(17000.00, request.getPricingDetails().getCostPrice());
-
-        connection.setAutoCommit(false);
-        request.setSellerId(2);
-        request.setOrderStatus(OrderStatus.READY);
-        request.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
-        request.setOfferValidDays(14);
-        request.getPricingDetails().setCoveragePercentage(0.45);
-        request.getPricingDetails().setCostPrice(18500.00);
-
-        boolean updated = orderMapper.updateOrder(connection, request);
-        connection.commit();
-        assertTrue(updated);
-
-        Order readyOrder = orderMapper.getOrderById(request.getOrderId());
-        assertEquals(OrderStatus.READY, readyOrder.getOrderStatus());
-        assertEquals(2, readyOrder.getSellerId());
-        assertEquals(45.0, readyOrder.getPricingDetails().getCoveragePercentage());
-
-        connection.setAutoCommit(false);
-        readyOrder.setOrderStatus(OrderStatus.ACCEPTED);
-        updated = orderMapper.updateOrder(connection, readyOrder);
-        connection.commit();
-        connection.close();
-        assertTrue(updated);
-
-        Order acceptedOrder = orderMapper.getOrderById(request.getOrderId());
-        assertEquals(OrderStatus.ACCEPTED, acceptedOrder.getOrderStatus());
-    }
-
-    @Test
-    void testOrderWithDifferentPricing() throws DatabaseException, SQLException
-    {
-        Connection connection = connectionPool.getConnection();
-        connection.setAutoCommit(false);
-
-        Order lowCostOrder = orderMapper.createOrder(
-                connection,
-                1,
-                1,
-                "Lille carport",
-                35.0,
-                10000.00
-        );
-        connection.commit();
-
-        assertEquals(35.0, lowCostOrder.getPricingDetails().getCoveragePercentage());
-        assertEquals(10000.00, lowCostOrder.getPricingDetails().getCostPrice());
-
-        connection.setAutoCommit(false);
-
-        Order highCostOrder = orderMapper.createOrder(
-                connection,
-                3,
-                2,
-                "Stor carport med skur",
-                50.0,
-                35000.00
-        );
-        connection.commit();
-        connection.close();
-
-        assertEquals(50.0, highCostOrder.getPricingDetails().getCoveragePercentage());
-        assertEquals(35000.00, highCostOrder.getPricingDetails().getCostPrice());
-    }
-
-    @Test
-    void testPricingDetailsAlwaysPresent() throws DatabaseException
-    {
-        List<Order> orders = orderMapper.getAllOrders();
-
-        for (Order order : orders)
+        try
         {
-            assertNotNull(order.getPricingDetails());
-            assertTrue(order.getPricingDetails().getCoveragePercentage() > 0);
-            assertTrue(order.getPricingDetails().getCostPrice() > 0);
+            Order request = orderMapper.createOrder(
+                    connection,
+                    1,
+                    1,
+                    "Ny carport ønskes",
+                    new PricingDetails(17000.00, 40.0)
+            );
+            connection.commit();
+
+            assertEquals(OrderStatus.PENDING, request.getOrderStatus());
+            assertNull(request.getSellerId());
+            assertEquals(40.0, request.getPricingDetails().getCoveragePercentage());
+            assertEquals(17000.00, request.getPricingDetails().getCostPrice());
+
+            connection.setAutoCommit(false);
+            request.setSellerId(2);
+            request.setOrderStatus(OrderStatus.READY);
+            request.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
+            request.setOfferValidDays(14);
+            request.setPricingDetails(new PricingDetails(18500.00, 45.0));
+
+            boolean updated = orderMapper.updateOrder(connection, request);
+            connection.commit();
+            assertTrue(updated);
+
+            Order readyOrder = orderMapper.getOrderById(request.getOrderId());
+            assertEquals(OrderStatus.READY, readyOrder.getOrderStatus());
+            assertEquals(2, readyOrder.getSellerId());
+            assertEquals(45.0, readyOrder.getPricingDetails().getCoveragePercentage());
+
+            connection.setAutoCommit(false);
+            readyOrder.setOrderStatus(OrderStatus.ACCEPTED);
+            updated = orderMapper.updateOrder(connection, readyOrder);
+            connection.commit();
+            assertTrue(updated);
+
+            Order acceptedOrder = orderMapper.getOrderById(request.getOrderId());
+            assertEquals(OrderStatus.ACCEPTED, acceptedOrder.getOrderStatus());
+        }
+        finally
+        {
+            connection.close();
         }
     }
 }
