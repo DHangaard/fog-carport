@@ -8,10 +8,10 @@ import java.sql.Timestamp;
 
 @Data
 @AllArgsConstructor
-public class Order
+public class OrderDetail
 {
     private int orderId;
-    private int offerId;
+    private Offer offer;
     private Timestamp orderDateTime;
     private OrderStatus status;
 }
