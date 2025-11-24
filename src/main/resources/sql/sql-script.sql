@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS public.material_variant
     CONSTRAINT material_variant_pkey PRIMARY KEY (material_variant_id)
     );
 
-CREATE TABLE IF NOT EXISTS public."order"
+CREATE TABLE IF NOT EXISTS public."orders"
 (
     order_id serial NOT NULL,
     customer_id integer NOT NULL,
@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS public."order"
     carport_id integer NOT NULL,
     request_created_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     created_at timestamp without time zone,
-    expiration_date timestamp without time zone,
+    offer_valid_days integer,
     order_status character varying COLLATE pg_catalog."default" NOT NULL DEFAULT 'PENDING'::character varying,
     customer_comment text COLLATE pg_catalog."default",
     coverage_percentage double precision,
