@@ -368,7 +368,7 @@ public class MaterialMapper
     public boolean updateMaterialVariant(Material material) throws DatabaseException
     {
         String sql = """
-                UPDATE material
+                UPDATE material_variant
                 SET variant_length = ?,
                 unit_price = ?
                 WHERE material_variant_id = ?
