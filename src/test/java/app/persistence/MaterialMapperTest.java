@@ -132,7 +132,7 @@ class MaterialMapperTest
        assertEquals(18, material.getMaterialHeight());
        assertEquals("mm", material.getUnit());
        assertEquals("Test description", material.getUsage());
-       assertEquals(7, material.getMaterialVariantId());
+       assertEquals(9, material.getMaterialVariantId());
        assertEquals(600, material.getVariantLength());
        assertEquals(74.95, material.getUnitPrice());
     }
@@ -155,7 +155,7 @@ class MaterialMapperTest
         assertEquals(97, material.getMaterialHeight());
         assertEquals("stk", material.getUnit());
         assertEquals("Stolper nedgraves 90 cm. i jord", material.getUsage());
-        assertEquals(7, material.getMaterialVariantId());
+        assertEquals(9, material.getMaterialVariantId());
         assertEquals(600, material.getVariantLength());
         assertEquals(419.95, material.getUnitPrice());
     }
@@ -204,9 +204,10 @@ class MaterialMapperTest
         List<Material> materials = materialMapper.getMaterialsByType(MaterialType.POST);
 
         assertNotNull(materials);
-        assertEquals(2, materials.size());
-        assertEquals(1, materials.get(0).getMaterialId());
-        assertEquals(6, materials.get(1).getMaterialId());
+        assertEquals(3, materials.size());
+        assertEquals(1, materials.get(0).getMaterialId()); // Variant 1
+        assertEquals(1, materials.get(1).getMaterialId()); // Variant 2
+        assertEquals(6, materials.get(2).getMaterialId());
     }
 
     @Test
@@ -221,9 +222,9 @@ class MaterialMapperTest
         }
 
         assertNotNull(materials);
-        assertEquals(5, materials.size());
-        assertTrue(materialIds.contains(1));
-        assertTrue(materialIds.contains(2));
+        assertEquals(7, materials.size());
+        assertTrue(materialIds.contains(1)); // Contains two variants
+        assertTrue(materialIds.contains(2)); // Contains two variants
         assertTrue(materialIds.contains(3));
         assertTrue(materialIds.contains(4));
         assertTrue(materialIds.contains(6));
@@ -289,7 +290,7 @@ class MaterialMapperTest
                 300,
                 249.95);
 
-        boolean updated = materialMapper.updateMaterial(material);
+        boolean updated = materialMapper.updateMaterialVariant(material);
 
         assertTrue(updated);
         Material updatedMaterial = materialMapper.getMaterialById(1);
@@ -297,12 +298,26 @@ class MaterialMapperTest
     }
 
     @Test
-    void testDeleteMaterial()
+    void testDeleteMaterial() throws DatabaseException
     {
+        boolean deleted = materialMapper.deleteMaterial(1);
+
+        assertTrue(deleted);
+        assertThrows(DatabaseException.class, () -> {
+            materialMapper.getMaterialById(1);
+        });
     }
 
     @Test
-    void testDeleteMaterialVariant()
+    void testDeleteMaterialVariant() throws DatabaseException
     {
+        boolean deleted = materialMapper.deleteMaterialVariant(1);
+        Material material = materialMapper.getMaterialById(1);
+
+        assertTrue(deleted);
+        assertEquals(2, material.getMaterialVariantId());
+        assertThrows(DatabaseException.class, () -> {
+            materialMapper.getMaterialById(1, 1);
+        });
     }
 }
