@@ -62,10 +62,11 @@ public class MaterialLineMapper
     public MaterialLine getMaterialLineById(int materialLineId) throws DatabaseException
     {
         String sql = """
-            SELECT ml.material_line_id, ml.order_id, ml.material_variant_id, ml.quantity, mv.material_variant_id AS mv_variant_id,
-                   mv.material_id AS mv_material_id,
-                   mv.variant_length AS mv_variant_length,
-                 mv.unit_price AS mv_unit_price,
+            SELECT 
+                ml.material_line_id, ml.order_id, ml.material_variant_id, ml.quantity, mv.material_variant_id AS mv_variant_id,
+                mv.material_id AS mv_material_id,
+                mv.variant_length AS mv_variant_length,
+                mv.unit_price AS mv_unit_price,
                 
                 m.material_id AS m_material_id,
                 m.name AS m_name,

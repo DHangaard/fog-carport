@@ -147,22 +147,17 @@ class MaterialLineMapperTest
         Connection connection = connectionPool.getConnection();
         connection.setAutoCommit(false);
 
-        try
-        {
-            MaterialLine line = materialLineMapper.createMaterialLine(connection, 1, 6, 10);
+        MaterialLine line = materialLineMapper.createMaterialLine(connection, 1, 6, 10);
 
-            connection.commit();
+        connection.commit();
 
-            assertNotNull(line);
-            assertEquals(6, line.getMaterialLineId());
-            assertEquals(1, line.getOrderId());
-            assertNull(line.getMaterialVariant());
-            assertEquals(10, line.getQuantity());
-        }
-        finally
-        {
-            connection.close();
-        }
+        assertNotNull(line);
+        assertEquals(6, line.getMaterialLineId());
+        assertEquals(1, line.getOrderId());
+        assertNull(line.getMaterialVariant());
+        assertEquals(10, line.getQuantity());
+
+        connection.close();
     }
 
     @Test
@@ -227,19 +222,12 @@ class MaterialLineMapperTest
         Connection connection = connectionPool.getConnection();
         connection.setAutoCommit(false);
 
-        try
-        {
-            line.setQuantity(12);
-            boolean updated = materialLineMapper.updateMaterialLine(connection, line);
+        line.setQuantity(12);
+        boolean updated = materialLineMapper.updateMaterialLine(connection, line);
 
-            connection.commit();
-            assertTrue(updated);
-        }
-        finally
-        {
-            connection.close();
-        }
+        connection.commit();
 
+        assertTrue(updated);
         MaterialLine updatedLine = materialLineMapper.getMaterialLineById(1);
         assertEquals(12, updatedLine.getQuantity());
     }
@@ -253,19 +241,14 @@ class MaterialLineMapperTest
         Connection connection = connectionPool.getConnection();
         connection.setAutoCommit(false);
 
-        try
-        {
-            line.getMaterialVariant().setMaterialVariantId(2);
-            line.setQuantity(10);
+        line.getMaterialVariant().setMaterialVariantId(2);
+        line.setQuantity(10);
 
-            boolean updated = materialLineMapper.updateMaterialLine(connection, line);
-            connection.commit();
-            assertTrue(updated);
-        }
-        finally
-        {
-            connection.close();
-        }
+        boolean updated = materialLineMapper.updateMaterialLine(connection, line);
+        connection.commit();
+        assertTrue(updated);
+
+        connection.close();
 
         MaterialLine result = materialLineMapper.getMaterialLineById(1);
         assertEquals(2, result.getMaterialVariant().getMaterialVariantId());
@@ -314,16 +297,11 @@ class MaterialLineMapperTest
         Connection connection = connectionPool.getConnection();
         connection.setAutoCommit(false);
 
-        try
-        {
-            Statement stmt = connection.createStatement();
-            stmt.execute("DELETE FROM test.material WHERE material_id = 1");
-            connection.commit();
-        }
-        finally
-        {
-            connection.close();
-        }
+        Statement stmt = connection.createStatement();
+        stmt.execute("DELETE FROM test.material WHERE material_id = 1");
+        connection.commit();
+
+        connection.close();
 
         List<MaterialLine> linesAfter = materialLineMapper.getMaterialLinesByOrderId(1);
         assertEquals(2, linesAfter.size());

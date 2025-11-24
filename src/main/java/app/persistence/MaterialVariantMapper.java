@@ -66,19 +66,19 @@ public class MaterialVariantMapper
 
         String sql = """
             SELECT 
-                mv.material_variant_id,
-                mv.material_id,
-                mv.variant_length,
-                mv.unit_price,
-                
-                m.material_id AS m_material_id,
-                m.name AS m_name,
-                m.category AS m_category,
-                m.type AS m_type,
-                m.material_width AS m_material_width,
-                m.material_height AS m_material_height,
-                m.unit AS m_unit,
-                m.usage AS m_usage
+            mv.material_variant_id,
+            mv.material_id,
+            mv.variant_length,
+            mv.unit_price,
+             
+            m.material_id AS m_material_id,
+            m.name AS m_name,
+            m.category AS m_category,
+            m.type AS m_type,
+            m.material_width AS m_material_width,
+            m.material_height AS m_material_height,
+            m.unit AS m_unit,
+            m.usage AS m_usage
                 
             FROM material_variant mv
             JOIN material m ON mv.material_id = m.material_id
@@ -110,19 +110,19 @@ public class MaterialVariantMapper
 
         String sql = """
             SELECT 
-                mv.material_variant_id,
-                mv.material_id,
-                mv.variant_length,
-                mv.unit_price,
+            mv.material_variant_id,
+            mv.material_id,
+            mv.variant_length,
+            mv.unit_price,
                 
-                m.material_id AS m_material_id,
-                m.name AS m_name,
-                m.category AS m_category,
-                m.type AS m_type,
-                m.material_width AS m_material_width,
-                m.material_height AS m_material_height,
-                m.unit AS m_unit,
-                m.usage AS m_usage
+            m.material_id AS m_material_id,
+            m.name AS m_name,
+            m.category AS m_category,
+            m.type AS m_type,
+            m.material_width AS m_material_width,
+            m.material_height AS m_material_height,
+            m.unit AS m_unit,
+            m.usage AS m_usage
                 
             FROM material_variant mv
             JOIN material m ON mv.material_id = m.material_id
@@ -156,19 +156,19 @@ public class MaterialVariantMapper
     {
         String sql = """
             SELECT 
-                mv.material_variant_id,
-                mv.material_id,
-                mv.variant_length,
-                mv.unit_price,
+            mv.material_variant_id,
+            mv.material_id,
+            mv.variant_length,
+            mv.unit_price,
                 
-                m.material_id AS m_material_id,
-                m.name AS m_name,
-                m.category AS m_category,
-                m.type AS m_type,
-                m.material_width AS m_material_width,
-                m.material_height AS m_material_height,
-                m.unit AS m_unit,
-                m.usage AS m_usage
+            m.material_id AS m_material_id,
+            m.name AS m_name,
+            m.category AS m_category,
+            m.type AS m_type,
+            m.material_width AS m_material_width,
+            m.material_height AS m_material_height,
+            m.unit AS m_unit,
+            m.usage AS m_usage
                 
             FROM material_variant mv
             JOIN material m ON mv.material_id = m.material_id

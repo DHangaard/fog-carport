@@ -21,10 +21,10 @@ public class OrderMapper
     public Order createOrder(Connection connection, int customerId, int carportId, String customerComment, PricingDetails pricingDetails) throws DatabaseException
     {
         String sql = """
-            INSERT INTO "orders" (customer_id, carport_id, customer_comment, order_status, coverage_percentage, cost_price)
-            VALUES (?, ?, ?, 'PENDING', ?, ?)
-            RETURNING order_id, request_created_at, order_status
-                """;
+               INSERT INTO "orders" (customer_id, carport_id, customer_comment, order_status, coverage_percentage, cost_price)
+               VALUES (?, ?, ?, 'PENDING', ?, ?)
+               RETURNING order_id, request_created_at, order_status
+               """;
 
         try (PreparedStatement ps = connection.prepareStatement(sql))
         {
@@ -199,10 +199,10 @@ public class OrderMapper
     public boolean updateOrder(Connection connection, Order order) throws DatabaseException
     {
         String sql = """
-        UPDATE orders
-        SET seller_id = ?, created_at = ?, offer_valid_days = ?, customer_comment = ?, order_status = ?, coverage_percentage = ?, cost_price = ?
-        WHERE order_id = ?
-            """;
+               UPDATE orders
+               SET seller_id = ?, created_at = ?, offer_valid_days = ?, customer_comment = ?, order_status = ?, coverage_percentage = ?, cost_price = ?
+               WHERE order_id = ?
+               """;
 
         try (PreparedStatement ps = connection.prepareStatement(sql))
         {

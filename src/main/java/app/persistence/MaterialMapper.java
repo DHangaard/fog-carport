@@ -21,10 +21,10 @@ public class MaterialMapper
     public Material createMaterial(Connection connection, String name, MaterialCategory materialCategory, MaterialType materialType, Integer materialWidth, Integer materialHeight, String unit, String usage) throws DatabaseException
     {
         String sql = """
-            INSERT INTO material (name, category, type, material_width, material_height, unit, usage)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-            RETURNING material_id
-                """;
+               INSERT INTO material (name, category, type, material_width, material_height, unit, usage)
+               VALUES (?, ?, ?, ?, ?, ?, ?)
+               RETURNING material_id
+               """;
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
 
@@ -79,10 +79,10 @@ public class MaterialMapper
     public Material getMaterialById(int materialId) throws DatabaseException
     {
         String sql = """
-            SELECT material_id, name, category, type, material_width, material_height, unit, usage
-            FROM material
-            WHERE material_id = ?
-                """;
+               SELECT material_id, name, category, type, material_width, material_height, unit, usage
+               FROM material
+               WHERE material_id = ?
+               """;
 
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql))
@@ -108,10 +108,9 @@ public class MaterialMapper
     public List<Material> getAllMaterials() throws DatabaseException
     {
         String sql = """
-            SELECT material_id, name, category, type, material_width, material_height, unit, usage
-            FROM material
-            ORDER BY category, type, name
-            """;
+               SELECT material_id, name, category, type, material_width, material_height, unit, usage
+               FROM material
+               """;
 
         List<Material> materials = new ArrayList<>();
 
@@ -137,11 +136,10 @@ public class MaterialMapper
     public List<Material> getMaterialsByType(MaterialType materialType) throws DatabaseException
     {
         String sql = """
-            SELECT material_id, name, category, type, material_width, material_height, unit, usage
-            FROM material
-            WHERE type = ?
-            ORDER BY type, name
-                """;
+               SELECT material_id, name, category, type, material_width, material_height, unit, usage
+               FROM material
+               WHERE type = ?
+               """;
 
         List<Material> materials = new ArrayList<>();
 
@@ -165,11 +163,11 @@ public class MaterialMapper
     public List<Material> getMaterialsByCategory(MaterialCategory materialCategory) throws DatabaseException
     {
         String sql = """
-            SELECT material_id, name, category, type, material_width, material_height, unit, usage
-            FROM material
-            WHERE category = ?
-            ORDER BY type, name
-                """;
+               SELECT material_id, name, category, type, material_width, material_height, unit, usage
+               FROM material
+               WHERE category = ?
+               ORDER BY type, name
+               """;
 
         List<Material> materials = new ArrayList<>();
 
