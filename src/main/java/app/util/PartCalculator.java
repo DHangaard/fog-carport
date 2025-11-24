@@ -20,7 +20,6 @@ public class PartCalculator
         return totalPosts;
     }
 
-
     public static int calculateNumberOfPostsWithOutShed(int length)
     {
         final double ROOF_LENGTH_PER_POST_CM = 310.0;
@@ -65,13 +64,6 @@ public class PartCalculator
 
     private static int getShedPosts(ShedPlacement shedPlacement)
     {
-        if(shedPlacement.equals(ShedPlacement.FULL_WIDTH))
-        {
-            return  SHED_FULL_SIZE_POSTS;
-        }
-        else
-        {
-            return SHED_NOT_FULL_SIZE_POSTS;
-        }
+        return shedPlacement == ShedPlacement.FULL_WIDTH ? SHED_FULL_SIZE_POSTS : SHED_NOT_FULL_SIZE_POSTS;
     }
 }
