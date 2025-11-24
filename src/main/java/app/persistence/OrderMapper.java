@@ -1,7 +1,9 @@
 package app.persistence;
 
+import app.entities.Offer;
 import app.entities.Order;
-import app.enums.OfferStatus;
+import app.entities.OrderTimeLine;
+import app.entities.PricingDetails;
 import app.enums.OrderStatus;
 import app.exceptions.DatabaseException;
 
@@ -18,50 +20,161 @@ public class OrderMapper
         this.connectionPool = connectionPool;
     }
 
-    public Order createOrder(int offerId, OrderStatus orderStatus) throws DatabaseException
+    public Order createOrder(Connection connection, int customerId, int carportId, String customerComment) throws DatabaseException
     {
         String sql = """
-                INSERT INTO order (offer_id, status)
-                VALUES (?, ?)
-                RETURNING order_id, order_date
+            INSERT INTO "order" (customer_id, carport_id, customer_comment, order_status, coverage_percentage, cost_price)
+            VALUES (?, ?, ?, 'PENDING')
+            RETURNING order_id, requested_at
                 """;
+        try
+        {
+            PreparedStatement ps = connection.prepareStatement(sql);
 
-        int orderId;
-        Timestamp orderDate;
+            ps.setInt(1, customerId);
+            ps.setInt(2, carportId);
+
+            if (customerComment != null)
+            {
+                ps.setString(3, customerComment);
+            }
+            else
+            {
+                ps.setNull(3, Types.VARCHAR);
+            }
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+
+                PricingDetails pricingDetails = new PricingDetails(
+                        rs.getDouble("coverage_percentage"),
+                        rs.getDouble("cost_price")
+                );
+
+                return new Order(
+                        rs.getInt("order_id"),
+                        rs.getInt("customer_id"),
+                        null,
+                        rs.getInt("carport_id"),
+                        rs.getTimestamp("requested_at"),
+                        null,
+                        null,
+                        rs.getString("customer_comment"),
+                        OrderStatus.valueOf(rs.getString("status")),
+                        pricingDetails
+                        );
+            }
+
+            throw new DatabaseException("Kunne ikke oprette ordren");
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl ved oprettelse af ordre " + e.getMessage());
+        }
+    }
+
+    public Order getOrderById(int orderId) throws DatabaseException
+    {
+        String sql = """
+                SELECT order_id, customer_id, seller_id, carport_id, request_created_at, created_at, offer_valid_days, order_status, customer_comment, coverage_percentage, cost_price
+                FROM order 
+                WHERE order_id = ?
+                """;
 
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql))
         {
-            ps.setInt(1, offerId);
-            ps.setString(2, orderStatus.name());
 
+            ps.setInt(1, orderId);
             ResultSet rs = ps.executeQuery();
+
             if (rs.next())
             {
-                orderId = rs.getInt("order_id");
-                orderDate = rs.getTimestamp("order_date");
-
-                return new Order(
-                        orderId,
-                        offerId,
-                        orderDate,
-                        orderStatus
-                );
+                return buildOfferFromResultSet(rs);
             }
-            throw new DatabaseException("Fejl ved oprettelse af ordre");
+            else
+            {
+                throw new DatabaseException("Ordren blev ikke fundet for ordre: " + orderId);
+            }
+
         }
         catch (SQLException e)
         {
-            throw new DatabaseException("Fejl ved oprettelse af ordre: " + e.getMessage());
+            throw new DatabaseException("Fejl ved hentning af ordre " + e.getMessage());
         }
     }
 
-    public List<Order> getAllOrdersByStatus(OfferStatus offerStatus) throws DatabaseException
+    public List<Order> getAllOrders() throws DatabaseException
     {
         String sql = """
-                SELECT *
+                SELECT order_id, customer_id, seller_id, carport_id, request_created_at, created_at, offer_valid_days, order_status, customer_comment, coverage_percentage, cost_price
+                FROM order 
+                ORDER BY request_created_at DESC
+                """;
+
+        List<Order> orders = new ArrayList<>();
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql))
+        {
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next())
+            {
+                orders.add(buildOfferFromResultSet(rs));
+            }
+
+            return orders;
+
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl ved hentning af alle ordre: " + e.getMessage());
+        }
+    }
+
+    public List<Offer> getAllOffersByCustomerId(int customerId) throws DatabaseException
+    {
+        String sql = """
+                SELECT order_id, customer_id, seller_id, carport_id, request_created_at, created_at, offer_valid_days, order_status, customer_comment, coverage_percentage, cost_price
+                FROM order
+                WHERE customer_id = ?
+                ORDER BY request_created_at DESC
+                """;
+
+        List<Order> orders = new ArrayList<>();
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql))
+        {
+            ps.setInt(1, customerId);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next())
+            {
+                orders.add(buildOfferFromResultSet(rs));
+            }
+
+            return orders;
+
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl ved hentning af alle ordre: " + e.getMessage());
+        }
+    }
+
+
+    public List<Order> getAllOrdersByStatus(OrderStatus offerStatus) throws DatabaseException
+    {
+        String sql = """
+                SELECT order_id, customer_id, seller_id, carport_id, request_created_at, created_at, offer_valid_days, order_status, customer_comment, coverage_percentage, cost_price
                 FROM order
                 WHERE offer_status = ?
+                ORDER BY request_created_at DESC
                 """;
 
         List<Order> orders = new ArrayList<>();
@@ -70,65 +183,54 @@ public class OrderMapper
              PreparedStatement ps = connection.prepareStatement(sql))
         {
             ps.setString(1, offerStatus.name());
+
             ResultSet rs = ps.executeQuery();
 
             while (rs.next())
             {
-                orders.add(buildOrderFromResultSet(rs));
+                orders.add(buildOfferFromResultSet(rs));
             }
+
             return orders;
+
         }
         catch (SQLException e)
         {
-            throw new DatabaseException("Fejl ved hentning af ordre: " + e.getMessage());
+            throw new DatabaseException("Fejl ved hentning af alle tilbud: " + e.getMessage());
         }
     }
 
-    public Order getOrderByOfferId(int offerId) throws DatabaseException
+
+    public boolean updateOffer(Order order) throws DatabaseException
     {
         String sql = """
-                SELECT *
-                FROM order 
-                WHERE offer_id = ?
-                """;
+        UPDATE order
+        SET seller_id = ?, carport_id = ?, created_at = ?, offer_valid_days = ?, customer_comment = ?, offer_status = ?, coverage_percentage = ?, cost_price = ?
+        WHERE order_id = ?
+            """;
 
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql))
         {
 
-            ps.setInt(1, offerId);
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next())
+            Integer sellerId = order.getSellerId();
+            if (sellerId != null)
             {
-                return buildOrderFromResultSet(rs);
+                ps.setInt(1, sellerId);
             }
             else
             {
-                throw new DatabaseException("Ordren blev ikke fundet for Tilbuds id: " + offerId);
+                ps.setNull(1, Types.INTEGER);
             }
 
-        }
-        catch (SQLException e)
-        {
-            throw new DatabaseException("Fejl ved hentning af ordren " + e.getMessage());
-        }
-    }
-
-    public boolean updateOrder(Order order) throws DatabaseException
-    {
-        String sql = """
-                UPDATE order
-                SET offer_id = ?, status = ?
-                WHERE order_id = ?
-                """;
-
-        try (Connection connection = connectionPool.getConnection();
-             PreparedStatement ps = connection.prepareStatement(sql))
-        {
-
-            ps.setInt(1, order.getOrderId());
-            ps.setString(2, order.getStatus().name());
+            ps.setInt(2, order.getCarportId());
+            ps.setTimestamp(3, order.getCreatedAt());
+            ps.setInt(4, order.getOfferValidDays());
+            ps.setString(5, order.getCustomerComment());
+            ps.setString(6, order.getOrderStatus().name());
+            ps.setDouble(7, order.getPricingDetails().getCoveragePercentage());
+            ps.setDouble(8, order.getPricingDetails().getTotalCostPrice());
+            ps.setInt(9, order.getOrderId());
 
             int rowsAffected = ps.executeUpdate();
             return rowsAffected == 1;
@@ -136,15 +238,15 @@ public class OrderMapper
         }
         catch (SQLException e)
         {
-            throw new DatabaseException("Fejl ved opdatering af ordre: " + e.getMessage());
+            throw new DatabaseException("Fejl ved opdatering af tilbuddet: " + e.getMessage());
         }
     }
 
-    public boolean deleteOrder(int orderId) throws DatabaseException
+    public boolean deleteOffer(int orderId) throws DatabaseException
     {
         String sql = """
-                DELETE FROM order WHERE order_id = ?
-                """;
+               DELETE FROM offer WHERE order_id = ?
+               """;
 
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql))
@@ -157,17 +259,26 @@ public class OrderMapper
         }
         catch (SQLException e)
         {
-            throw new DatabaseException("Fejl ved sletning af ordre: " + e.getMessage());
+            throw new DatabaseException("Fejl ved sletning af tilbuddet: " + e.getMessage());
         }
     }
 
-    private Order buildOrderFromResultSet(ResultSet rs) throws SQLException
+    private Offer buildOfferFromResultSet(ResultSet rs) throws SQLException
     {
-        return new Order(
-                rs.getInt("order_id"),
+        OrderTimeLine orderTimeLine = new OrderTimeLine(
+                rs.getTimestamp("request_created_at"),
+                rs.getTimestamp("created_date"),
+                rs.getTimestamp("expiration_date")
+        );
+
+        return new Offer(
                 rs.getInt("offer_id"),
-                rs.getTimestamp("order_date"),
-                OrderStatus.valueOf(rs.getString("status"))
+                rs.getInt("customer_id"),
+                (Integer) rs.getObject("seller_id"),
+                rs.getInt("carport_id"),
+                orderTimeLine,
+                rs.getString("customer_comment"),
+                OrderStatus.valueOf(rs.getString("offer_status"))
         );
     }
 }

@@ -7,11 +7,11 @@ import java.sql.Timestamp;
 
 @Data
 @AllArgsConstructor
-public class OfferDate
+public class OrderTimeLine
 {
     private Timestamp customerRequestCreatedAt;
     private Timestamp createdAt;
-    private Timestamp expirationDate;
+    private int offerValidDays;
 
     public boolean isExpired()
     {

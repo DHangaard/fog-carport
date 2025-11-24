@@ -1,8 +1,8 @@
 package app.persistence;
 
 import app.entities.Offer;
-import app.entities.OfferDate;
-import app.enums.OfferStatus;
+import app.entities.OrderTimeLine;
+import app.enums.OrderStatus;
 import app.exceptions.DatabaseException;
 
 import java.sql.*;
@@ -40,7 +40,7 @@ public class OfferMapper
             {
                 int offerId = rs.getInt("offer_id");
 
-                OfferDate offerDate = new OfferDate(
+                OrderTimeLine orderTimeLine = new OrderTimeLine(
                         new Timestamp(System.currentTimeMillis()),
                         null,
                         null
@@ -51,9 +51,9 @@ public class OfferMapper
                         customerId,
                         null,
                         carportId,
-                        offerDate,
+                        orderTimeLine,
                         customerComment,
-                        OfferStatus.PENDING
+                        OrderStatus.PENDING
                 );
             }
 
@@ -162,7 +162,7 @@ public class OfferMapper
     }
 
 
-    public List<Offer> getAllOffersByStatus(OfferStatus offerStatus) throws DatabaseException
+    public List<Offer> getAllOffersByStatus(OrderStatus offerStatus) throws DatabaseException
     {
         String sql = """
                 SELECT offer_id, customer_id, seller_id, carport_id, request_created_at, created_date, expiration_date,
@@ -219,10 +219,10 @@ public class OfferMapper
             }
 
             ps.setInt(2, offer.getCarportId());
-            ps.setTimestamp(3, offer.getOfferDate().getCreatedAt());
-            ps.setTimestamp(4, offer.getOfferDate().getExpirationDate());
+            ps.setTimestamp(3, offer.getOrderTimeLine().getCreatedAt());
+            ps.setTimestamp(4, offer.getOrderTimeLine().getExpirationDate());
             ps.setString(5, offer.getCustomerComment());
-            ps.setString(6, offer.getOfferStatus().name());
+            ps.setString(6, offer.getOrderStatus().name());
             ps.setInt(7, offer.getOfferId());
             int rowsAffected = ps.executeUpdate();
             return rowsAffected == 1;
@@ -257,7 +257,7 @@ public class OfferMapper
 
     private Offer buildOfferFromResultSet(ResultSet rs) throws SQLException
     {
-        OfferDate offerDate = new OfferDate(
+        OrderTimeLine orderTimeLine = new OrderTimeLine(
                 rs.getTimestamp("request_created_at"),
                 rs.getTimestamp("created_date"),
                 rs.getTimestamp("expiration_date")
@@ -268,9 +268,9 @@ public class OfferMapper
                 rs.getInt("customer_id"),
                 (Integer) rs.getObject("seller_id"),
                 rs.getInt("carport_id"),
-                offerDate,
+                orderTimeLine,
                 rs.getString("customer_comment"),
-                OfferStatus.valueOf(rs.getString("offer_status"))
+                OrderStatus.valueOf(rs.getString("offer_status"))
         );
     }
 }

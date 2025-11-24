@@ -1,8 +1,8 @@
 package app.persistence;
 
 import app.entities.Offer;
-import app.entities.OfferDate;
-import app.enums.OfferStatus;
+import app.entities.OrderTimeLine;
+import app.enums.OrderStatus;
 import app.exceptions.DatabaseException;
 import org.junit.jupiter.api.*;
 
@@ -171,10 +171,10 @@ class OfferMapperTest
         assertNull(offer.getSellerId());
         assertEquals(1, offer.getCarportId());
         assertEquals("Jeg vil gerne have en carport til min nye bil", offer.getCustomerComment());
-        assertEquals(OfferStatus.PENDING, offer.getOfferStatus());
-        assertNotNull(offer.getOfferDate().getCustomerRequestCreatedAt());
-        assertNull(offer.getOfferDate().getCreatedAt());
-        assertNull(offer.getOfferDate().getExpirationDate());
+        assertEquals(OrderStatus.PENDING, offer.getOrderStatus());
+        assertNotNull(offer.getOrderTimeLine().getCustomerRequestCreatedAt());
+        assertNull(offer.getOrderTimeLine().getCreatedAt());
+        assertNull(offer.getOrderTimeLine().getExpirationDate());
     }
 
     @Test
@@ -186,7 +186,7 @@ class OfferMapperTest
         assertEquals(1, offer.getOfferId());
         assertEquals(1, offer.getCustomerId());
         assertNull(offer.getSellerId());
-        assertEquals(OfferStatus.PENDING, offer.getOfferStatus());
+        assertEquals(OrderStatus.PENDING, offer.getOrderStatus());
     }
 
     @Test
@@ -218,16 +218,16 @@ class OfferMapperTest
     @Test
     void testGetAllOffersByStatus() throws DatabaseException
     {
-        List<Offer> pending = offerMapper.getAllOffersByStatus(OfferStatus.PENDING);
+        List<Offer> pending = offerMapper.getAllOffersByStatus(OrderStatus.PENDING);
         assertEquals(1, pending.size());
 
-        List<Offer> ready = offerMapper.getAllOffersByStatus(OfferStatus.READY);
+        List<Offer> ready = offerMapper.getAllOffersByStatus(OrderStatus.READY);
         assertEquals(1, ready.size());
 
-        List<Offer> accepted = offerMapper.getAllOffersByStatus(OfferStatus.ACCEPTED);
+        List<Offer> accepted = offerMapper.getAllOffersByStatus(OrderStatus.ACCEPTED);
         assertEquals(1, accepted.size());
 
-        List<Offer> rejected = offerMapper.getAllOffersByStatus(OfferStatus.REJECTED);
+        List<Offer> rejected = offerMapper.getAllOffersByStatus(OrderStatus.REJECTED);
         assertEquals(0, rejected.size());
     }
 
@@ -235,16 +235,16 @@ class OfferMapperTest
     void testUpdateOfferFromPendingToReady() throws DatabaseException
     {
         Offer offer = offerMapper.getOfferById(1);
-        assertEquals(OfferStatus.PENDING, offer.getOfferStatus());
+        assertEquals(OrderStatus.PENDING, offer.getOrderStatus());
         assertNull(offer.getSellerId());
 
         offer.setSellerId(2);
-        offer.setOfferStatus(OfferStatus.READY);
+        offer.setOrderStatus(OrderStatus.READY);
 
         Timestamp now = Timestamp.valueOf(LocalDateTime.now());
         Timestamp expiration = Timestamp.valueOf(LocalDateTime.now().plusDays(14));
-        offer.getOfferDate().setCreatedAt(now);
-        offer.getOfferDate().setExpirationDate(expiration);
+        offer.getOrderTimeLine().setCreatedAt(now);
+        offer.getOrderTimeLine().setExpirationDate(expiration);
 
         boolean updated = offerMapper.updateOffer(offer);
 
@@ -252,40 +252,40 @@ class OfferMapperTest
 
         Offer updatedOffer = offerMapper.getOfferById(1);
         assertEquals(2, updatedOffer.getSellerId());
-        assertEquals(OfferStatus.READY, updatedOffer.getOfferStatus());
-        assertNotNull(updatedOffer.getOfferDate().getCreatedAt());
-        assertNotNull(updatedOffer.getOfferDate().getExpirationDate());
+        assertEquals(OrderStatus.READY, updatedOffer.getOrderStatus());
+        assertNotNull(updatedOffer.getOrderTimeLine().getCreatedAt());
+        assertNotNull(updatedOffer.getOrderTimeLine().getExpirationDate());
     }
 
     @Test
     void testUpdateOfferFromReadyToAccepted() throws DatabaseException
     {
         Offer offer = offerMapper.getOfferById(2);
-        assertEquals(OfferStatus.READY, offer.getOfferStatus());
+        assertEquals(OrderStatus.READY, offer.getOrderStatus());
 
-        offer.setOfferStatus(OfferStatus.ACCEPTED);
+        offer.setOrderStatus(OrderStatus.ACCEPTED);
         boolean updated = offerMapper.updateOffer(offer);
 
         assertTrue(updated);
 
         Offer acceptedOffer = offerMapper.getOfferById(2);
-        assertEquals(OfferStatus.ACCEPTED, acceptedOffer.getOfferStatus());
+        assertEquals(OrderStatus.ACCEPTED, acceptedOffer.getOrderStatus());
     }
 
     @Test
     void testUpdateOfferFromReadyToRejected() throws DatabaseException
     {
         Offer offer = offerMapper.getOfferById(2);
-        assertEquals(OfferStatus.READY, offer.getOfferStatus());
+        assertEquals(OrderStatus.READY, offer.getOrderStatus());
 
-        offer.setOfferStatus(OfferStatus.REJECTED);
+        offer.setOrderStatus(OrderStatus.REJECTED);
         offer.setCustomerComment("Prisen er desværre for høj");
         boolean updated = offerMapper.updateOffer(offer);
 
         assertTrue(updated);
 
         Offer rejectedOffer = offerMapper.getOfferById(2);
-        assertEquals(OfferStatus.REJECTED, rejectedOffer.getOfferStatus());
+        assertEquals(OrderStatus.REJECTED, rejectedOffer.getOrderStatus());
         assertEquals("Prisen er desværre for høj", rejectedOffer.getCustomerComment());
     }
 
@@ -293,21 +293,21 @@ class OfferMapperTest
     void testUpdateOfferToExpired() throws DatabaseException
     {
         Offer offer = offerMapper.getOfferById(2);
-        assertEquals(OfferStatus.READY, offer.getOfferStatus());
+        assertEquals(OrderStatus.READY, offer.getOrderStatus());
 
-        offer.setOfferStatus(OfferStatus.EXPIRED);
+        offer.setOrderStatus(OrderStatus.EXPIRED);
         boolean updated = offerMapper.updateOffer(offer);
 
         assertTrue(updated);
 
         Offer expiredOffer = offerMapper.getOfferById(2);
-        assertEquals(OfferStatus.EXPIRED, expiredOffer.getOfferStatus());
+        assertEquals(OrderStatus.EXPIRED, expiredOffer.getOrderStatus());
     }
 
     @Test
     void testUpdateOfferNotFound() throws DatabaseException
     {
-        OfferDate offerDate = new OfferDate(
+        OrderTimeLine orderTimeLine = new OrderTimeLine(
                 Timestamp.valueOf(LocalDateTime.now()),
                 null,
                 null
@@ -318,9 +318,9 @@ class OfferMapperTest
                 1,
                 null,
                 1,
-                offerDate,
+                orderTimeLine,
                 "Comment",
-                OfferStatus.PENDING
+                OrderStatus.PENDING
         );
 
         boolean updated = offerMapper.updateOffer(fakeOffer);
@@ -358,48 +358,48 @@ class OfferMapperTest
         connection.commit();
         connection.close();
 
-        assertEquals(OfferStatus.PENDING, request.getOfferStatus());
+        assertEquals(OrderStatus.PENDING, request.getOrderStatus());
         assertNull(request.getSellerId());
 
         request.setSellerId(2);
-        request.setOfferStatus(OfferStatus.READY);
+        request.setOrderStatus(OrderStatus.READY);
         Timestamp now = Timestamp.valueOf(LocalDateTime.now());
-        request.getOfferDate().setCreatedAt(now);
-        request.getOfferDate().setExpirationDate(Timestamp.valueOf(LocalDateTime.now().plusDays(14)));
+        request.getOrderTimeLine().setCreatedAt(now);
+        request.getOrderTimeLine().setExpirationDate(Timestamp.valueOf(LocalDateTime.now().plusDays(14)));
 
         boolean updated = offerMapper.updateOffer(request);
         assertTrue(updated);
 
         Offer readyOffer = offerMapper.getOfferById(request.getOfferId());
-        assertEquals(OfferStatus.READY, readyOffer.getOfferStatus());
+        assertEquals(OrderStatus.READY, readyOffer.getOrderStatus());
         assertEquals(2, readyOffer.getSellerId());
 
-        readyOffer.setOfferStatus(OfferStatus.ACCEPTED);
+        readyOffer.setOrderStatus(OrderStatus.ACCEPTED);
         updated = offerMapper.updateOffer(readyOffer);
         assertTrue(updated);
 
         Offer acceptedOffer = offerMapper.getOfferById(request.getOfferId());
-        assertEquals(OfferStatus.ACCEPTED, acceptedOffer.getOfferStatus());
+        assertEquals(OrderStatus.ACCEPTED, acceptedOffer.getOrderStatus());
     }
 
     @Test
     void testOfferExpirationLogic() throws DatabaseException
     {
         Offer offer = offerMapper.getOfferById(2);
-        assertEquals(OfferStatus.READY, offer.getOfferStatus());
+        assertEquals(OrderStatus.READY, offer.getOrderStatus());
 
-        Timestamp expirationDate = offer.getOfferDate().getExpirationDate();
+        Timestamp expirationDate = offer.getOrderTimeLine().getExpirationDate();
         assertNotNull(expirationDate);
 
         assertTrue(expirationDate.after(new Timestamp(System.currentTimeMillis())));
 
-        offer.getOfferDate().setExpirationDate(Timestamp.valueOf(LocalDateTime.now().minusDays(1)));
-        offer.setOfferStatus(OfferStatus.EXPIRED);
+        offer.getOrderTimeLine().setExpirationDate(Timestamp.valueOf(LocalDateTime.now().minusDays(1)));
+        offer.setOrderStatus(OrderStatus.EXPIRED);
 
         boolean updated = offerMapper.updateOffer(offer);
         assertTrue(updated);
 
         Offer expiredOffer = offerMapper.getOfferById(2);
-        assertEquals(OfferStatus.EXPIRED, expiredOffer.getOfferStatus());
+        assertEquals(OrderStatus.EXPIRED, expiredOffer.getOrderStatus());
     }
 }

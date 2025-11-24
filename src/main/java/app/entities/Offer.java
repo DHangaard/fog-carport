@@ -1,6 +1,6 @@
 package app.entities;
 
-import app.enums.OfferStatus;
+import app.enums.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -12,7 +12,7 @@ public class Offer
     private int customerId;
     private Integer sellerId;
     private int carportId;
-    private OfferDate offerDate;
+    private OrderTimeLine orderTimeLine;
     private String customerComment;
-    private OfferStatus offerStatus;
+    private OrderStatus orderStatus;
 }
