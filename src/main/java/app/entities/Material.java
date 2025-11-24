@@ -28,8 +28,8 @@ public class Material
              Integer materialHeight,
              String unit,
              String usage,
-             Integer materialVariantId,
-             int variantLength,
+             int materialVariantId,
+             Integer variantLength,
              double unitPrice)
     {
         this.materialId = materialId;

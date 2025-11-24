@@ -61,10 +61,10 @@ CREATE TABLE IF NOT EXISTS public.material_variant
 CREATE TABLE IF NOT EXISTS public.offer
 (
     offer_id serial NOT NULL,
-    seller_id integer NOT NULL,
+    seller_id integer,
     customer_id integer NOT NULL,
     carport_id integer NOT NULL,
-    created_date timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_date timestamp without time zone,
     expiration_date timestamp without time zone,
     customer_comment text COLLATE pg_catalog."default",
     offer_status character varying COLLATE pg_catalog."default" NOT NULL DEFAULT 'PENDING'::character varying,

@@ -13,6 +13,7 @@ public class BillOfMaterials
     private int offerId;
     private List<MaterialLine> materialLines;
     private PricingDetails pricingDetails;
+    private double coveragePercentage;
 
     public void addMaterialLine(MaterialLine materialLine)
     {

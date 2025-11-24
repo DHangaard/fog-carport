@@ -18,7 +18,7 @@ public class ShedMapper
         this.connectionPool = connectionPool;
     }
 
-    public Shed createShed(Shed shed) throws DatabaseException
+    public Shed createShed(Connection connection, int length, int width, ShedPlacement shedPlacement) throws DatabaseException
     {
         String sql = """
                 INSERT INTO shed (length, width, shed_placement)
@@ -26,19 +26,23 @@ public class ShedMapper
                 RETURNING shed_id;
                 """;
 
-        try (Connection connection = connectionPool.getConnection();
-             PreparedStatement ps = connection.prepareStatement(sql))
+        try (PreparedStatement ps = connection.prepareStatement(sql))
         {
 
-            ps.setInt(1, shed.getLength());
-            ps.setInt(2, shed.getWidth());
-            ps.setString(3, shed.getShedPlacement().name());
+            ps.setInt(1, length);
+            ps.setInt(2, width);
+            ps.setString(3, shedPlacement.name());
 
             ResultSet rs = ps.executeQuery();
             if (rs.next())
             {
                 int shedId = rs.getInt("shed_id");
-                return getShedById(shedId);
+                return new Shed(
+                        shedId,
+                        length,
+                        width,
+                        shedPlacement
+                );
             }
             else
             {
