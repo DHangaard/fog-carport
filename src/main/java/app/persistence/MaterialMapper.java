@@ -61,7 +61,7 @@ public class MaterialMapper
                 ResultSet rs = ps.executeQuery();
                 if (rs.next())
                 {
-                    materialId = rs.getInt("material_id");
+                    materialId = rs.getInt(1);
                 }
             }
 
@@ -74,7 +74,7 @@ public class MaterialMapper
                 ResultSet rs = ps.executeQuery();
                 if (rs.next())
                 {
-                    materialVariantId = rs.getInt("material_variant_id");
+                    materialVariantId = rs.getInt(1);
                 }
             }
 
@@ -126,6 +126,51 @@ public class MaterialMapper
         }
     }
 
+    public Material createMaterialVariant(int materialId, Integer variantLength, double unitPrice) throws DatabaseException
+    {
+        String materialVariantSql = """
+                INSERT INTO material_variant (material_id, variant_length, unit_price) 
+                VALUES (?, ?, ?)
+                RETURNING material_variant_id
+                """;
+
+        Material material = getMaterialById(materialId);
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(materialVariantSql))
+        {
+            ps.setInt(1, materialId);
+            ps.setObject(2, variantLength);
+            ps.setDouble(3, unitPrice);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next())
+            {
+                int materialVariantId = rs.getInt(1);
+
+                return new Material(
+                        material.getMaterialId(),
+                        material.getName(),
+                        material.getMaterialCategory(),
+                        material.getMaterialType(),
+                        material.getMaterialWidth(),
+                        material.getMaterialHeight(),
+                        material.getUnit(),
+                        material.getUsage(),
+                        materialVariantId,
+                        variantLength,
+                        unitPrice
+                );
+            }
+            throw new DatabaseException("Fejl ved oprettelse af materiale variant.");
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl ved oprettelse af materiale variant: " + e.getMessage());
+        }
+    }
+
     public Material getMaterialById(int materialId) throws DatabaseException
     {
         String sql = """
@@ -134,6 +179,8 @@ public class MaterialMapper
                 FROM material m
                 JOIN material_variant mv ON m.material_id = mv.material_id
                 WHERE m.material_id = ?
+                ORDER BY mv.material_variant_id
+                LIMIT 1
                 """;
 
         try (Connection connection = connectionPool.getConnection();
@@ -153,7 +200,39 @@ public class MaterialMapper
         }
         catch (SQLException e)
         {
-            throw new DatabaseException("Fejl ved hentning af materiale med ID " + materialId + ": " + e.getMessage());
+            throw new DatabaseException("Fejl ved hentning af materiale: " + e.getMessage());
+        }
+    }
+
+    public Material getMaterialById(int materialId, int materialVariantId) throws DatabaseException
+    {
+        String sql = """
+                SELECT m.material_id, m.name, m.category, m.type, m.material_width, m.material_height, 
+                       m.unit, m.usage, mv.material_variant_id, mv.variant_length, mv.unit_price
+                FROM material m
+                JOIN material_variant mv ON m.material_id = mv.material_id
+                WHERE m.material_id = ? AND mv.material_variant_id = ?
+                """;
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql))
+        {
+            ps.setInt(1, materialId);
+            ps.setInt(2, materialVariantId);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next())
+            {
+                return buildMaterialFromResultSet(rs);
+            }
+            else
+            {
+                throw new DatabaseException("Materiale med ID " + materialId + " blev ikke fundet i databasen.");
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl ved hentning af materiale: " + e.getMessage());
         }
     }
 
@@ -165,6 +244,7 @@ public class MaterialMapper
                 FROM material m
                 JOIN material_variant mv ON m.material_id = mv.material_id
                 WHERE m.type = ?
+                ORDER BY m.material_id
                 """;
 
         List<Material> materials = new ArrayList<>();
@@ -184,7 +264,7 @@ public class MaterialMapper
         }
         catch (SQLException e)
         {
-            throw new DatabaseException("Kunne ikke hente materialer med typen " + materialType.getDisplayCategory() + e.getMessage());
+            throw new DatabaseException("Kunne ikke hente materialer med typen " + materialType.getDisplayCategory() + ": " + e.getMessage());
         }
     }
 
@@ -196,6 +276,7 @@ public class MaterialMapper
                 FROM material m
                 JOIN material_variant mv ON m.material_id = mv.material_id
                 WHERE m.category = ?
+                ORDER BY m.material_id
                 """;
 
         List<Material> materials = new ArrayList<>();
@@ -215,7 +296,7 @@ public class MaterialMapper
         }
         catch (SQLException e)
         {
-            throw new DatabaseException("Kunne ikke hente materialer med kategorien " + materialCategory.getDisplayCategory() + e.getMessage());
+            throw new DatabaseException("Kunne ikke hente materialer med kategorien " + materialCategory.getDisplayCategory() + ": " + e.getMessage());
         }
     }
 
@@ -226,6 +307,7 @@ public class MaterialMapper
                        m.unit, m.usage, mv.material_variant_id, mv.variant_length, mv.unit_price
                 FROM material m
                 JOIN material_variant mv ON m.material_id = mv.material_id
+                ORDER BY m.material_id
                 """;
 
         List<Material> materials = new ArrayList<>();
@@ -244,7 +326,7 @@ public class MaterialMapper
         }
         catch (SQLException e)
         {
-            throw new DatabaseException("Kunne ikke hente alle materialer fra databasen" + e.getMessage());
+            throw new DatabaseException("Kunne ikke hente alle materialer fra databasen: " + e.getMessage());
         }
     }
 
@@ -286,7 +368,7 @@ public class MaterialMapper
     public boolean updateMaterialVariant(Material material) throws DatabaseException
     {
         String sql = """
-                UPDATE material
+                UPDATE material_variant
                 SET variant_length = ?,
                 unit_price = ?
                 WHERE material_variant_id = ?

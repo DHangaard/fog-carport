@@ -100,7 +100,7 @@ class BomMapperTest
 
                 stmt.execute("INSERT INTO test.material (material_id, name, category, type, material_width, material_height, unit, usage) VALUES " +
                         "(1, 'trykimp. Stolpe', 'WOOD_AND_ROOFING', 'POST', 97, 97, 'stk', 'Stolper nedgraves 90 cm. i jord'), " +
-                        "(2, 'spærtræ ubh.', 'WOOD_AND_ROOFING', 'WALL_PLATE', 45, 195, 'stk', 'Remme i sider, sadles ned i stolper'), " +
+                        "(2, 'spærtræ ubh.', 'WOOD_AND_ROOFING', 'BEAM', 45, 195, 'stk', 'Remme i sider, sadles ned i stolper'), " +
                         "(3, 'spærtræ ubh.', 'WOOD_AND_ROOFING', 'RAFTER', 45, 195, 'stk', 'Spær, monteres på rem'), " +
                         "(4, 'Plastmo Ecolite blåtonet', 'ROOFING', 'ROOF', 109, 5, 'stk', 'Tagplader monteres på spær')");
 
