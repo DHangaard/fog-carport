@@ -1,4 +1,4 @@
-package app.services;
+package app.services.svg;
 
 public class CarportSvgTop
 {

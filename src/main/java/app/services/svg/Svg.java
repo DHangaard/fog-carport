@@ -1,4 +1,4 @@
-package app.services;
+package app.services.svg;
 
 public class Svg {
     private static final String SVG_TEMPLATE = "<svg version=\"1.1\"\n" +

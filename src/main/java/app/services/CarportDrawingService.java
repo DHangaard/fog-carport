@@ -1,13 +1,19 @@
 package app.services;
 
 import app.entities.Carport;
+import app.services.svg.CarportSvgTop;
+import app.services.svg.Svg;
 
 public class CarportDrawingService implements ICarportDrawingService
 {
     @Override
-    public Svg getCarportTopSvgView(Carport carport)
+    public CarportSvgTop getCarportTopSvgView(Carport carport)
     {
-        return null;
+        if(carport == null)
+        {
+
+        }
+        return new CarportSvgTop(carport.getWidth(), carport.getLength());
     }
 
     @Override

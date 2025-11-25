@@ -11,19 +11,14 @@
 <div th:replace="~{fragments :: headerFragment}"></div>
 
 <main>
-    <div class="form-container">
-    <form th:action="@{/showCarport}">
-        <label for="length">Length</label>
-        <input type="text" id="length" name="length">
-
-        <label for="width">Width</label>
-        <input type="text" id="width" name="width">
-
-        <button class="btn" type="submit">Show carport</button>
-    </form>
+    <h1>Carport for ordre: 12</h1>
+    <div class="carport-svg-topview">
+        <div th:utext="${carportTop}"></div>
+    </div>
+    <div class="carport-svg-sideview">
+        <div th:utext="${carportSide}"></div>
     </div>
 </main>
-
 
 <div th:replace="~{fragments :: footerFragment}"></div>
 
