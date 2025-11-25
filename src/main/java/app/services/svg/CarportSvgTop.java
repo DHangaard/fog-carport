@@ -1,5 +1,8 @@
 package app.services.svg;
 
+import app.dto.RafterCalculationDTO;
+import app.util.PartCalculator;
+
 public class CarportSvgTop
 {
     private int width;
@@ -13,7 +16,10 @@ public class CarportSvgTop
     private final double RAFTER_WIDTH_CM =  4.5;
     private final double POST_WIDTH_CM = 10.0;
     private final double POST_HEIGHT_CM = 10.0;
-    private final double POST_START_POSITION_CM = 108.50;
+    private final double POST_START_POSITION_CM = 100.0;
+    private final double POST_VERTICAL_OFFSET_CM = 2.5;
+    private final double POST_OFFSET_END_POSITION_CM = 30.00;
+    private final double POST_SPACING_CM = 310;
     private final double MAX_SPACING_CM = 55.0;
     private final double POST_EDGE_INSET_CM = 35.00;
     private double yPositionBottom;
@@ -32,7 +38,7 @@ public CarportSvgTop(int width, int length)
    this.width = width;
    this.length = length;
    this.carportTopSvg = new Svg(0, 0, WIDTH_SIZE, VIEW_BOX);
-   this.carportInnerSvg = new Svg(innerX, innerY, this.length+20, this.width, getInnerViewBox(width, length));
+   this.carportInnerSvg = new Svg(innerX, innerY, this.length, this.width, getInnerViewBox(width, length));
    this.yPositionBottom =  width - POST_EDGE_INSET_CM - 2.5;
    this.yPositionTop = POST_EDGE_INSET_CM + RAFTER_WIDTH_CM;
 
@@ -59,12 +65,72 @@ private void addFrame()
     carportInnerSvg.addRectangle(0,0,width,length, BASE_STYLE);
 }
 
-private void addBeams()
-{
+   private void addBeams()
+   {
     carportInnerSvg.addRectangle(0, POST_EDGE_INSET_CM, RAFTER_WIDTH_CM, length, BASE_STYLE);
     carportInnerSvg.addRectangle(0,width - POST_EDGE_INSET_CM, RAFTER_WIDTH_CM, length, BASE_STYLE);
+   }
+
+
+    private void addPost()
+    {
+        int numberOfPostsPerRow = PartCalculator.calculateNumberOfPostsWithOutShed(length);
+
+        double lastPostPosition = length - POST_OFFSET_END_POSITION_CM;
+
+        if(numberOfPostsPerRow == 2)
+        {
+            addPostPair(POST_START_POSITION_CM);
+            addPostPair(lastPostPosition);
+        }
+        else
+        {
+            double middlePostPosition = POST_START_POSITION_CM + POST_SPACING_CM;
+
+            addPostPair(POST_START_POSITION_CM);
+            addPostPair(middlePostPosition);
+            addPostPair(lastPostPosition);
+        }
+
+    }
+
+    private void addPostPair(double x)
+    {
+        carportInnerSvg.addRectangle(x, POST_EDGE_INSET_CM - POST_VERTICAL_OFFSET_CM, POST_HEIGHT_CM, POST_WIDTH_CM, BASE_STYLE);
+        carportInnerSvg.addRectangle(x, yPositionBottom, POST_HEIGHT_CM, POST_WIDTH_CM, BASE_STYLE);
+    }
+
+    private void addRafters()
+    {
+        RafterCalculationDTO rafterCalcDTO = PartCalculator.calculateRafters(length, RAFTER_WIDTH_CM);
+
+        int numberOfRafters = rafterCalcDTO.numberOfRafters();
+        double spacing = rafterCalcDTO.spacing();
+        double currentXPos = 0;
+
+        for(int i = 0; i < numberOfRafters -1; i++)
+        {
+            carportInnerSvg.addRectangle(currentXPos, 0, width, RAFTER_WIDTH_CM, BASE_STYLE);
+            currentXPos += spacing;
+        }
+        carportInnerSvg.addRectangle(length - RAFTER_WIDTH_CM, 0, width, RAFTER_WIDTH_CM, BASE_STYLE);
+    }
+
+/*
+private void addPost()
+{
+    double postSpacing = 310;
+
+    for(double x = POST_START_POSITION_CM; x < length; x += postSpacing)
+    {
+        carportInnerSvg.addRectangle(x, POST_EDGE_INSET_CM-2.5, POST_HEIGHT_CM, POST_WIDTH_CM, BASE_STYLE);
+        carportInnerSvg.addRectangle(x, yPositionBottom, POST_HEIGHT_CM, POST_WIDTH_CM, BASE_STYLE);
+    }
 }
 
+ */
+
+    /*
 private void addRafters()
 {
     int numberOfSpaces = (int) Math.round(length / MAX_SPACING_CM);
@@ -76,17 +142,7 @@ private void addRafters()
     }
 
 }
-
-private void addPost()
-{
-    double postSpacing = 310;
-
-    for(double x = POST_START_POSITION_CM; x < length; x += postSpacing)
-    {
-        carportInnerSvg.addRectangle(x, POST_EDGE_INSET_CM-2.5, POST_HEIGHT_CM, POST_WIDTH_CM, BASE_STYLE);
-        carportInnerSvg.addRectangle(x, yPositionBottom, POST_HEIGHT_CM, POST_WIDTH_CM, BASE_STYLE);
-    }
-}
+ */
 
 private void addMetalStrap()
 {
