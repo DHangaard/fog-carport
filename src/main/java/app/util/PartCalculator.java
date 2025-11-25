@@ -11,6 +11,8 @@ public class PartCalculator
 {
     private static final int SHED_FULL_SIZE_POSTS = 5;
     private static final int SHED_NOT_FULL_SIZE_POSTS = 4;
+    private static final int MAX_SPACING_CM = 60;
+    private static final int RAFTER_START_END = 2;
 
     public static int calculateNumberOfPostsWithShed(int length, ShedPlacement shedPlacement)
     {
@@ -41,14 +43,36 @@ public class PartCalculator
         return new BeamCalculationDTO(3, List.of());
     }
 
-    {
+    /*
+    Variabler:
+    Længde
+    Max. spænvidde = Antages / fastslået
+    Spær bredde = Afhænger af materiale, formentlig ens
 
+    Antal spær = (længde / max spænvidde rundet op) + 2 til gavle
+
+    Mellemrum = antal spær - 1
+
+    Mellemrum størrelse = ((længde - 2 * spær bredde) / antal mellemrum)
+
+
+    Længde = 750
+    Spænvidde = 60
+    antal spær = (750/60 rundet op) + 2 = 15
+    Mellemrum = 15-1 = 14
+    M.Størrelse = (750/14) = 53,5 cm
+     */
+
+    public static int calculateNumberOfRafters(int length)
+    {
+        int numberOfMiddleRafters = length / MAX_SPACING_CM;
+        return numberOfMiddleRafters + RAFTER_START_END;
     }
 
-    public static RafterCalculationDTO calculateRafters(int length, double rafterWidth, int maxSpacing)
+    public static RafterCalculationDTO calculateRafters(int length, double rafterWidth)
     {
-        int numberOfMiddleRafters = length / maxSpacing;
-        int totalNumberOfRafters = numberOfMiddleRafters + 2;
+        int totalNumberOfRafters = calculateNumberOfRafters(length);
+        int numberOfMiddleRafters = totalNumberOfRafters - RAFTER_START_END;
         double spacing = (length - (2 * rafterWidth)) / (totalNumberOfRafters - 1);
 
         if (spacing > 56.0)
@@ -65,5 +89,10 @@ public class PartCalculator
     private static int getShedPosts(ShedPlacement shedPlacement)
     {
         return shedPlacement == ShedPlacement.FULL_WIDTH ? SHED_FULL_SIZE_POSTS : SHED_NOT_FULL_SIZE_POSTS;
+    }
+
+    public static int calculateRoofTiles(int carportWidth, int carportLength)
+    {
+        return 0;
     }
 }
