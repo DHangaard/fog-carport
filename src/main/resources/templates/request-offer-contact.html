@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Fog - Bekræft kundeinformation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="/public/css/styles.css" th:href="@{/css/styles.css}"/>
+</head>
+<body>
+
+<div th:replace="~{fragments :: headerFragment}"></div>
+
+<main>
+    <main>
+        <div class="content">
+            <h1>Valider kontaktoplysninger</h1>
+
+        </div>
+
+        <div class="form-container">
+            <h2>Kontaktoplysninger</h2>
+
+            <p>
+                Bekræft venligst at vi har de rigtige informationer til din ordre.
+            </p>
+
+            <form th:action="@{/request-offer}" method="post" class="form">
+
+                <div class="form-field">
+                    <label>Fornavn</label>
+                    <input class="form-input" type="text" name="firstName"
+                           th:value="${currentUser != null} ? ${currentUser.firstName} : ''" required>
+                </div>
+
+                <div class="form-field">
+                    <label>Efternavn</label>
+                    <input class="form-input" type="text" name="lastName"
+                           th:value="${currentUser != null} ? ${currentUser.lastName} : ''" required>
+                </div>
+
+                <div class="form-field">
+                    <label for="phoneNumber">Telefonnummer</label>
+                    <input class="form-input" type="text" id="phoneNumber" name="phoneNumber"
+                           th:value="${currentUser != null} ? ${currentUser.phoneNumber} : ''" required>
+                </div>
+
+                <div class="form-field">
+                    <label>Email</label>
+                    <input class="form-input" type="email" name="email"
+                           th:value="${currentUser != null} ? ${currentUser.email} : ''" required>
+                </div>
+
+                <div class="form-field">
+                    <label>Adresse</label>
+                        <input class="form-input" type="text" name="street"
+                               th:value="${currentUser != null} ? ${currentUser.street} : ''" required>
+                </div>
+
+                <div class="form-field">
+                    <label>By</label>
+                    <input class="form-input" type="text" name="city"
+                           th:value="${currentUser != null} ? ${currentUser.city} : ''" required>
+                </div>
+
+                <div class="form-field">
+                    <label>Postnummer</label>
+                    <input class="form-input" type="text" name="zipCode"
+                           th:value="${currentUser != null} ? ${currentUser.zipCode} : ''" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Bestil tilbud</button>
+            </form>
+
+            <div th:if="${errorMessage != null}" class="message message-error">
+                <p th:text="${errorMessage}"></p>
+            </div>
+
+            <div th:if="${session.successMessage}" class="message message-success">
+                <p th:text="${session.successMessage}"></p>
+            </div>
+
+        </div>
+    </main>
+
+</main>
+
+
+<div th:replace="~{fragments :: footerFragment}"></div>
+
+
+</body>
+</html>
