@@ -2,12 +2,12 @@ package app;
 
 import app.config.ThymeleafConfig;
 import app.controllers.UserController;
+import app.exceptions.DatabaseException;
 import app.persistence.ConnectionPool;
 import app.persistence.UserMapper;
 import app.persistence.ZipCodeMapper;
 import app.services.IUserService;
 import app.services.UserService;
-import app.util.PartCalculator;
 import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinThymeleaf;
 
@@ -31,7 +31,7 @@ public class Main
 
     private static final ConnectionPool connectionPool = ConnectionPool.getInstance(USER, PASSWORD, URL, DB);
 
-    public static void main(String[] args)
+    public static void main(String[] args) throws DatabaseException
     {
         Javalin app = Javalin.create(config ->
         {
