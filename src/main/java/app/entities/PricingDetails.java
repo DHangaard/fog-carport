@@ -7,9 +7,10 @@ public class PricingDetails
 {
     private double costPrice;
     private double coveragePercentage;
-    private final double priceWithoutVat;
-    private final double vatAmount;
-    private final double totalPrice;
+    private double priceWithoutVat;
+    private final double VAT_PERCENTAGE = 0.25;
+    private double vatAmount;
+    private double totalPrice;
 
     public PricingDetails(double costPrice, double coveragePercentage)
     {
@@ -17,7 +18,7 @@ public class PricingDetails
         this.coveragePercentage = coveragePercentage;
 
         this.priceWithoutVat = costPrice * (1 + coveragePercentage / 100.0);
-        this.vatAmount = priceWithoutVat * 0.25;
+        this.vatAmount = priceWithoutVat * VAT_PERCENTAGE;
         this.totalPrice = priceWithoutVat + vatAmount;
     }
 }

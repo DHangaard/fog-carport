@@ -110,19 +110,19 @@ ALTER TABLE IF EXISTS public.material_variant
     ON UPDATE CASCADE
        ON DELETE CASCADE;
 
-ALTER TABLE IF EXISTS public."order"
+ALTER TABLE IF EXISTS public."orders"
     ADD CONSTRAINT order_customer_fk FOREIGN KEY (customer_id)
     REFERENCES public.users (user_id) MATCH SIMPLE
     ON UPDATE CASCADE
        ON DELETE RESTRICT;
 
-ALTER TABLE IF EXISTS public."order"
+ALTER TABLE IF EXISTS public."orders"
     ADD CONSTRAINT order_seller_fk FOREIGN KEY (seller_id)
     REFERENCES public.users (user_id) MATCH SIMPLE
     ON UPDATE CASCADE
        ON DELETE RESTRICT;
 
-ALTER TABLE IF EXISTS public."order"
+ALTER TABLE IF EXISTS public."orders"
     ADD CONSTRAINT order_carport_fk FOREIGN KEY (carport_id)
     REFERENCES public.carport (carport_id) MATCH SIMPLE
     ON UPDATE CASCADE
@@ -130,7 +130,7 @@ ALTER TABLE IF EXISTS public."order"
 
 ALTER TABLE IF EXISTS public.material_line
     ADD CONSTRAINT material_line_order_fk FOREIGN KEY (order_id)
-    REFERENCES public."order" (order_id) MATCH SIMPLE
+    REFERENCES public."orders" (order_id) MATCH SIMPLE
     ON UPDATE CASCADE
        ON DELETE CASCADE;
 
