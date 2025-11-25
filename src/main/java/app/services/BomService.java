@@ -6,6 +6,9 @@ import app.exceptions.DatabaseException;
 import app.persistence.MaterialVariantMapper;
 import app.util.PartCalculator;
 
+import java.time.DateTimeException;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class BomService
@@ -19,34 +22,77 @@ public class BomService
         this.variantMapper = variantMapper;
     }
 
-    public BillOfMaterial getBillOfMaterial(Carport carport) throws DatabaseException
+    public List<MaterialLine> getBillOfMaterialByCarport(Carport carport) throws DatabaseException
     {
-        BillOfMaterial billOfMaterial = new BillOfMaterial();
+        List<MaterialLine> billOfMaterial = new ArrayList<>();
 
-        MaterialLine postsMaterialLine = calculateNumberOfPosts(carport.getLength());
-        billOfMaterial.addMaterialLine(postsMaterialLine);
+        MaterialLine postsMaterialLine = calculateNumberOfPosts(carport);
+        MaterialLine beamsMaterialLine = calculateNumberOfBeams(carport);
+        MaterialLine raftersMaterialLine = calculateNumberOfRafters(carport);
 
-        MaterialLine beamsMaterialLine = calculateNumberOfBeams(carport.getLength());
-        billOfMaterial.addMaterialLine(beamsMaterialLine);
+        billOfMaterial.add(postsMaterialLine);
+        billOfMaterial.add(beamsMaterialLine);
+        billOfMaterial.add(raftersMaterialLine);
 
         return billOfMaterial;
     }
 
-    private MaterialLine calculateNumberOfPosts(int carportLength) throws DatabaseException
+    private MaterialLine calculateNumberOfPosts(Carport carport) throws DatabaseException
     {
-        int numberOfPosts = PartCalculator.calculateNumberOfPostsWithOutShed(carportLength);
+        int numberOfPosts = 0;
+
+        if(carport.getShed() != null)
+        {
+           numberOfPosts = PartCalculator.calculateNumberOfPostsWithShed(carport.getLength(), carport.getShed().getShedPlacement());
+        }
+        else
+        {
+            numberOfPosts = PartCalculator.calculateNumberOfPostsWithOutShed(carport.getLength());
+        }
+
         List<MaterialVariant> posts = variantMapper.getAllVariantsByType(MaterialType.POST);
 
         MaterialVariant postVariant = posts.stream()
-                        .filter(materialVariant -> materialVariant.getVariantLength() == STANDARD_POST_SIZE)
-                        .findFirst()
-                        .orElseThrow(() -> new DatabaseException("Kunne ikke finde stolpe"));
+                .filter(materialVariant -> materialVariant.getVariantLength() == STANDARD_POST_SIZE)
+                .findFirst()
+                .orElseThrow(() -> new DatabaseException("Kunne ikke finde stolpe"));
 
         return new MaterialLine(postVariant, numberOfPosts);
     }
 
+    private MaterialLine calculateNumberOfRafters(Carport carport) throws DatabaseException
+    {
+        int numberOfRafters = PartCalculator.calculateNumberOfRafters(carport.getLength());
 
-    private MaterialLine calculateNumberOfBeams(int carportLength) throws DatabaseException
+        List<MaterialVariant> rafterVariants = variantMapper.getAllVariantsByType(MaterialType.RAFTER);
+
+        MaterialVariant rafterVariant = rafterVariants.stream()
+                .filter(variant -> variant.getVariantLength() != null)
+                .filter(variant -> variant.getVariantLength() >= carport.getWidth())
+                .min(Comparator.comparingInt(MaterialVariant::getVariantLength))
+                .orElseThrow(() -> new DatabaseException("Ingen spær er lang nok til bredde: " + carport.getWidth() + " cm."));
+
+        return new MaterialLine(rafterVariant, numberOfRafters);
+    }
+
+    private MaterialLine calculateRoofTiles(int carportWidth, int carportLength) throws DatabaseException
+    {
+        List<MaterialVariant> roofs = variantMapper.getAllVariantsByType(MaterialType.ROOF);
+        int numberofRoofTiles = PartCalculator.calculateRoofTiles(carportWidth, carportLength);
+
+        // Beregn hvilken længde tagplade der skal anvendes
+
+        // Find tagplade variant
+        MaterialVariant roofVariant = roofs.stream()
+                .filter(materialVariant -> materialVariant.getVariantLength() == 00) // TODO insert variable
+                .findFirst()
+                .orElseThrow(() -> new DateTimeException("Kunne ikke finde tagmateriale"));
+
+        return new MaterialLine(roofVariant, numberofRoofTiles);
+    }
+
+
+    private MaterialLine calculateNumberOfBeams(Carport carport) throws DatabaseException
     {
         List<MaterialVariant> beams = variantMapper.getAllVariantsByType(MaterialType.BEAM);
         // List<Integer> lengths = new ArrayList<>();
@@ -108,8 +154,8 @@ public class BomService
 
          */
 
-        beams.stream()
-                .filter(materialVariant -> materialVariant.getVariantLength() == )
+        //beams.stream()
+              //  .filter(materialVariant -> materialVariant.getVariantLength() ==)
 
         return null;
     }
