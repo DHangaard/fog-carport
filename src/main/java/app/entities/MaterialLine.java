@@ -7,6 +7,12 @@ import lombok.Data;
 @AllArgsConstructor
 public class MaterialLine
 {
+    public MaterialLine(MaterialVariant materialVariant, int quantity)
+    {
+        this.materialVariant = materialVariant;
+        this.quantity = quantity;
+    }
+
     private int materialLineId;
     private int orderId;
     private MaterialVariant materialVariant;
