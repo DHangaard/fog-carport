@@ -23,7 +23,7 @@ public class OrderController
 
         public void addRoutes(Javalin app)
         {
-            app.get("/carport-drawing", ctx -> showCarportDrawing(ctx));
+            app.post("/show-carport", ctx -> showCarportDrawing(ctx));
         }
 
     private void showCarportDrawing(Context ctx)
@@ -39,6 +39,6 @@ public class OrderController
         Carport carport = new Carport(0,carportLength, carportWidth, RoofType.FLAT,null);
         CarportSvgTop carportSvgTop = carportDrawingService.getCarportTopSvgView(carport);
         ctx.attribute("carportTop", carportSvgTop.toString());
-        ctx.render("order");
+        ctx.render("carport-drawing");
     }
 }

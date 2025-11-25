@@ -12,14 +12,17 @@
 
 <main>
     <div class="form-container">
-    <form th:action="@{/showCarport}">
+    <form th:action="@{/show-carport}" method="post">
+        <div class="form-field">
         <label for="length">Length</label>
         <input type="text" id="length" name="length">
+        </div>
 
+        <div class="form-field">
         <label for="width">Width</label>
         <input type="text" id="width" name="width">
-
-        <button class="btn" type="submit">Show carport</button>
+        </div>
+        <button class="btn-primary" type="submit">Show carport</button>
     </form>
     </div>
 </main>

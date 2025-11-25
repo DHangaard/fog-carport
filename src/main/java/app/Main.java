@@ -1,12 +1,12 @@
 package app;
 
 import app.config.ThymeleafConfig;
+import app.controllers.OrderController;
 import app.controllers.UserController;
 import app.persistence.ConnectionPool;
 import app.persistence.UserMapper;
 import app.persistence.ZipCodeMapper;
-import app.services.IUserService;
-import app.services.UserService;
+import app.services.*;
 import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinThymeleaf;
 
@@ -42,9 +42,13 @@ public class Main
         UserMapper userMapper = new UserMapper(connectionPool);
         ZipCodeMapper zipCodeMapper = new ZipCodeMapper(connectionPool);
         IUserService userService = new UserService(userMapper, zipCodeMapper);
+        ICarportDrawingService carportDrawingService = new CarportDrawingService();
+        IOrderService orderService = new OrderService();
 
         UserController userController = new UserController(userService);
+        OrderController orderController = new OrderController(orderService, carportDrawingService);
 
         userController.addRoutes(app);
+        orderController.addRoutes(app);
     }
 }
