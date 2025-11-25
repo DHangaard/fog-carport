@@ -18,170 +18,71 @@ public class MaterialMapper
         this.connectionPool = connectionPool;
     }
 
-    public Material createMaterial(String name,
-                                   MaterialCategory materialCategory,
-                                   MaterialType materialType,
-                                   Integer materialWidth,
-                                   Integer materialHeight,
-                                   String unit,
-                                   String usage,
-                                   Integer variantLength,
-                                   double unitPrice) throws DatabaseException
+    public Material createMaterial(Connection connection, String name, MaterialCategory materialCategory, MaterialType materialType, Integer materialWidth, Integer materialHeight, String unit, String usage) throws DatabaseException
     {
-        String materialSql = """
-                INSERT INTO material (name, category, type, material_width, material_height, unit, usage)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
-                RETURNING material_id
-                """;
+        String sql = """
+               INSERT INTO material (name, category, type, material_width, material_height, unit, usage)
+               VALUES (?, ?, ?, ?, ?, ?, ?)
+               RETURNING material_id
+               """;
 
-        String materialVariantSql = """
-                INSERT INTO material_variant (material_id, variant_length, unit_price) 
-                VALUES (?, ?, ?)
-                RETURNING material_variant_id
-                """;
-        Connection connection = null;
-        int materialId = 0;
-        int materialVariantId = 0;
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
 
-        try
-        {
-            connection = connectionPool.getConnection();
-            connection.setAutoCommit(false);
+            ps.setString(1, name);
+            ps.setString(2, materialCategory.name());
+            ps.setString(3, materialType.name());
 
-            try (PreparedStatement ps = connection.prepareStatement(materialSql))
+            if (materialWidth != null)
             {
-                ps.setString(1, name);
-                ps.setString(2, materialCategory.name());
-                ps.setString(3, materialType.name());
-                ps.setObject(4, materialWidth);
-                ps.setObject(5, materialHeight);
-                ps.setString(6, unit);
-                ps.setString(7, usage);
-
-                ResultSet rs = ps.executeQuery();
-                if (rs.next())
-                {
-                    materialId = rs.getInt(1);
-                }
+                ps.setInt(4, materialWidth);
+            }
+            else
+            {
+                ps.setNull(4, Types.INTEGER);
             }
 
-            try (PreparedStatement ps = connection.prepareStatement(materialVariantSql))
+            if (materialHeight != null)
             {
-                ps.setInt(1, materialId);
-                ps.setObject(2, variantLength);
-                ps.setDouble(3, unitPrice);
-
-                ResultSet rs = ps.executeQuery();
-                if (rs.next())
-                {
-                    materialVariantId = rs.getInt(1);
-                }
+                ps.setInt(5, materialHeight);
+            }
+            else
+            {
+                ps.setNull(5, Types.INTEGER);
             }
 
-            connection.commit();
-
-            return new Material(
-                    materialId,
-                    name,
-                    materialCategory,
-                    materialType,
-                    materialWidth,
-                    materialHeight,
-                    unit,
-                    usage,
-                    materialVariantId,
-                    variantLength,
-                    unitPrice
-            );
-        }
-        catch (SQLException e)
-        {
-            if (connection != null)
-            {
-                try
-                {
-                    connection.rollback();
-                }
-                catch (SQLException rollbackEx)
-                {
-                    throw new DatabaseException("Fejl ved oprettelse af materiale: " + rollbackEx.getMessage());
-                }
-            }
-            throw new DatabaseException("Fejl ved oprettelse af materiale: " + e.getMessage());
-        }
-        finally
-        {
-            if (connection != null)
-            {
-                try
-                {
-                    connection.setAutoCommit(true);
-                    connection.close();
-                }
-                catch (SQLException e)
-                {
-                    throw new DatabaseException("Fejl ved oprettelse af materiale: " + e.getMessage());
-                }
-            }
-        }
-    }
-
-    public Material createMaterialVariant(int materialId, Integer variantLength, double unitPrice) throws DatabaseException
-    {
-        String materialVariantSql = """
-                INSERT INTO material_variant (material_id, variant_length, unit_price) 
-                VALUES (?, ?, ?)
-                RETURNING material_variant_id
-                """;
-
-        Material material = getMaterialById(materialId);
-
-        try (Connection connection = connectionPool.getConnection();
-             PreparedStatement ps = connection.prepareStatement(materialVariantSql))
-        {
-            ps.setInt(1, materialId);
-            ps.setObject(2, variantLength);
-            ps.setDouble(3, unitPrice);
+            ps.setString(6, unit);
+            ps.setString(7, usage);
 
             ResultSet rs = ps.executeQuery();
 
             if (rs.next())
             {
-                int materialVariantId = rs.getInt(1);
-
                 return new Material(
-                        material.getMaterialId(),
-                        material.getName(),
-                        material.getMaterialCategory(),
-                        material.getMaterialType(),
-                        material.getMaterialWidth(),
-                        material.getMaterialHeight(),
-                        material.getUnit(),
-                        material.getUsage(),
-                        materialVariantId,
-                        variantLength,
-                        unitPrice
+                        rs.getInt("material_id"),
+                        name,
+                        materialCategory,
+                        materialType,
+                        materialWidth,
+                        materialHeight,
+                        unit,
+                        usage
                 );
             }
-            throw new DatabaseException("Fejl ved oprettelse af materiale variant.");
-        }
-        catch (SQLException e)
-        {
-            throw new DatabaseException("Fejl ved oprettelse af materiale variant: " + e.getMessage());
+
+            throw new DatabaseException("Kunne ikke oprette materiale");
+
+        } catch (SQLException e) {
+            throw new DatabaseException("Fejl ved oprettelse af materiale: " + e.getMessage());
         }
     }
 
     public Material getMaterialById(int materialId) throws DatabaseException
     {
         String sql = """
-                SELECT m.material_id, m.name, m.category, m.type, m.material_width, m.material_height, 
-                       m.unit, m.usage, mv.material_variant_id, mv.variant_length, mv.unit_price
-                FROM material m
-                JOIN material_variant mv ON m.material_id = mv.material_id
-                WHERE m.material_id = ?
-                ORDER BY mv.material_variant_id
-                LIMIT 1
-                """;
+               SELECT material_id, name, category, type, material_width, material_height, unit, usage
+               FROM material
+               WHERE material_id = ?
+               """;
 
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql))
@@ -204,48 +105,41 @@ public class MaterialMapper
         }
     }
 
-    public Material getMaterialById(int materialId, int materialVariantId) throws DatabaseException
+    public List<Material> getAllMaterials() throws DatabaseException
     {
         String sql = """
-                SELECT m.material_id, m.name, m.category, m.type, m.material_width, m.material_height, 
-                       m.unit, m.usage, mv.material_variant_id, mv.variant_length, mv.unit_price
-                FROM material m
-                JOIN material_variant mv ON m.material_id = mv.material_id
-                WHERE m.material_id = ? AND mv.material_variant_id = ?
-                """;
+               SELECT material_id, name, category, type, material_width, material_height, unit, usage
+               FROM material
+               """;
+
+        List<Material> materials = new ArrayList<>();
 
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql))
         {
-            ps.setInt(1, materialId);
-            ps.setInt(2, materialVariantId);
             ResultSet rs = ps.executeQuery();
 
-            if (rs.next())
+            while (rs.next())
             {
-                return buildMaterialFromResultSet(rs);
+                materials.add(buildMaterialFromResultSet(rs));
             }
-            else
-            {
-                throw new DatabaseException("Materiale med ID " + materialId + " blev ikke fundet i databasen.");
-            }
+
+            return materials;
         }
         catch (SQLException e)
         {
-            throw new DatabaseException("Fejl ved hentning af materiale: " + e.getMessage());
+            throw new DatabaseException("Fejl ved hentning af materialer: " + e.getMessage());
         }
     }
+
 
     public List<Material> getMaterialsByType(MaterialType materialType) throws DatabaseException
     {
         String sql = """
-                SELECT m.material_id, m.name, m.category, m.type, m.material_width, m.material_height, 
-                       m.unit, m.usage, mv.material_variant_id, mv.variant_length, mv.unit_price
-                FROM material m
-                JOIN material_variant mv ON m.material_id = mv.material_id
-                WHERE m.type = ?
-                ORDER BY m.material_id
-                """;
+               SELECT material_id, name, category, type, material_width, material_height, unit, usage
+               FROM material
+               WHERE type = ?
+               """;
 
         List<Material> materials = new ArrayList<>();
 
@@ -269,13 +163,11 @@ public class MaterialMapper
     public List<Material> getMaterialsByCategory(MaterialCategory materialCategory) throws DatabaseException
     {
         String sql = """
-                SELECT m.material_id, m.name, m.category, m.type, m.material_width, m.material_height, 
-                       m.unit, m.usage, mv.material_variant_id, mv.variant_length, mv.unit_price
-                FROM material m
-                JOIN material_variant mv ON m.material_id = mv.material_id
-                WHERE m.category = ?
-                ORDER BY m.material_id
-                """;
+               SELECT material_id, name, category, type, material_width, material_height, unit, usage
+               FROM material
+               WHERE category = ?
+               ORDER BY type, name
+               """;
 
         List<Material> materials = new ArrayList<>();
 
@@ -297,35 +189,7 @@ public class MaterialMapper
         }
     }
 
-    public List<Material> getAllMaterials() throws DatabaseException
-    {
-        String sql = """
-                SELECT m.material_id, m.name, m.category, m.type, m.material_width, m.material_height, 
-                       m.unit, m.usage, mv.material_variant_id, mv.variant_length, mv.unit_price
-                FROM material m
-                JOIN material_variant mv ON m.material_id = mv.material_id
-                ORDER BY m.material_id
-                """;
-
-        List<Material> materials = new ArrayList<>();
-
-        try (Connection connection = connectionPool.getConnection();
-             PreparedStatement ps = connection.prepareStatement(sql))
-        {
-            ResultSet rs = ps.executeQuery();
-                while (rs.next())
-                {
-                    materials.add(buildMaterialFromResultSet(rs));
-                }
-            return materials;
-        }
-        catch (SQLException e)
-        {
-            throw new DatabaseException("Kunne ikke hente alle materialer fra databasen: " + e.getMessage());
-        }
-    }
-
-    public boolean updateMaterial(Material material) throws DatabaseException
+    public boolean updateMaterial(Connection connection, Material material) throws DatabaseException
     {
         String sql = """
                 UPDATE material
@@ -339,47 +203,33 @@ public class MaterialMapper
                 WHERE material_id = ?
                 """;
 
-        try (Connection connection = connectionPool.getConnection();
-             PreparedStatement ps = connection.prepareStatement(sql))
+        try (PreparedStatement ps = connection.prepareStatement(sql))
         {
+
             ps.setString(1, material.getName());
-            ps.setString(2, material.getMaterialCategory().name());
-            ps.setString(3, material.getMaterialType().name());
-            ps.setInt(4, material.getMaterialWidth());
-            ps.setInt(5, material.getMaterialHeight());
+            ps.setString(2, material.getCategory().name());
+            ps.setString(3, material.getType().name());
+
+            if (material.getMaterialWidth() != null) {
+                ps.setInt(4, material.getMaterialWidth());
+            } else {
+                ps.setNull(4, Types.INTEGER);
+            }
+
+            if (material.getMaterialHeight() != null) {
+                ps.setInt(5, material.getMaterialHeight());
+            } else {
+                ps.setNull(5, Types.INTEGER);
+            }
+
             ps.setString(6, material.getUnit());
             ps.setString(7, material.getUsage());
             ps.setInt(8, material.getMaterialId());
 
             int rowsAffected = ps.executeUpdate();
             return rowsAffected == 1;
-        }
-        catch (SQLException e)
-        {
-            throw new DatabaseException("Fejl ved opdatering af materiale: " + e.getMessage());
-        }
-    }
 
-    public boolean updateMaterialVariant(Material material) throws DatabaseException
-    {
-        String sql = """
-                UPDATE material_variant
-                SET variant_length = ?,
-                unit_price = ?
-                WHERE material_variant_id = ?
-                """;
-
-        try (Connection connection = connectionPool.getConnection();
-             PreparedStatement ps = connection.prepareStatement(sql))
-        {
-            ps.setInt(1, material.getVariantLength());
-            ps.setDouble(2, material.getUnitPrice());
-            ps.setInt(3, material.getMaterialVariantId());
-
-            int rowsAffected = ps.executeUpdate();
-            return rowsAffected == 1;
-        }
-        catch (SQLException e)
+        } catch (SQLException e)
         {
             throw new DatabaseException("Fejl ved opdatering af materiale: " + e.getMessage());
         }
@@ -405,26 +255,6 @@ public class MaterialMapper
         }
     }
 
-    public boolean deleteMaterialVariant(int materialVariantId) throws DatabaseException
-    {
-        String sql = """
-                DELETE FROM material_variant
-                WHERE material_variant_id = ?
-                """;
-
-        try (Connection connection = connectionPool.getConnection();
-             PreparedStatement ps = connection.prepareStatement(sql))
-        {
-            ps.setInt(1, materialVariantId);
-            int rowsAffected = ps.executeUpdate();
-            return rowsAffected == 1;
-        }
-        catch (SQLException e)
-        {
-            throw new DatabaseException("Fejl ved sletning af materiale variant med id: " + materialVariantId + e.getMessage());
-        }
-    }
-
     private Material buildMaterialFromResultSet(ResultSet rs) throws SQLException
     {
         return new Material(
@@ -435,10 +265,7 @@ public class MaterialMapper
                 (Integer) rs.getObject("material_width"),
                 (Integer) rs.getObject("material_height"),
                 rs.getString("unit"),
-                rs.getString("usage"),
-                rs.getInt("material_variant_id"),
-                (Integer) rs.getObject("variant_length"),
-                rs.getDouble("unit_price")
+                rs.getString("usage")
         );
     }
 }

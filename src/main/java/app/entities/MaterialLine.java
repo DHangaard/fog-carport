@@ -8,8 +8,7 @@ import lombok.Data;
 public class MaterialLine
 {
     private int materialLineId;
-    private int bomId;
-    private Material material;
+    private int orderId;
+    private MaterialVariant materialVariant;
     private int quantity;
-    private double lineTotal;
 }

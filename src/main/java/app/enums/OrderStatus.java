@@ -2,18 +2,18 @@ package app.enums;
 
 public enum OrderStatus
 {
+    PENDING("Afventer"),
+    READY("Klar"),
+    ACCEPTED("Accepteret"),
+    REJECTED("Afvist"),
+    EXPIRED("Udløbet"),
     PAID("Betalt"),
     CANCELLED("Annulleret");
 
-    private final String displayCategory;
 
-    OrderStatus(String displayCategory)
-    {
-        this.displayCategory = displayCategory;
-    }
+    private final String displayName;
 
-    public String getDisplayCategory()
-    {
-        return displayCategory;
+    OrderStatus(String displayName) {
+        this.displayName = displayName;
     }
 }

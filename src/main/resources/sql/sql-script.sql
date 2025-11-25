@@ -3,16 +3,35 @@
 BEGIN;
 
 
-CREATE TABLE IF NOT EXISTS public.bill_of_materials
+CREATE TABLE IF NOT EXISTS public.zip_code
 (
-    bom_id serial NOT NULL,
-    offer_id integer NOT NULL,
-    cost_price double precision NOT NULL,
-    coverage_percentage double precision NOT NULL,
-    price_without_vat double precision NOT NULL,
-    total_price double precision NOT NULL,
-    CONSTRAINT bill_of_materials_pkey PRIMARY KEY (bom_id),
-    CONSTRAINT bill_of_materials_offer_id_key UNIQUE (offer_id)
+    zip_code integer NOT NULL,
+    city character varying COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT zip_code_pkey PRIMARY KEY (zip_code)
+    );
+
+CREATE TABLE IF NOT EXISTS public.users
+(
+    user_id serial NOT NULL,
+    first_name character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    last_name character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    email character varying(100) COLLATE pg_catalog."default" NOT NULL,
+    phone_number character varying(20) COLLATE pg_catalog."default" NOT NULL,
+    hashed_password character varying(150) COLLATE pg_catalog."default" NOT NULL,
+    zip_code integer NOT NULL,
+    street character varying(100) COLLATE pg_catalog."default" NOT NULL,
+    role character varying COLLATE pg_catalog."default" NOT NULL DEFAULT 'CUSTOMER'::character varying,
+    CONSTRAINT users_pkey PRIMARY KEY (user_id),
+    CONSTRAINT users_email_key UNIQUE (email)
+    );
+
+CREATE TABLE IF NOT EXISTS public.shed
+(
+    shed_id serial NOT NULL,
+    length integer NOT NULL,
+    width integer NOT NULL,
+    shed_placement character varying COLLATE pg_catalog."default" NOT NULL DEFAULT 'FULL_WIDTH'::character varying,
+    CONSTRAINT shed_pkey PRIMARY KEY (shed_id)
     );
 
 CREATE TABLE IF NOT EXISTS public.carport
@@ -39,16 +58,6 @@ CREATE TABLE IF NOT EXISTS public.material
     CONSTRAINT material_pkey PRIMARY KEY (material_id)
     );
 
-CREATE TABLE IF NOT EXISTS public.material_line
-(
-    material_line_id serial NOT NULL,
-    bom_id integer NOT NULL,
-    material_id integer NOT NULL,
-    quantity integer NOT NULL,
-    line_total double precision NOT NULL,
-    CONSTRAINT material_line_pkey PRIMARY KEY (material_line_id)
-    );
-
 CREATE TABLE IF NOT EXISTS public.material_variant
 (
     material_variant_id serial NOT NULL,
@@ -58,135 +67,76 @@ CREATE TABLE IF NOT EXISTS public.material_variant
     CONSTRAINT material_variant_pkey PRIMARY KEY (material_variant_id)
     );
 
-CREATE TABLE IF NOT EXISTS public.offer
-(
-    offer_id serial NOT NULL,
-    seller_id integer,
-    customer_id integer NOT NULL,
-    carport_id integer NOT NULL,
-    created_date timestamp without time zone,
-    expiration_date timestamp without time zone,
-    customer_comment text COLLATE pg_catalog."default",
-    offer_status character varying COLLATE pg_catalog."default" NOT NULL DEFAULT 'PENDING'::character varying,
-    request_created_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT offer_pkey PRIMARY KEY (offer_id)
-    );
-
-CREATE TABLE IF NOT EXISTS public."order"
+CREATE TABLE IF NOT EXISTS public."orders"
 (
     order_id serial NOT NULL,
-    offer_id integer NOT NULL,
-    order_date timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    status character varying(30) COLLATE pg_catalog."default" NOT NULL DEFAULT 'PENDING'::character varying,
-    CONSTRAINT order_pkey PRIMARY KEY (order_id),
-    CONSTRAINT order_offer_id_key UNIQUE (offer_id)
+    customer_id integer NOT NULL,
+    seller_id integer,
+    carport_id integer NOT NULL,
+    request_created_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_at timestamp without time zone,
+    offer_valid_days integer,
+    order_status character varying COLLATE pg_catalog."default" NOT NULL DEFAULT 'PENDING'::character varying,
+    customer_comment text COLLATE pg_catalog."default",
+    coverage_percentage double precision,
+    cost_price double precision,
+    CONSTRAINT order_pkey PRIMARY KEY (order_id)
     );
 
-CREATE TABLE IF NOT EXISTS public.shed
+CREATE TABLE IF NOT EXISTS public.material_line
 (
-    shed_id serial NOT NULL,
-    length integer,
-    width integer,
-    shed_placement character varying COLLATE pg_catalog."default" NOT NULL DEFAULT 'FULL_WIDTH'::character varying,
-    CONSTRAINT shed_pkey PRIMARY KEY (shed_id)
+    material_line_id serial NOT NULL,
+    order_id integer NOT NULL,
+    material_variant_id integer NOT NULL,
+    quantity integer NOT NULL,
+    CONSTRAINT material_line_pkey PRIMARY KEY (material_line_id)
     );
 
-CREATE TABLE IF NOT EXISTS public.users
-(
-    user_id serial NOT NULL,
-    first_name character varying(50) COLLATE pg_catalog."default" NOT NULL,
-    last_name character varying(50) COLLATE pg_catalog."default" NOT NULL,
-    email character varying(100) COLLATE pg_catalog."default" NOT NULL,
-    phone_number character varying(20) COLLATE pg_catalog."default" NOT NULL,
-    hashed_password character varying(150) COLLATE pg_catalog."default" NOT NULL,
-    zip_code integer NOT NULL,
-    street character varying(100) COLLATE pg_catalog."default" NOT NULL,
-    role character varying COLLATE pg_catalog."default" NOT NULL DEFAULT 'CUSTOMER'::character varying,
-    CONSTRAINT users_pkey PRIMARY KEY (user_id),
-    CONSTRAINT users_email_key UNIQUE (email)
-    );
-
-CREATE TABLE IF NOT EXISTS public.zip_code
-(
-    zip_code integer NOT NULL,
-    city character varying COLLATE pg_catalog."default" NOT NULL,
-    CONSTRAINT zip_code_pkey PRIMARY KEY (zip_code)
-    );
-
-ALTER TABLE IF EXISTS public.bill_of_materials
-    ADD CONSTRAINT bom_offer_fk FOREIGN KEY (offer_id)
-    REFERENCES public.offer (offer_id) MATCH SIMPLE
+ALTER TABLE IF EXISTS public.users
+    ADD CONSTRAINT users_zip_code_fk FOREIGN KEY (zip_code)
+    REFERENCES public.zip_code (zip_code) MATCH SIMPLE
     ON UPDATE CASCADE
-       ON DELETE CASCADE;
-CREATE INDEX IF NOT EXISTS bill_of_materials_offer_id_key
-    ON public.bill_of_materials(offer_id);
-
+       ON DELETE RESTRICT;
 
 ALTER TABLE IF EXISTS public.carport
     ADD CONSTRAINT carport_shed_fk FOREIGN KEY (shed_id)
     REFERENCES public.shed (shed_id) MATCH SIMPLE
     ON UPDATE CASCADE
        ON DELETE SET NULL;
-CREATE INDEX IF NOT EXISTS carport_shed_id_unique
-    ON public.carport(shed_id);
-
-
-ALTER TABLE IF EXISTS public.material_line
-    ADD CONSTRAINT material_line_bom_fk FOREIGN KEY (bom_id)
-    REFERENCES public.bill_of_materials (bom_id) MATCH SIMPLE
-    ON UPDATE CASCADE
-       ON DELETE CASCADE;
-
-
-ALTER TABLE IF EXISTS public.material_line
-    ADD CONSTRAINT material_line_material_fk FOREIGN KEY (material_id)
-    REFERENCES public.material (material_id) MATCH SIMPLE
-    ON UPDATE NO ACTION
-       ON DELETE NO ACTION
-    NOT VALID;
-
 
 ALTER TABLE IF EXISTS public.material_variant
     ADD CONSTRAINT material_variant_material_fk FOREIGN KEY (material_id)
     REFERENCES public.material (material_id) MATCH SIMPLE
-    ON UPDATE NO ACTION
-       ON DELETE CASCADE
-    NOT VALID;
+    ON UPDATE CASCADE
+       ON DELETE CASCADE;
 
+ALTER TABLE IF EXISTS public."orders"
+    ADD CONSTRAINT order_customer_fk FOREIGN KEY (customer_id)
+    REFERENCES public.users (user_id) MATCH SIMPLE
+    ON UPDATE CASCADE
+       ON DELETE RESTRICT;
 
-ALTER TABLE IF EXISTS public.offer
-    ADD CONSTRAINT offer_carport_fk FOREIGN KEY (carport_id)
+ALTER TABLE IF EXISTS public."orders"
+    ADD CONSTRAINT order_seller_fk FOREIGN KEY (seller_id)
+    REFERENCES public.users (user_id) MATCH SIMPLE
+    ON UPDATE CASCADE
+       ON DELETE RESTRICT;
+
+ALTER TABLE IF EXISTS public."orders"
+    ADD CONSTRAINT order_carport_fk FOREIGN KEY (carport_id)
     REFERENCES public.carport (carport_id) MATCH SIMPLE
     ON UPDATE CASCADE
        ON DELETE RESTRICT;
 
-
-ALTER TABLE IF EXISTS public.offer
-    ADD CONSTRAINT offer_customer_fk FOREIGN KEY (customer_id)
-    REFERENCES public.users (user_id) MATCH SIMPLE
+ALTER TABLE IF EXISTS public.material_line
+    ADD CONSTRAINT material_line_order_fk FOREIGN KEY (order_id)
+    REFERENCES public."orders" (order_id) MATCH SIMPLE
     ON UPDATE CASCADE
-       ON DELETE RESTRICT;
+       ON DELETE CASCADE;
 
-
-ALTER TABLE IF EXISTS public.offer
-    ADD CONSTRAINT offer_seller_fk FOREIGN KEY (seller_id)
-    REFERENCES public.users (user_id) MATCH SIMPLE
-    ON UPDATE CASCADE
-       ON DELETE RESTRICT;
-
-
-ALTER TABLE IF EXISTS public."order"
-    ADD CONSTRAINT order_offer_fk FOREIGN KEY (offer_id)
-    REFERENCES public.offer (offer_id) MATCH SIMPLE
-    ON UPDATE CASCADE
-       ON DELETE RESTRICT;
-CREATE INDEX IF NOT EXISTS order_offer_id_key
-    ON public."order"(offer_id);
-
-
-ALTER TABLE IF EXISTS public.users
-    ADD CONSTRAINT users_zip_code_fk FOREIGN KEY (zip_code)
-    REFERENCES public.zip_code (zip_code) MATCH SIMPLE
+ALTER TABLE IF EXISTS public.material_line
+    ADD CONSTRAINT material_line_variant_fk FOREIGN KEY (material_variant_id)
+    REFERENCES public.material_variant (material_variant_id) MATCH SIMPLE
     ON UPDATE CASCADE
        ON DELETE RESTRICT;
 
