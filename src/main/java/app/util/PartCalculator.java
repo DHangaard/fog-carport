@@ -3,6 +3,7 @@ package app.util;
 import app.dto.BeamCalculationDTO;
 import app.dto.RafterCalculationDTO;
 import app.entities.Material;
+import app.entities.MaterialVariant;
 import app.enums.ShedPlacement;
 
 import java.util.List;
@@ -38,30 +39,10 @@ public class PartCalculator
         return postsPerRow * ROWS;
     }
 
-    public static BeamCalculationDTO calculateBeam(int lenght, List<Material> beamMaterials)
+    public static MaterialVariant calculateBeam(int lenght, List<Material> beamMaterials)
     {
-        return new BeamCalculationDTO(3, List.of());
+        return null;
     }
-
-    /*
-    Variabler:
-    Længde
-    Max. spænvidde = Antages / fastslået
-    Spær bredde = Afhænger af materiale, formentlig ens
-
-    Antal spær = (længde / max spænvidde rundet op) + 2 til gavle
-
-    Mellemrum = antal spær - 1
-
-    Mellemrum størrelse = ((længde - 2 * spær bredde) / antal mellemrum)
-
-
-    Længde = 750
-    Spænvidde = 60
-    antal spær = (750/60 rundet op) + 2 = 15
-    Mellemrum = 15-1 = 14
-    M.Størrelse = (750/14) = 53,5 cm
-     */
 
     public static int calculateNumberOfRafters(int length)
     {
