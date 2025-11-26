@@ -72,8 +72,12 @@ public class PartCalculator
         return shedPlacement == ShedPlacement.FULL_WIDTH ? SHED_FULL_SIZE_POSTS : SHED_NOT_FULL_SIZE_POSTS;
     }
 
-    public static int calculateRoofTiles(int carportWidth, int carportLength)
+    public static int calculateNumberOfRoofTileRows(int carportWidth, int roofVariantWidth)
     {
-        return 0;
+        final int OVERLAY = 9;
+        int roofVariantWidthWithOverlay = roofVariantWidth - OVERLAY;
+
+        return (int) Math.ceil(((double)carportWidth / roofVariantWidthWithOverlay));
+
     }
 }

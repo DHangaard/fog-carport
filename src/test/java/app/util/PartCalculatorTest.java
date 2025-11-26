@@ -72,4 +72,29 @@ class PartCalculatorTest
         assertTrue(rafters300.spacing() <= MAX_ACCEPTABLE_SPACING);
         assertTrue(rafters300.spacing() >= MIN_ACCEPTABLE_SPACING);
     }
+
+    @Test
+    void testNumberOfRoofTileRows()
+    {
+        int numberOfRoofTilesWith420Width = PartCalculator.calculateNumberOfRoofTileRows(420, 109);
+        assertEquals(5, numberOfRoofTilesWith420Width);
+
+        int numberOfRoofTilesWith450Width = PartCalculator.calculateNumberOfRoofTileRows(450, 109);
+        assertEquals(5, numberOfRoofTilesWith450Width);
+
+        int numberOfRoofTilesWith480Width = PartCalculator.calculateNumberOfRoofTileRows(480, 109);
+        assertEquals(5, numberOfRoofTilesWith480Width);
+
+        int numberOfRoofTilesWith510Width = PartCalculator.calculateNumberOfRoofTileRows(510, 109);
+        assertEquals(6, numberOfRoofTilesWith510Width);
+
+        int numberOfRoofTilesWith540Width = PartCalculator.calculateNumberOfRoofTileRows(540, 109);
+        assertEquals(6, numberOfRoofTilesWith540Width);
+
+        int numberOfRoofTilesWith570Width = PartCalculator.calculateNumberOfRoofTileRows(570, 109);
+        assertEquals(6, numberOfRoofTilesWith570Width);
+
+        int numberOfRoofTilesWith600Width = PartCalculator.calculateNumberOfRoofTileRows(600, 109);
+        assertEquals(6, numberOfRoofTilesWith600Width);
+    }
 }
