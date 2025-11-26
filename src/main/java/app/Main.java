@@ -16,7 +16,6 @@ import app.services.UserService;
 import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinThymeleaf;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 

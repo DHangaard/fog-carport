@@ -6,7 +6,6 @@ import app.exceptions.DatabaseException;
 import app.persistence.MaterialVariantMapper;
 import app.util.PartCalculator;
 
-import java.time.DateTimeException;
 import java.util.*;
 
 public class BomService
@@ -23,15 +22,21 @@ public class BomService
     {
         List<MaterialLine> billOfMaterial = new ArrayList<>();
 
-        MaterialLine postsMaterialLine = calculateNumberOfPosts(carport);
-        List<MaterialLine> beamsMaterialLine = calculateNumberOfBeams(carport);
-        MaterialLine raftersMaterialLine = calculateNumberOfRafters(carport);
+        MaterialLine postMaterialLine = calculateNumberOfPosts(carport);
+        MaterialLine rafterMaterialLine = calculateNumberOfRafters(carport);
+        List<MaterialLine> beamMaterialLines = calculateNumberOfBeams(carport);
+        List<MaterialLine> roofMaterialLines = calculateRoofTiles(carport);
 
-        billOfMaterial.add(postsMaterialLine);
-        beamsMaterialLine.stream()
+        billOfMaterial.add(rafterMaterialLine);
+        billOfMaterial.add(postMaterialLine);
+
+        beamMaterialLines.stream()
                 .filter(materialLine -> materialLine != null)
                 .forEach(materialLine -> billOfMaterial.add(materialLine));
-        billOfMaterial.add(raftersMaterialLine);
+
+        roofMaterialLines.stream()
+                .filter(materialLine -> materialLine != null)
+                .forEach(materialLine -> billOfMaterial.add(materialLine));
 
         return billOfMaterial;
     }
@@ -74,27 +79,49 @@ public class BomService
         return new MaterialLine(rafterVariant, numberOfRafters);
     }
 
-    private MaterialLine calculateRoofTiles(int carportWidth, int carportLength) throws DatabaseException
+    private List<MaterialLine> calculateRoofTiles(Carport carport) throws DatabaseException
     {
+        List<MaterialLine> roofVariantsNeeded = new ArrayList<>();
         List<MaterialVariant> roofVariants = variantMapper.getAllVariantsByType(MaterialType.ROOF);
-        int numberofRoofTiles = PartCalculator.calculateRoofTiles(carportWidth, carportLength);
 
-        // Beregn hvilken længde tagplade der skal anvendes
-
-        // Find tagplade variant
-        MaterialVariant roofVariant = roofVariants.stream()
-                .filter(materialVariant -> materialVariant.getVariantLength() == 00) // TODO insert variable
+        int roofVariantWidth = roofVariants.stream()
+                .filter(materialVariant -> materialVariant.getVariantLength() != null)
+                .filter(m -> m.getMaterial().getMaterialWidth() != null)
+                .mapToInt(m -> m.getMaterial().getMaterialWidth())
                 .findFirst()
-                .orElseThrow(() -> new DateTimeException("Kunne ikke finde tagmateriale"));
+                .orElseThrow(() -> new DatabaseException("Ingen kombination af tagplader passer til længde: " + carport.getLength() + " cm."));
 
-        return new MaterialLine(roofVariant, numberofRoofTiles);
+        int numberOfRoofTileRows = PartCalculator.calculateNumberOfRoofTileRows(carport.getWidth(), roofVariantWidth);
+
+        int variantMaxLength = getMaxVariantLength(roofVariants);
+        final int OVERHANG = 20;
+        int variantMaxLengthWithOverhang = variantMaxLength + OVERHANG;
+        System.out.println("Nummer af plader på en række " + numberOfRoofTileRows);
+        System.out.println("Roof variant widt: " + roofVariantWidth);
+        System.out.println("Variant max længde " + variantMaxLength);
+
+        if (carport.getLength() > variantMaxLengthWithOverhang)
+        {
+            int remainingLength = carport.getLength() - variantMaxLength;
+
+            MaterialVariant roofVariant = findOptimalVariantLength(roofVariants, carport.getLength());
+            MaterialVariant remainingVariant = findOptimalVariantLength(roofVariants, remainingLength);
+
+            roofVariantsNeeded.add(new MaterialLine(roofVariant, numberOfRoofTileRows));
+            roofVariantsNeeded.add(new MaterialLine(remainingVariant, numberOfRoofTileRows));
+        }
+        else
+        {
+            MaterialVariant roofVariant = findOptimalVariantLength(roofVariants, carport.getLength());
+            roofVariantsNeeded.add(new MaterialLine(roofVariant, numberOfRoofTileRows));
+        }
+        return roofVariantsNeeded;
     }
 
     private List<MaterialLine> calculateNumberOfBeams(Carport carport) throws DatabaseException
     {
         List<MaterialLine> beamsNeeded = new ArrayList<>();
         List<MaterialVariant> beamVariants = variantMapper.getAllVariantsByType(MaterialType.BEAM);
-
         final int WASTE_TOLERANCE_CM = 60;
         final int NUMBER_OF_BEAM_ROWS = 2;
         final int MAX_VARIANT_lENGTH = beamVariants.stream()
@@ -141,5 +168,26 @@ public class BomService
         }
 
         return beamsNeeded;
+    }
+
+    private MaterialVariant findOptimalVariantLength(List<MaterialVariant> variants, int carportLength) throws DatabaseException
+    {
+        final int WASTE_TOLERANCE_CM = 60;
+
+        return variants.stream()
+                .filter(variant -> variant.getVariantLength() != null)
+                .filter(variant -> variant.getVariantLength() >= carportLength)
+                .filter(variant -> variant.getVariantLength() - carportLength <= WASTE_TOLERANCE_CM)
+                .min(Comparator.comparingInt(MaterialVariant::getVariantLength))
+                .orElseThrow(() -> new DatabaseException("Ingen kombination af remme passer til længde: " + carportLength + " cm."));
+    }
+
+    private int getMaxVariantLength(List<MaterialVariant> variants) throws DatabaseException
+    {
+        return variants.stream()
+                .filter(materialVariant -> materialVariant.getVariantLength() != null)
+                .mapToInt(MaterialVariant::getVariantLength)
+                .max()
+                .orElseThrow(() -> new DatabaseException("Ingen materialer fundet"));
     }
 }
