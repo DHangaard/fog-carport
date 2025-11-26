@@ -2,6 +2,7 @@ package app.util;
 
 import app.dto.BeamCalculationDTO;
 import app.dto.RafterCalculationDTO;
+import app.entities.Carport;
 import app.entities.Material;
 import app.entities.MaterialVariant;
 import app.enums.ShedPlacement;
@@ -39,11 +40,6 @@ public class PartCalculator
         return postsPerRow * ROWS;
     }
 
-    public static MaterialVariant calculateBeam(int lenght, List<Material> beamMaterials)
-    {
-        return null;
-    }
-
     public static int calculateNumberOfRafters(int length)
     {
         int numberOfMiddleRafters = length / MAX_SPACING_CM;
@@ -67,6 +63,12 @@ public class PartCalculator
         return new RafterCalculationDTO(totalNumberOfRafters, roundedSpacing);
     }
 
+    private static double getRafterSpacing(int length, double rafterWidth)
+    {
+        int totalNumberOfRafters = calculateNumberOfRafters(length);
+        return  (length - (2 * rafterWidth)) / (totalNumberOfRafters - 1);
+    }
+
     private static int getShedPosts(ShedPlacement shedPlacement)
     {
         return shedPlacement == ShedPlacement.FULL_WIDTH ? SHED_FULL_SIZE_POSTS : SHED_NOT_FULL_SIZE_POSTS;
@@ -78,6 +80,44 @@ public class PartCalculator
         int roofVariantWidthWithOverlay = roofVariantWidth - OVERLAY;
 
         return (int) Math.ceil(((double)carportWidth / roofVariantWidthWithOverlay));
+    }
 
+    public static int calculateNumberOfRoofScrewPackagesNeeded(int carportWidth, int carportLength, int numberOfScrewsInPackage)
+    {
+        int screwsPerSquareMeter = 12;
+
+        double carportWidthInMeter = carportWidth / 100;
+        double carportLengthInMeter = carportLength / 100;
+
+        double totalCarportArea = carportWidthInMeter * carportLengthInMeter;
+        double totalScrews = totalCarportArea * screwsPerSquareMeter;
+
+        return (int) Math.ceil( totalScrews / numberOfScrewsInPackage);
+    }
+
+    public static int calculateNumberOfperforatedStripRools(Carport carport, int stripRoolLength)
+    {
+        int edgeInsetInCm = 35;
+        double rafterWidth = 4.5;
+        double stripRoolLengthInMeter = stripRoolLength / 100;
+
+        double rafterSpacing = getRafterSpacing(carport.getLength(), rafterWidth);
+
+        double carportWidthAfterMargin = carport.getWidth() - (edgeInsetInCm * 2);
+        double carportLengthAfterMargin = 0;
+
+        if(carport.getShed() != null)
+        {
+            carportLengthAfterMargin = carport.getLength() - (carport.getShed().getLength() + rafterSpacing);
+        }
+        else
+        {
+            carportLengthAfterMargin = carport.getLength() - (rafterSpacing * 2);
+        }
+
+        double diagonal = Math.sqrt(Math.pow(carportLengthAfterMargin, 2) + Math.pow(carportWidthAfterMargin, 2));
+        double totalStripNeed =  2 * (diagonal / 100);
+
+        return (int) Math.ceil(totalStripNeed / stripRoolLengthInMeter);
     }
 }

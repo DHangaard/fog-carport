@@ -24,17 +24,27 @@ public class BomService
 
         MaterialLine postMaterialLine = calculateNumberOfPosts(carport);
         MaterialLine rafterMaterialLine = calculateNumberOfRafters(carport);
+        MaterialLine roofPlateScrewLine = calculateRoofPlateScrews(carport);
+        MaterialLine stripRoolLine = calculateNumberOfStripRools(carport);
+
         List<MaterialLine> beamMaterialLines = calculateNumberOfBeams(carport);
         List<MaterialLine> roofMaterialLines = calculateRoofTiles(carport);
+        List<MaterialLine> fittingMaterialLines = getFittingsForCarport(PartCalculator.calculateNumberOfRafters(carport.getLength()));
 
         billOfMaterial.add(rafterMaterialLine);
         billOfMaterial.add(postMaterialLine);
+        billOfMaterial.add(roofPlateScrewLine);
+        billOfMaterial.add(stripRoolLine);
 
         beamMaterialLines.stream()
                 .filter(materialLine -> materialLine != null)
                 .forEach(materialLine -> billOfMaterial.add(materialLine));
 
         roofMaterialLines.stream()
+                .filter(materialLine -> materialLine != null)
+                .forEach(materialLine -> billOfMaterial.add(materialLine));
+
+        fittingMaterialLines.stream()
                 .filter(materialLine -> materialLine != null)
                 .forEach(materialLine -> billOfMaterial.add(materialLine));
 
@@ -173,12 +183,40 @@ public class BomService
         return beamsNeeded;
     }
 
-    private List<MaterialLine> getFittingsForCarport(int number)
+    private MaterialLine calculateRoofPlateScrews(Carport carport) throws DatabaseException
     {
-    return null;
+        final String PLASTMO_BOTTOM_SCREW_NAME = "Plastmo Bundskruer";
+
+        List<MaterialVariant> fastenerVariants = variantMapper.getAllVariantsByType(MaterialType.FASTENER);
+
+        MaterialVariant roofFastenerVariant = fastenerVariants.stream()
+                .filter(materialVariant -> materialVariant != null)
+                .filter(materialVariant -> materialVariant.getMaterial().getName().equals(PLASTMO_BOTTOM_SCREW_NAME))
+                .findFirst()
+                .orElseThrow(() -> new DatabaseException("Ingen bund skruer fundet"));
+
+        int numberOfScrewsInPackage = roofFastenerVariant.getPiecesPerUnit();
+        int numberOfPackagesNeeded = PartCalculator.calculateNumberOfRoofScrewPackagesNeeded(carport.getWidth(), carport.getLength(), numberOfScrewsInPackage);
+
+        return new MaterialLine(roofFastenerVariant, numberOfPackagesNeeded);
     }
 
-    private MaterialVariant getFittingsForPost(String fittingDirection) throws DatabaseException
+    private List<MaterialLine> getFittingsForCarport(int numberOfFittings) throws DatabaseException
+    {
+        final String FITTING_RIGHT = "Universal højre";
+        final String FITTING_LEFT= "Universal venstre";
+        List<MaterialLine> fittings = new ArrayList<>();
+
+        MaterialVariant rightFitting = getFittingsForRafters(FITTING_RIGHT);
+        MaterialVariant leftFitting = getFittingsForRafters(FITTING_LEFT);
+
+        fittings.add(new MaterialLine(rightFitting, numberOfFittings));
+        fittings.add(new MaterialLine(leftFitting, numberOfFittings));
+
+        return fittings;
+    }
+
+    private MaterialVariant getFittingsForRafters(String fittingDirection) throws DatabaseException
     {
         List<MaterialVariant> fittingVariants = variantMapper.getAllVariantsByType(MaterialType.FITTING);
 
@@ -187,6 +225,20 @@ public class BomService
                 .filter(materialVariant -> materialVariant.getMaterial().getName().equals(fittingDirection))
                 .findFirst()
                 .orElseThrow(() -> new DatabaseException("Kunne ikke finde beslag"));
+    }
+
+    private MaterialLine calculateNumberOfStripRools(Carport carport) throws DatabaseException
+    {
+        List<MaterialVariant> stripRoolVariants = variantMapper.getAllVariantsByType(MaterialType.METAL_STRAP);
+
+        MaterialVariant stripRoolVariant = stripRoolVariants.stream()
+                .filter(materialVariant -> materialVariant != null)
+                .findFirst()
+                .orElseThrow(() -> new DatabaseException("Kunne ikke finde hulbånd"));
+
+        int numberOfStripRoolsNeeded = PartCalculator.calculateNumberOfperforatedStripRools(carport, stripRoolVariant.getVariantLength());
+
+        return new MaterialLine(stripRoolVariant, numberOfStripRoolsNeeded);
     }
 
     private MaterialVariant findOptimalVariantLength(List<MaterialVariant> variants, int carportLength) throws DatabaseException

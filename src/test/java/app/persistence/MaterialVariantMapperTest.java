@@ -82,13 +82,13 @@ class MaterialVariantMapperTest
                 );
 
                 stmt.execute(
-                        "INSERT INTO test.material_variant (material_variant_id, material_id, variant_length, unit_price) VALUES " +
-                                "(1, 1, 300, 221.85), " +
-                                "(2, 1, 360, 266.21), " +
-                                "(3, 2, 360, 190.61), " +
-                                "(4, 2, 600, 479.70), " +
-                                "(5, 3, null, 149.00), " +
-                                "(6, 4, null, 9.45)"
+                        "INSERT INTO test.material_variant (material_variant_id, material_id, variant_length, unit_price, pieces_per_unit) VALUES " +
+                                "(1, 1, 300, 221.85, 1), " +
+                                "(2, 1, 360, 266.21, 1), " +
+                                "(3, 2, 360, 190.61, 1), " +
+                                "(4, 2, 600, 479.70, 1), " +
+                                "(5, 3, null, 149.00, 200), " +
+                                "(6, 4, null, 9.45, 1)"
                 );
 
                 stmt.execute(
@@ -120,7 +120,7 @@ class MaterialVariantMapperTest
         Connection connection = connectionPool.getConnection();
         connection.setAutoCommit(false);
 
-        MaterialVariant variant = materialVariantMapper.createMaterialVariant(connection, 1, 480, 350.50);
+        MaterialVariant variant = materialVariantMapper.createMaterialVariant(connection, 1, 480, 350.50, 1);
 
         connection.commit();
 
@@ -129,6 +129,7 @@ class MaterialVariantMapperTest
         assertEquals(1, variant.getMaterialId());
         assertEquals(480, variant.getVariantLength());
         assertEquals(350.50, variant.getUnitPrice());
+        assertEquals(1, variant.getPiecesPerUnit());
         assertNull(variant.getMaterial());
 
         connection.close();
@@ -141,7 +142,7 @@ class MaterialVariantMapperTest
         Connection connection = connectionPool.getConnection();
         connection.setAutoCommit(false);
 
-        MaterialVariant variant = materialVariantMapper.createMaterialVariant(connection, 3, null, 199.00);
+        MaterialVariant variant = materialVariantMapper.createMaterialVariant(connection, 3, null, 199.00, 1);
 
         connection.commit();
 
@@ -174,6 +175,28 @@ class MaterialVariantMapperTest
     void testGetVariantWithMaterialByIdNotFound()
     {
         assertThrows(DatabaseException.class, () -> materialVariantMapper.getVariantWithMaterialById(999));
+    }
+
+    @Test
+    void testCreateVariantWithMultiplePiecies() throws DatabaseException, SQLException
+    {
+        Connection connection = connectionPool.getConnection();
+        connection.setAutoCommit(false);
+
+        MaterialVariant variant = materialVariantMapper.createMaterialVariant(connection, 3, null, 149.00, 300);
+
+        connection.commit();
+
+        assertNotNull(variant);
+        assertEquals(7, variant.getMaterialVariantId());
+        assertEquals(3, variant.getMaterialId());
+        assertNull(variant.getVariantLength());
+        assertEquals(149.00, variant.getUnitPrice());
+        assertEquals(300, variant.getPiecesPerUnit());
+
+        connection.close();
+
+
     }
 
     @Test

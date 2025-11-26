@@ -96,13 +96,13 @@ class MaterialLineMapperTest
                 );
 
                 stmt.execute(
-                        "INSERT INTO test.material_variant (material_variant_id, material_id, variant_length, unit_price) VALUES " +
-                                "(1, 1, 300, 221.85), " +
-                                "(2, 1, 360, 266.21), " +
-                                "(3, 2, 360, 190.61), " +
-                                "(4, 2, 600, 479.70), " +
-                                "(5, 3, 600, 479.70), " +
-                                "(6, 4, 360, 199.00)"
+                        "INSERT INTO test.material_variant (material_variant_id, material_id, variant_length, unit_price, pieces_per_unit) VALUES " +
+                                "(1, 1, 300, 221.85, 1), " +
+                                "(2, 1, 360, 266.21, 1), " +
+                                "(3, 2, 360, 190.61, 1), " +
+                                "(4, 2, 600, 479.70, 1), " +
+                                "(5, 3, 600, 479.70, 1), " +
+                                "(6, 4, 360, 199.00, 200)"
                 );
 
                 stmt.execute(
