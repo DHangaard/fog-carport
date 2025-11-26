@@ -7,14 +7,11 @@ import app.persistence.MaterialVariantMapper;
 import app.util.PartCalculator;
 
 import java.time.DateTimeException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 public class BomService
 {
     private MaterialVariantMapper variantMapper;
-    private final int NUMBER_OF_BEAMS = 2;
     private final int STANDARD_POST_SIZE = 300;
 
     public BomService(MaterialVariantMapper variantMapper)
@@ -27,11 +24,13 @@ public class BomService
         List<MaterialLine> billOfMaterial = new ArrayList<>();
 
         MaterialLine postsMaterialLine = calculateNumberOfPosts(carport);
-        MaterialLine beamsMaterialLine = calculateNumberOfBeams(carport);
+        List<MaterialLine> beamsMaterialLine = calculateNumberOfBeams(carport);
         MaterialLine raftersMaterialLine = calculateNumberOfRafters(carport);
 
         billOfMaterial.add(postsMaterialLine);
-        billOfMaterial.add(beamsMaterialLine);
+        beamsMaterialLine.stream()
+                .filter(materialLine -> materialLine != null)
+                .forEach(materialLine -> billOfMaterial.add(materialLine));
         billOfMaterial.add(raftersMaterialLine);
 
         return billOfMaterial;
@@ -41,9 +40,9 @@ public class BomService
     {
         int numberOfPosts = 0;
 
-        if(carport.getShed() != null)
+        if (carport.getShed() != null)
         {
-           numberOfPosts = PartCalculator.calculateNumberOfPostsWithShed(carport.getLength(), carport.getShed().getShedPlacement());
+            numberOfPosts = PartCalculator.calculateNumberOfPostsWithShed(carport.getLength(), carport.getShed().getShedPlacement());
         }
         else
         {
@@ -77,13 +76,13 @@ public class BomService
 
     private MaterialLine calculateRoofTiles(int carportWidth, int carportLength) throws DatabaseException
     {
-        List<MaterialVariant> roofs = variantMapper.getAllVariantsByType(MaterialType.ROOF);
+        List<MaterialVariant> roofVariants = variantMapper.getAllVariantsByType(MaterialType.ROOF);
         int numberofRoofTiles = PartCalculator.calculateRoofTiles(carportWidth, carportLength);
 
         // Beregn hvilken længde tagplade der skal anvendes
 
         // Find tagplade variant
-        MaterialVariant roofVariant = roofs.stream()
+        MaterialVariant roofVariant = roofVariants.stream()
                 .filter(materialVariant -> materialVariant.getVariantLength() == 00) // TODO insert variable
                 .findFirst()
                 .orElseThrow(() -> new DateTimeException("Kunne ikke finde tagmateriale"));
@@ -91,73 +90,56 @@ public class BomService
         return new MaterialLine(roofVariant, numberofRoofTiles);
     }
 
-
-    private MaterialLine calculateNumberOfBeams(Carport carport) throws DatabaseException
+    private List<MaterialLine> calculateNumberOfBeams(Carport carport) throws DatabaseException
     {
-        List<MaterialVariant> beams = variantMapper.getAllVariantsByType(MaterialType.BEAM);
-        // List<Integer> lengths = new ArrayList<>();
+        List<MaterialLine> beamsNeeded = new ArrayList<>();
+        List<MaterialVariant> beamVariants = variantMapper.getAllVariantsByType(MaterialType.BEAM);
 
-        /*
-        final MINIMUMLENGTH = 420
-        final WASTE_TOLERENCE = 60
-        Er længden på remmen > variant Længden
+        final int WASTE_TOLERANCE_CM = 60;
+        final int NUMBER_OF_BEAM_ROWS = 2;
+        final int MAX_VARIANT_lENGTH = beamVariants.stream()
+                .filter(materialVariant -> materialVariant.getVariantLength() != null)
+                .mapToInt(MaterialVariant::getVariantLength)
+                .max()
+                .orElseThrow(() -> new DatabaseException("Ingen kombination af remme passer til længde: " + carport.getLength() + " cm."));
 
-        1. Hent alle remme via mapper
-        2. Populer listen lengths med rem-længder
-        Valgt: 690 + 30 cm (Acceptable spild) = vælg : 720!
-        Valgt: 660: fundet 660!
+        if (carport.getLength() > MAX_VARIANT_lENGTH) // When longer than max variant, the carport will have 6 posts
+        {
+            final int DISTANCE_TO_CENTER_POST = 420; // Should this be 410 ?
 
-        Logik:
-        Findes længden?
-        - løb listen igennem
-        - Hvis ja:
-            - return materiale
-        Findes længden ikke?
+            MaterialVariant beamVariant = beamVariants.stream()
+                    .filter(v -> v.getVariantLength() != null)
+                    .filter(v -> v.getVariantLength() >= DISTANCE_TO_CENTER_POST)
+                    .filter(v -> v.getVariantLength() - DISTANCE_TO_CENTER_POST <= WASTE_TOLERANCE_CM)
+                    .min(Comparator.comparingInt(MaterialVariant::getVariantLength))
+                    .orElseThrow(() -> new DatabaseException("Ingen kombination af remme passer til længde: " + carport.getLength() + " cm."));
 
+            beamsNeeded.add(new MaterialLine(beamVariant, NUMBER_OF_BEAM_ROWS));
 
-        Er længden på remmen = variant Længden - Så brug
+            int remainingPerSide = carport.getLength() - DISTANCE_TO_CENTER_POST;
+            int remainingTotal = remainingPerSide * NUMBER_OF_BEAM_ROWS;
 
-        Er længden på remmen > variant Længden
-        Kunde valgt 750
-        Kunde valgt 780 findes ikke i længde brug 2 stykker for at opnå fuld længden
-            - Hardcoded
-        Vælg 2 stykker på 600
-        780-600 = 180 mangler
-        180 * 2 = 360
-        Find et stykke med acceptable spild
-        Vi ved at 2. stople er ved 420 cm
+            MaterialVariant remainingVariant = beamVariants.stream()
+                    .filter(v -> v.getVariantLength() != null)
+                    .filter(v -> v.getVariantLength() >= remainingTotal)
+                    .filter(v -> v.getVariantLength() - remainingTotal <= WASTE_TOLERANCE_CM)
+                    .min(Comparator.comparingInt(MaterialVariant::getVariantLength))
+                    .orElseThrow(() -> new DatabaseException("Ingen kombination af remme passer til længde: " + carport.getLength() + " cm."));
 
-        Programmet længde/7 første stolpe
-        780: |110cm ------ |420 -------- |30 (750)cm
-        750: |110cm ------ |420 -------- |30 (720)cm
-        Er længden på remmen < variant Længden
+            beamsNeeded.add(new MaterialLine(remainingVariant, 1));
+        }
+        else
+        {
+            MaterialVariant beamVariant = beamVariants.stream()
+                    .filter(variant -> variant.getVariantLength() != null)
+                    .filter(variant -> variant.getVariantLength() >= carport.getLength())
+                    .filter(variant -> variant.getVariantLength() - carport.getLength() <= WASTE_TOLERANCE_CM)
+                    .min(Comparator.comparingInt(MaterialVariant::getVariantLength))
+                    .orElseThrow(() -> new DatabaseException("Ingen kombination af remme passer til længde: " + carport.getLength() + " cm."));
 
-        Carport på 420:
-                 110cm                        390cm
-        ----------*----------------------------*---
-        |                                         |
-        |                                         |
-        |                                         |
-        |                                         |
-        |                                         |
-        |                                         |
-        ----------*----------------------------*---
-        Længde
+            beamsNeeded.add(new MaterialLine(beamVariant, NUMBER_OF_BEAM_ROWS));
+        }
 
-        Første skal være 310+110 - (stolpebredde / 2) = 415 = længde Vælg 2 stykker til liste!
-        Andet stykke længde (780) - 415 = 365
-        Find et stykke 365 + spildTolerence og læg et i listen!
-
-
-        Andet stykke længde (750) - 415 = 335
-
-
-         */
-
-        //beams.stream()
-              //  .filter(materialVariant -> materialVariant.getVariantLength() ==)
-
-        return null;
+        return beamsNeeded;
     }
-
 }
