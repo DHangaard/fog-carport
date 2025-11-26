@@ -173,6 +173,22 @@ public class BomService
         return beamsNeeded;
     }
 
+    private List<MaterialLine> getFittingsForCarport(int number)
+    {
+    return null;
+    }
+
+    private MaterialVariant getFittingsForPost(String fittingDirection) throws DatabaseException
+    {
+        List<MaterialVariant> fittingVariants = variantMapper.getAllVariantsByType(MaterialType.FITTING);
+
+        return fittingVariants.stream()
+                .filter(materialVariant -> materialVariant != null)
+                .filter(materialVariant -> materialVariant.getMaterial().getName().equals(fittingDirection))
+                .findFirst()
+                .orElseThrow(() -> new DatabaseException("Kunne ikke finde beslag"));
+    }
+
     private MaterialVariant findOptimalVariantLength(List<MaterialVariant> variants, int carportLength) throws DatabaseException
     {
         return variants.stream()
@@ -190,4 +206,5 @@ public class BomService
                 .max()
                 .orElseThrow(() -> new DatabaseException("Ingen materialer fundet"));
     }
+
 }
