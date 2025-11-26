@@ -56,7 +56,7 @@ public class Main
 
         MaterialVariantMapper mvm = new MaterialVariantMapper(connectionPool);
         BomService bom = new BomService(mvm);
-        Carport carport = new Carport(0, 420, 600, RoofType.FLAT, null);
+        Carport carport = new Carport(0, 780, 600, RoofType.FLAT, null);
         List<MaterialLine> materials = bom.getBillOfMaterialByCarport(carport);
         materials.stream()
                 .forEach(System.out::println);

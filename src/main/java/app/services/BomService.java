@@ -95,16 +95,23 @@ public class BomService
 
         int variantMaxLength = getMaxVariantLength(roofVariants);
         final int OVERHANG = 20;
-        int variantMaxLengthWithOverhang = variantMaxLength + OVERHANG;
-        System.out.println("Nummer af plader på en række " + numberOfRoofTileRows);
-        System.out.println("Roof variant widt: " + roofVariantWidth);
-        System.out.println("Variant max længde " + variantMaxLength);
+        final int OVERLAY = 20;
 
-        if (carport.getLength() > variantMaxLengthWithOverhang)
+        int carportLengthWithOverhang = carport.getLength() + OVERHANG;
+
+        if (variantMaxLength <= carportLengthWithOverhang)
         {
-            int remainingLength = carport.getLength() - variantMaxLength;
+            int tolerance = 100;
+            MaterialVariant roofVariant = findOptimalVariantLength(roofVariants, variantMaxLength);
 
-            MaterialVariant roofVariant = findOptimalVariantLength(roofVariants, carport.getLength());
+            if (roofVariant.getVariantLength() == carport.getLength() || roofVariant.getVariantLength() < carport.getLength() + tolerance)
+            {
+                roofVariant = findOptimalVariantLength(roofVariants, variantMaxLength/2);
+            }
+
+            int totalRoofLengthCoverage = carport.getLength() + OVERHANG + OVERLAY;
+            int remainingLength = totalRoofLengthCoverage - roofVariant.getVariantLength();
+
             MaterialVariant remainingVariant = findOptimalVariantLength(roofVariants, remainingLength);
 
             roofVariantsNeeded.add(new MaterialLine(roofVariant, numberOfRoofTileRows));
@@ -122,7 +129,6 @@ public class BomService
     {
         List<MaterialLine> beamsNeeded = new ArrayList<>();
         List<MaterialVariant> beamVariants = variantMapper.getAllVariantsByType(MaterialType.BEAM);
-        final int WASTE_TOLERANCE_CM = 60;
         final int NUMBER_OF_BEAM_ROWS = 2;
         final int MAX_VARIANT_lENGTH = beamVariants.stream()
                 .filter(materialVariant -> materialVariant.getVariantLength() != null)
@@ -137,7 +143,6 @@ public class BomService
             MaterialVariant beamVariant = beamVariants.stream()
                     .filter(v -> v.getVariantLength() != null)
                     .filter(v -> v.getVariantLength() >= DISTANCE_TO_CENTER_POST)
-                    .filter(v -> v.getVariantLength() - DISTANCE_TO_CENTER_POST <= WASTE_TOLERANCE_CM)
                     .min(Comparator.comparingInt(MaterialVariant::getVariantLength))
                     .orElseThrow(() -> new DatabaseException("Ingen kombination af remme passer til længde: " + carport.getLength() + " cm."));
 
@@ -149,7 +154,6 @@ public class BomService
             MaterialVariant remainingVariant = beamVariants.stream()
                     .filter(v -> v.getVariantLength() != null)
                     .filter(v -> v.getVariantLength() >= remainingTotal)
-                    .filter(v -> v.getVariantLength() - remainingTotal <= WASTE_TOLERANCE_CM)
                     .min(Comparator.comparingInt(MaterialVariant::getVariantLength))
                     .orElseThrow(() -> new DatabaseException("Ingen kombination af remme passer til længde: " + carport.getLength() + " cm."));
 
@@ -160,7 +164,6 @@ public class BomService
             MaterialVariant beamVariant = beamVariants.stream()
                     .filter(variant -> variant.getVariantLength() != null)
                     .filter(variant -> variant.getVariantLength() >= carport.getLength())
-                    .filter(variant -> variant.getVariantLength() - carport.getLength() <= WASTE_TOLERANCE_CM)
                     .min(Comparator.comparingInt(MaterialVariant::getVariantLength))
                     .orElseThrow(() -> new DatabaseException("Ingen kombination af remme passer til længde: " + carport.getLength() + " cm."));
 
@@ -172,14 +175,11 @@ public class BomService
 
     private MaterialVariant findOptimalVariantLength(List<MaterialVariant> variants, int carportLength) throws DatabaseException
     {
-        final int WASTE_TOLERANCE_CM = 60;
-
         return variants.stream()
                 .filter(variant -> variant.getVariantLength() != null)
                 .filter(variant -> variant.getVariantLength() >= carportLength)
-                .filter(variant -> variant.getVariantLength() - carportLength <= WASTE_TOLERANCE_CM)
                 .min(Comparator.comparingInt(MaterialVariant::getVariantLength))
-                .orElseThrow(() -> new DatabaseException("Ingen kombination af remme passer til længde: " + carportLength + " cm."));
+                .orElseThrow(() -> new DatabaseException("Ingen kombination af materialer passer til længde: " + carportLength + " cm."));
     }
 
     private int getMaxVariantLength(List<MaterialVariant> variants) throws DatabaseException
