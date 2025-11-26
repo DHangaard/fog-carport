@@ -19,11 +19,11 @@ public class MaterialVariantMapper
         this.connectionPool = connectionPool;
     }
 
-    public MaterialVariant createMaterialVariant(Connection connection, int materialId, Integer variantLength, double unitPrice) throws DatabaseException
+    public MaterialVariant createMaterialVariant(Connection connection, int materialId, Integer variantLength, double unitPrice, Integer piecesPerUnit) throws DatabaseException
     {
         String sql = """
-                INSERT INTO material_variant (material_id, variant_length, unit_price)
-                VALUES (?, ?, ?)
+                INSERT INTO material_variant (material_id, variant_length, unit_price, pieces_per_unit)
+                VALUES (?, ?, ?, ?)
                 RETURNING material_variant_id
                 """;
 
@@ -42,6 +42,15 @@ public class MaterialVariantMapper
 
             ps.setDouble(3, unitPrice);
 
+            if (piecesPerUnit != null)
+            {
+                ps.setInt(4, piecesPerUnit);
+            }
+            else
+            {
+                ps.setNull(4, Types.INTEGER);
+            }
+
             ResultSet rs = ps.executeQuery();
 
             if (rs.next())
@@ -51,6 +60,7 @@ public class MaterialVariantMapper
                         materialId,
                         variantLength,
                         unitPrice,
+                        piecesPerUnit,
                         null
                 );
             }
@@ -70,6 +80,7 @@ public class MaterialVariantMapper
             mv.material_id,
             mv.variant_length,
             mv.unit_price,
+            mv.pieces_per_unit,
              
             m.material_id AS m_material_id,
             m.name AS m_name,
@@ -114,6 +125,7 @@ public class MaterialVariantMapper
             mv.material_id,
             mv.variant_length,
             mv.unit_price,
+            mv.pieces_per_unit,
                 
             m.material_id AS m_material_id,
             m.name AS m_name,
@@ -160,6 +172,7 @@ public class MaterialVariantMapper
             mv.material_id,
             mv.variant_length,
             mv.unit_price,
+            mv.pieces_per_unit,
                 
             m.material_id AS m_material_id,
             m.name AS m_name,
@@ -222,7 +235,8 @@ public class MaterialVariantMapper
         String sql = """
                 UPDATE material_variant
                 SET variant_length = ?,
-                unit_price = ?
+                unit_price = ?,
+                pieces_per_unit = ?
                 WHERE material_variant_id = ?
                 """;
 
@@ -237,7 +251,17 @@ public class MaterialVariantMapper
                 ps.setNull(1, Types.INTEGER);
             }
             ps.setDouble(2, materialVariant.getUnitPrice());
-            ps.setInt(3, materialVariant.getMaterialVariantId());
+
+            if (materialVariant.getPiecesPerUnit() != null)
+            {
+                ps.setInt(3, materialVariant.getPiecesPerUnit());
+            }
+            else
+            {
+                ps.setNull(3, Types.INTEGER);
+            }
+
+            ps.setInt(4, materialVariant.getMaterialVariantId());
 
             int rowsAffected = ps.executeUpdate();
             return rowsAffected == 1;
@@ -266,6 +290,7 @@ public class MaterialVariantMapper
                 rs.getInt("material_id"),
                 (Integer) rs.getObject("variant_length"),
                 rs.getDouble("unit_price"),
+                (Integer) rs.getObject("pieces_per_unit"),
                 material
         );
     }

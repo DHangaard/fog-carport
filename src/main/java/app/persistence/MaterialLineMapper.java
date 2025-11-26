@@ -67,6 +67,7 @@ public class MaterialLineMapper
                 mv.material_id AS mv_material_id,
                 mv.variant_length AS mv_variant_length,
                 mv.unit_price AS mv_unit_price,
+                mv.pieces_per_unit AS mv_pieces_per_unit,
                 
                 m.material_id AS m_material_id,
                 m.name AS m_name,
@@ -115,6 +116,7 @@ public class MaterialLineMapper
                 mv.material_id AS mv_material_id,
                 mv.variant_length AS mv_variant_length,
                 mv.unit_price AS mv_unit_price,
+                mv.pieces_per_unit AS mv_pieces_per_unit,
                 
                 m.material_id AS m_material_id,
                 m.name AS m_name,
@@ -213,6 +215,7 @@ public class MaterialLineMapper
                 rs.getInt("mv_material_id"),
                 (Integer) rs.getObject("mv_variant_length"),
                 rs.getDouble("mv_unit_price"),
+                (Integer) rs.getObject("mv_pieces_per_unit"),
                 material
         );
 
