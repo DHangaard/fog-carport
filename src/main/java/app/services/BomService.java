@@ -211,7 +211,7 @@ public class BomService
         fittings.add(new MaterialLine(rightFitting, numberOfFittings));
         fittings.add(new MaterialLine(leftFitting, numberOfFittings));
 
-    return fittings;
+        return fittings;
     }
 
     private MaterialVariant getFittingsForRafters(String fittingDirection) throws DatabaseException
