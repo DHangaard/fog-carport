@@ -27,6 +27,8 @@ public class BomService
         List<MaterialLine> beamMaterialLines = calculateNumberOfBeams(carport);
         List<MaterialLine> roofMaterialLines = calculateRoofTiles(carport);
 
+        List<MaterialLine> fittingMaterialLines = getFittingsForCarport(PartCalculator.calculateNumberOfRafters(carport.getLength()));
+
         billOfMaterial.add(rafterMaterialLine);
         billOfMaterial.add(postMaterialLine);
 
@@ -35,6 +37,10 @@ public class BomService
                 .forEach(materialLine -> billOfMaterial.add(materialLine));
 
         roofMaterialLines.stream()
+                .filter(materialLine -> materialLine != null)
+                .forEach(materialLine -> billOfMaterial.add(materialLine));
+
+        fittingMaterialLines.stream()
                 .filter(materialLine -> materialLine != null)
                 .forEach(materialLine -> billOfMaterial.add(materialLine));
 
@@ -173,12 +179,28 @@ public class BomService
         return beamsNeeded;
     }
 
-    private List<MaterialLine> getFittingsForCarport(int number)
+    private MaterialVariant getRoofplateScrews()
     {
-    return null;
+        //15 screws pr. m2
+        return null;
     }
 
-    private MaterialVariant getFittingsForPost(String fittingDirection) throws DatabaseException
+    private List<MaterialLine> getFittingsForCarport(int numberOfFittings) throws DatabaseException
+    {
+        final String FITTING_RIGHT = "Universal højre";
+        final String FITTING_LEFT= "Universal venstre";
+        List<MaterialLine> fittings = new ArrayList<>();
+
+        MaterialVariant rightFitting = getFittingsForRafters(FITTING_RIGHT);
+        MaterialVariant leftFitting = getFittingsForRafters(FITTING_LEFT);
+
+        fittings.add(new MaterialLine(rightFitting, numberOfFittings));
+        fittings.add(new MaterialLine(leftFitting, numberOfFittings));
+
+    return fittings;
+    }
+
+    private MaterialVariant getFittingsForRafters(String fittingDirection) throws DatabaseException
     {
         List<MaterialVariant> fittingVariants = variantMapper.getAllVariantsByType(MaterialType.FITTING);
 
