@@ -97,4 +97,19 @@ class PartCalculatorTest
         int numberOfRoofTilesWith600Width = PartCalculator.calculateNumberOfRoofTileRows(600, 109);
         assertEquals(6, numberOfRoofTilesWith600Width);
     }
+
+    @Test
+    void testNumberOfRoofScrewPackagesNeeded()
+    {
+        int screwsPerPackage = 200;
+
+        int carportWidth420Length600 = PartCalculator.calculateNumberOfRoofScrewPackagesNeeded(420, 600, screwsPerPackage);
+        assertEquals(2, carportWidth420Length600);
+
+        int carportWidth450Length690 = PartCalculator.calculateNumberOfRoofScrewPackagesNeeded(450, 690, screwsPerPackage);
+        assertEquals(2, carportWidth450Length690);
+
+        int carportWidth600Length780 = PartCalculator.calculateNumberOfRoofScrewPackagesNeeded(600, 780, screwsPerPackage);
+        assertEquals(3, carportWidth600Length780);
+    }
 }

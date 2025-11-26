@@ -24,13 +24,15 @@ public class BomService
 
         MaterialLine postMaterialLine = calculateNumberOfPosts(carport);
         MaterialLine rafterMaterialLine = calculateNumberOfRafters(carport);
+        MaterialLine roofPlateScrewLine = calculateRoofPlateScrews(carport);
+
         List<MaterialLine> beamMaterialLines = calculateNumberOfBeams(carport);
         List<MaterialLine> roofMaterialLines = calculateRoofTiles(carport);
-
         List<MaterialLine> fittingMaterialLines = getFittingsForCarport(PartCalculator.calculateNumberOfRafters(carport.getLength()));
 
         billOfMaterial.add(rafterMaterialLine);
         billOfMaterial.add(postMaterialLine);
+        billOfMaterial.add(roofPlateScrewLine);
 
         beamMaterialLines.stream()
                 .filter(materialLine -> materialLine != null)
@@ -179,10 +181,22 @@ public class BomService
         return beamsNeeded;
     }
 
-    private MaterialVariant getRoofplateScrews()
+    private MaterialLine calculateRoofPlateScrews(Carport carport) throws DatabaseException
     {
-        //15 screws pr. m2
-        return null;
+        final String PLASTMO_BOTTOM_SCREW_NAME = "Plastmo Bundskruer";
+
+        List<MaterialVariant> fastenerVariants = variantMapper.getAllVariantsByType(MaterialType.FASTENER);
+
+        MaterialVariant roofFastenerVariant = fastenerVariants.stream()
+                .filter(materialVariant -> materialVariant != null)
+                .filter(materialVariant -> materialVariant.getMaterial().getName().equals(PLASTMO_BOTTOM_SCREW_NAME))
+                .findFirst()
+                .orElseThrow(() -> new DatabaseException("Ingen bund skruer fundet"));
+
+        int numberOfScrewsInPackage = roofFastenerVariant.getPiecesPerUnit();
+        int numberOfPackagesNeeded = PartCalculator.calculateNumberOfRoofScrewPackagesNeeded(carport.getWidth(), carport.getLength(), numberOfScrewsInPackage);
+
+        return new MaterialLine(roofFastenerVariant, numberOfPackagesNeeded);
     }
 
     private List<MaterialLine> getFittingsForCarport(int numberOfFittings) throws DatabaseException

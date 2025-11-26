@@ -78,6 +78,18 @@ public class PartCalculator
         int roofVariantWidthWithOverlay = roofVariantWidth - OVERLAY;
 
         return (int) Math.ceil(((double)carportWidth / roofVariantWidthWithOverlay));
+    }
 
+    public static int calculateNumberOfRoofScrewPackagesNeeded(int carportWidth, int carportLength, int numberOfScrewsInPackage)
+    {
+        int screwsPerSquareMeter = 12;
+
+        double carportWidthInMeter = carportWidth / 100;
+        double carportLengthInMeter = carportLength / 100;
+
+        double totalCarportArea = carportWidthInMeter * carportLengthInMeter;
+        double totalScrews = totalCarportArea * screwsPerSquareMeter;
+
+        return (int) Math.ceil( totalScrews / numberOfScrewsInPackage);
     }
 }
