@@ -1,6 +1,9 @@
 package app.util;
 
 import app.dto.RafterCalculationDTO;
+import app.entities.Carport;
+import app.entities.Shed;
+import app.enums.RoofType;
 import app.enums.ShedPlacement;
 import org.junit.jupiter.api.Test;
 
@@ -111,5 +114,23 @@ class PartCalculatorTest
 
         int carportWidth600Length780 = PartCalculator.calculateNumberOfRoofScrewPackagesNeeded(600, 780, screwsPerPackage);
         assertEquals(3, carportWidth600Length780);
+    }
+
+    @Test
+    void testNumberOfStripRoolsNeeded()
+    {
+        int stripRoolLengthInMeter = 1000;
+
+        Carport carport = new Carport(0,780,600, RoofType.FLAT,new Shed(0,210,530,ShedPlacement.FULL_WIDTH));
+        assertEquals(2, PartCalculator.calculateNumberOfperforatedStripRools(carport, stripRoolLengthInMeter));
+
+        Carport carportWithOutShed = new Carport(0,780,600, RoofType.FLAT,null);
+        assertEquals(2, PartCalculator.calculateNumberOfperforatedStripRools(carportWithOutShed, stripRoolLengthInMeter));
+
+        Carport carportSmall = new Carport(0,420,420, RoofType.FLAT,null);
+        assertEquals(1, PartCalculator.calculateNumberOfperforatedStripRools(carportSmall, stripRoolLengthInMeter));
+
+        Carport carportSmallWithShed = new Carport(0,420,420, RoofType.FLAT,new Shed(0,180,350, ShedPlacement.FULL_WIDTH));
+        assertEquals(1, PartCalculator.calculateNumberOfperforatedStripRools(carportSmallWithShed, stripRoolLengthInMeter));
     }
 }

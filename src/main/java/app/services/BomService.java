@@ -25,6 +25,7 @@ public class BomService
         MaterialLine postMaterialLine = calculateNumberOfPosts(carport);
         MaterialLine rafterMaterialLine = calculateNumberOfRafters(carport);
         MaterialLine roofPlateScrewLine = calculateRoofPlateScrews(carport);
+        MaterialLine stripRoolLine = calculateNumberOfStripRools(carport);
 
         List<MaterialLine> beamMaterialLines = calculateNumberOfBeams(carport);
         List<MaterialLine> roofMaterialLines = calculateRoofTiles(carport);
@@ -33,6 +34,7 @@ public class BomService
         billOfMaterial.add(rafterMaterialLine);
         billOfMaterial.add(postMaterialLine);
         billOfMaterial.add(roofPlateScrewLine);
+        billOfMaterial.add(stripRoolLine);
 
         beamMaterialLines.stream()
                 .filter(materialLine -> materialLine != null)
@@ -223,6 +225,20 @@ public class BomService
                 .filter(materialVariant -> materialVariant.getMaterial().getName().equals(fittingDirection))
                 .findFirst()
                 .orElseThrow(() -> new DatabaseException("Kunne ikke finde beslag"));
+    }
+
+    private MaterialLine calculateNumberOfStripRools(Carport carport) throws DatabaseException
+    {
+        List<MaterialVariant> stripRoolVariants = variantMapper.getAllVariantsByType(MaterialType.METAL_STRAP);
+
+        MaterialVariant stripRoolVariant = stripRoolVariants.stream()
+                .filter(materialVariant -> materialVariant != null)
+                .findFirst()
+                .orElseThrow(() -> new DatabaseException("Kunne ikke finde hulbånd"));
+
+        int numberOfStripRoolsNeeded = PartCalculator.calculateNumberOfperforatedStripRools(carport, stripRoolVariant.getVariantLength());
+
+        return new MaterialLine(stripRoolVariant, numberOfStripRoolsNeeded);
     }
 
     private MaterialVariant findOptimalVariantLength(List<MaterialVariant> variants, int carportLength) throws DatabaseException
