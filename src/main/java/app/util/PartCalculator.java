@@ -6,6 +6,7 @@ import app.entities.Carport;
 import app.entities.Material;
 import app.entities.MaterialVariant;
 import app.enums.ShedPlacement;
+import app.exceptions.DatabaseException;
 
 import java.util.List;
 
@@ -66,7 +67,7 @@ public class PartCalculator
     private static double getRafterSpacing(int length, double rafterWidth)
     {
         int totalNumberOfRafters = calculateNumberOfRafters(length);
-        return  (length - (2 * rafterWidth)) / (totalNumberOfRafters - 1);
+        return (length - (2 * rafterWidth)) / (totalNumberOfRafters - 1);
     }
 
     private static int getShedPosts(ShedPlacement shedPlacement)
@@ -79,7 +80,7 @@ public class PartCalculator
         final int OVERLAY = 9;
         int roofVariantWidthWithOverlay = roofVariantWidth - OVERLAY;
 
-        return (int) Math.ceil(((double)carportWidth / roofVariantWidthWithOverlay));
+        return (int) Math.ceil(((double) carportWidth / roofVariantWidthWithOverlay));
     }
 
     public static int calculateNumberOfRoofScrewPackagesNeeded(int carportWidth, int carportLength, int numberOfScrewsInPackage)
@@ -92,7 +93,7 @@ public class PartCalculator
         double totalCarportArea = carportWidthInMeter * carportLengthInMeter;
         double totalScrews = totalCarportArea * screwsPerSquareMeter;
 
-        return (int) Math.ceil( totalScrews / numberOfScrewsInPackage);
+        return (int) Math.ceil(totalScrews / numberOfScrewsInPackage);
     }
 
     public static int calculateNumberOfperforatedStripRools(Carport carport, int stripRoolLength)
@@ -106,7 +107,7 @@ public class PartCalculator
         double carportWidthAfterMargin = carport.getWidth() - (edgeInsetInCm * 2);
         double carportLengthAfterMargin = 0;
 
-        if(carport.getShed() != null)
+        if (carport.getShed() != null)
         {
             carportLengthAfterMargin = carport.getLength() - (carport.getShed().getLength() + rafterSpacing);
         }
@@ -116,8 +117,27 @@ public class PartCalculator
         }
 
         double diagonal = Math.sqrt(Math.pow(carportLengthAfterMargin, 2) + Math.pow(carportWidthAfterMargin, 2));
-        double totalStripNeed =  2 * (diagonal / 100);
+        double totalStripNeed = 2 * (diagonal / 100);
 
         return (int) Math.ceil(totalStripNeed / stripRoolLengthInMeter);
+    }
+
+    public static int calculateNumberOfCarriageBoltsAndWashers(Carport carport, List<MaterialVariant> beamVariants) throws DatabaseException
+    {
+        int beamVariantMaxLength = beamVariants.stream()
+                .filter(materialVariant -> materialVariant.getVariantLength() != null)
+                .mapToInt(MaterialVariant::getVariantLength)
+                .max()
+                .orElseThrow(() -> new DatabaseException("Ingen materialer fundet"));
+
+        boolean isSingleBeamPerRow = beamVariantMaxLength >= carport.getLength();
+
+        int jointsPerSide = isSingleBeamPerRow ? 3 : 4;
+        int jointsTotal = jointsPerSide * 2;
+
+        int numberOfBoltsPerJoin = 2; // Washers are the same number as bolts
+        int numberOfWashersPerJoin = numberOfBoltsPerJoin; // Redundant
+
+        return jointsTotal * numberOfBoltsPerJoin;
     }
 }
