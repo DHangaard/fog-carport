@@ -241,6 +241,27 @@ public class BomService
         return new MaterialLine(stripRoolVariant, numberOfStripRoolsNeeded);
     }
 
+    private List<MaterialLine> calculateNumberOfCarriageBoltsAndWashers(Carport carport) throws DatabaseException
+    {
+        List<MaterialLine> boltsAndWashers = new ArrayList<>();
+
+        List<MaterialVariant> beamVariants = variantMapper.getAllVariantsByType(MaterialType.BEAM);
+        int beamMaxVariantLength = getMaxVariantLength(beamVariants);
+        int numberOfBolts = PartCalculator.calculateNumberOfCarriageBoltsAndWashers(carport, beamMaxVariantLength);
+        int numberOfWashers = numberOfBolts;
+
+        List<MaterialVariant> fastenerVariants = variantMapper.getAllVariantsByType(MaterialType.FASTENER);
+        MaterialVariant fastener;
+
+        List<MaterialVariant> washerVariants = variantMapper.getAllVariantsByType(MaterialType.WASHER);
+        MaterialVariant washer;
+
+        boltsAndWashers.add(new MaterialVariant());
+        boltsAndWashers.add(new MaterialVariant());
+
+        return boltsAndWashers;
+    }
+
     private MaterialVariant findOptimalVariantLength(List<MaterialVariant> variants, int carportLength) throws DatabaseException
     {
         return variants.stream()

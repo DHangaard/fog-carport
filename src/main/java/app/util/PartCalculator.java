@@ -122,14 +122,14 @@ public class PartCalculator
         return (int) Math.ceil(totalStripNeed / stripRoolLengthInMeter);
     }
 
-    public static int calculateNumberOfCarriageBoltsAndWashers(Carport carport, int beamVariantMaxLength)
+    public static int calculateNumberOfCarriageBoltsAndWashers(Carport carport, int beamMaxVariantLength)
     {
         boolean hasShed = carport.getShed() != null;
         int postsWithoutBeam = 3;
         int numberOfPosts = hasShed ? calculateNumberOfPostsWithShed(carport.getLength(), carport.getShed().getShedPlacement()) - postsWithoutBeam
                 : calculateNumberOfPostsWithOutShed(carport.getLength());
 
-        boolean isSingleBeamPerRow = beamVariantMaxLength >= carport.getLength();
+        boolean isSingleBeamPerRow = beamMaxVariantLength >= carport.getLength();
         int jointsTotal = isSingleBeamPerRow ? numberOfPosts : numberOfPosts + 2;
 
         int numberOfBoltsPerJoin = 2; // Washers are the same number as bolts
