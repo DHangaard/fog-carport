@@ -31,6 +31,7 @@ public class BomService
         List<MaterialLine> beamMaterialLines = calculateNumberOfBeams(carport);
         List<MaterialLine> roofMaterialLines = calculateRoofTiles(carport);
         List<MaterialLine> fittingMaterialLines = getFittingsForCarport(PartCalculator.calculateNumberOfRafters(carport.getLength()));
+        List<MaterialLine> boltsAndWashers = calculateNumberOfCarriageBoltsAndWashers(carport);
 
         billOfMaterial.add(rafterMaterialLine);
         billOfMaterial.add(postMaterialLine);
@@ -47,6 +48,10 @@ public class BomService
                 .forEach(materialLine -> billOfMaterial.add(materialLine));
 
         fittingMaterialLines.stream()
+                .filter(materialLine -> materialLine != null)
+                .forEach(materialLine -> billOfMaterial.add(materialLine));
+
+        boltsAndWashers.stream()
                 .filter(materialLine -> materialLine != null)
                 .forEach(materialLine -> billOfMaterial.add(materialLine));
 
@@ -241,6 +246,45 @@ public class BomService
         int numberOfStripRoolsNeeded = PartCalculator.calculateNumberOfperforatedStripRools(carport, stripRoolVariant.getVariantLength());
 
         return new MaterialLine(stripRoolVariant, numberOfStripRoolsNeeded);
+    }
+
+    private List<MaterialLine> calculateNumberOfCarriageBoltsAndWashers(Carport carport) throws DatabaseException
+    {
+        final String CARRIAGE_BOLT_NAME = "bræddebolt";
+        final int CARRIAGE_BOLT_LENGTH_CM = 12;
+
+        final String WASHER_NAME = "firkantskiver";
+        final int WASHER_LENGTH_CM = 1;
+
+        List<MaterialLine> boltsAndWashers = new ArrayList<>();
+
+        List<MaterialVariant> beamVariants = variantMapper.getAllVariantsByType(MaterialType.BEAM);
+        int beamMaxVariantLength = getMaxVariantLength(beamVariants);
+        int numberOfBolts = PartCalculator.calculateNumberOfCarriageBoltsAndWashers(carport, beamMaxVariantLength);
+        int numberOfWashers = numberOfBolts;
+
+        List<MaterialVariant> fastenerVariants = variantMapper.getAllVariantsByType(MaterialType.FASTENER);
+        MaterialVariant bolt = fastenerVariants.stream()
+                .filter(materialVariant -> materialVariant != null)
+                .filter(materialVariant -> materialVariant.getMaterial().getName().equals(CARRIAGE_BOLT_NAME))
+                .filter(materialVariant -> materialVariant.getVariantLength() != null)
+                .filter(materialVariant -> materialVariant.getVariantLength() == CARRIAGE_BOLT_LENGTH_CM)
+                .min(Comparator.comparing(MaterialVariant::getUnitPrice))
+                .orElseThrow(() -> new DatabaseException("Kunne ikke finde bræddebolt"));;
+
+        List<MaterialVariant> washerVariants = variantMapper.getAllVariantsByType(MaterialType.WASHER);
+        MaterialVariant washer = washerVariants.stream()
+                .filter(materialVariant -> materialVariant != null)
+                .filter(materialVariant -> materialVariant.getMaterial().getName().equals(WASHER_NAME))
+                //.filter(materialVariant -> materialVariant.getVariantLength() != null)
+                //.filter(materialVariant -> materialVariant.getVariantLength() == WASHER_LENGTH_CM)
+                .min(Comparator.comparing(MaterialVariant::getUnitPrice))
+                .orElseThrow(() -> new DatabaseException("Kunne ikke finde firkantskiver"));;
+
+        boltsAndWashers.add(new MaterialLine(bolt, numberOfBolts));
+        boltsAndWashers.add(new MaterialLine(washer, numberOfWashers));
+
+        return boltsAndWashers;
     }
 
     private MaterialLine calculateBracketScrews(Carport carport) throws DatabaseException

@@ -106,7 +106,7 @@ public class PartCalculator
         double carportWidthAfterMargin = carport.getWidth() - (edgeInsetInCm * 2);
         double carportLengthAfterMargin = 0;
 
-        if(carport.getShed() != null)
+        if (carport.getShed() != null)
         {
             carportLengthAfterMargin = carport.getLength() - (carport.getShed().getLength() + rafterSpacing);
         }
@@ -116,9 +116,24 @@ public class PartCalculator
         }
 
         double diagonal = Math.sqrt(Math.pow(carportLengthAfterMargin, 2) + Math.pow(carportWidthAfterMargin, 2));
-        double totalStripNeed =  2 * (diagonal / 100);
+        double totalStripNeed = 2 * (diagonal / 100);
 
         return (int) Math.ceil(totalStripNeed / stripRoolLengthInMeter);
+    }
+
+    public static int calculateNumberOfCarriageBoltsAndWashers(Carport carport, int beamMaxVariantLength)
+    {
+        boolean hasShed = carport.getShed() != null;
+        int postsWithoutBeam = 3;
+        int numberOfPosts = hasShed ? calculateNumberOfPostsWithShed(carport.getLength(), carport.getShed().getShedPlacement()) - postsWithoutBeam
+                : calculateNumberOfPostsWithOutShed(carport.getLength());
+
+        boolean isSingleBeamPerRow = beamMaxVariantLength >= carport.getLength();
+        int jointsTotal = isSingleBeamPerRow ? numberOfPosts : numberOfPosts + 2;
+
+        int numberOfBoltsPerJoin = 2; // Washers are the same number as bolts
+
+        return jointsTotal * numberOfBoltsPerJoin;
     }
 
     public static int calculateNumberOfBracketScrewsNeeded(Carport carport, int screwsPerPackage)

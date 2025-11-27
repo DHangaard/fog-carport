@@ -2,21 +2,14 @@ package app;
 
 import app.config.ThymeleafConfig;
 import app.controllers.UserController;
-import app.entities.Carport;
-import app.entities.MaterialLine;
-import app.enums.RoofType;
-import app.exceptions.DatabaseException;
 import app.persistence.ConnectionPool;
-import app.persistence.MaterialVariantMapper;
 import app.persistence.UserMapper;
 import app.persistence.ZipCodeMapper;
-import app.services.BomService;
 import app.services.IUserService;
 import app.services.UserService;
 import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinThymeleaf;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 public class Main
@@ -37,7 +30,7 @@ public class Main
 
     private static final ConnectionPool connectionPool = ConnectionPool.getInstance(USER, PASSWORD, URL, DB);
 
-    public static void main(String[] args) throws DatabaseException
+    public static void main(String[] args)
     {
         Javalin app = Javalin.create(config ->
         {
@@ -53,13 +46,5 @@ public class Main
         UserController userController = new UserController(userService);
 
         userController.addRoutes(app);
-
-        MaterialVariantMapper mvm = new MaterialVariantMapper(connectionPool);
-        BomService bom = new BomService(mvm);
-        Carport carport = new Carport(0, 780, 600, RoofType.FLAT, null);
-        List<MaterialLine> materials = bom.getBillOfMaterialByCarport(carport);
-        materials.stream()
-                .forEach(System.out::println);
-
     }
 }

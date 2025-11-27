@@ -9,7 +9,8 @@ public enum MaterialType
     BOARD("Bræt"),
     FASTENER("Skrue"),
     FITTING("Beslag"),
-    METAL_STRAP("Hulbånd");
+    METAL_STRAP("Hulbånd"),
+    WASHER("Spændeskive");
 
     private final String displayCategory;
 
