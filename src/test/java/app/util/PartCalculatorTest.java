@@ -133,4 +133,19 @@ class PartCalculatorTest
         Carport carportSmallWithShed = new Carport(0,420,420, RoofType.FLAT,new Shed(0,180,350, ShedPlacement.FULL_WIDTH));
         assertEquals(1, PartCalculator.calculateNumberOfperforatedStripRools(carportSmallWithShed, stripRoolLengthInMeter));
     }
+
+    @Test
+    void testNumberOfBracketScrewPackagesNeeded()
+    {
+        int screwsPerPackage = 250;
+
+        Carport carport780x600WithShed = new Carport(0, 780, 600, RoofType.FLAT, new Shed(0, 240, 530, ShedPlacement.FULL_WIDTH));
+        assertEquals(2, PartCalculator.calculateNumberOfBracketScrewsNeeded(carport780x600WithShed, screwsPerPackage));
+
+        Carport carport600x600WithOutShed = new Carport(0, 600, 600, RoofType.FLAT, null);
+        assertEquals(1, PartCalculator.calculateNumberOfBracketScrewsNeeded(carport600x600WithOutShed, screwsPerPackage));
+
+        Carport carport420x420WithOutShed = new Carport(0, 600, 600, RoofType.FLAT, null);
+        assertEquals(1, PartCalculator.calculateNumberOfBracketScrewsNeeded(carport420x420WithOutShed, screwsPerPackage));
+    }
 }
