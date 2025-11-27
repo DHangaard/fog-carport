@@ -122,30 +122,17 @@ public class PartCalculator
         return (int) Math.ceil(totalStripNeed / stripRoolLengthInMeter);
     }
 
-    public static int calculateNumberOfCarriageBoltsAndWashers(Carport carport, List<MaterialVariant> beamVariants) throws DatabaseException
+    public static int calculateNumberOfCarriageBoltsAndWashers(Carport carport, int beamVariantMaxLength)
     {
-        int beamVariantMaxLength = beamVariants.stream()
-                .filter(materialVariant -> materialVariant.getVariantLength() != null)
-                .mapToInt(MaterialVariant::getVariantLength)
-                .max()
-                .orElseThrow(() -> new DatabaseException("Ingen materialer fundet"));
+        boolean hasShed = carport.getShed() != null;
+        int postsWithoutBeam = 3;
+        int numberOfPosts = hasShed ? calculateNumberOfPostsWithShed(carport.getLength(), carport.getShed().getShedPlacement()) - postsWithoutBeam
+                : calculateNumberOfPostsWithOutShed(carport.getLength());
 
         boolean isSingleBeamPerRow = beamVariantMaxLength >= carport.getLength();
+        int jointsTotal = isSingleBeamPerRow ? numberOfPosts : numberOfPosts + 2;
 
-        int jointsPerSide = isSingleBeamPerRow ? 3 : 4;
-        int jointsTotal = jointsPerSide * 2;
-
-        if (carport.getShed() != null && carport.getShed().getShedPlacement() != ShedPlacement.FULL_WIDTH)
-        {
-            jointsTotal ++;
-        }
-        else if (carport.getShed() != null)
-        {
-            jointsTotal += 2;
-        }
-        
         int numberOfBoltsPerJoin = 2; // Washers are the same number as bolts
-        int numberOfWashersPerJoin = numberOfBoltsPerJoin; // Redundant
 
         return jointsTotal * numberOfBoltsPerJoin;
     }
