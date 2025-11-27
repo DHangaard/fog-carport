@@ -55,5 +55,5 @@ INSERT INTO material (
 INSERT INTO material_variant (
     material_id, variant_length, unit_price, pieces_per_unit
 ) VALUES (
-             (SELECT material_id FROM material WHERE name = 'firkantskive'), 1, 15.71, 1
+             (SELECT material_id FROM material WHERE name = 'firkantskiver'), 1, 15.71, 1
          );
