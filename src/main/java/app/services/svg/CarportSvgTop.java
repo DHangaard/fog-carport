@@ -24,8 +24,8 @@ public class CarportSvgTop
     private final double POST_EDGE_INSET_CM = 35.00;
     private double yPositionBottom;
     private double yPositionTop;
-    private final int innerX = 150;
-    private final int innerY = 50;
+    private final int INNER_SVG_X_START = 150;
+    private final int INNER_SVG_Y_START = 50;
     double arrowXLeftMargin;
     double arrowYEnd;
     double arrowXEnd;
@@ -38,15 +38,15 @@ public CarportSvgTop(int width, int length)
    this.width = width;
    this.length = length;
    this.carportTopSvg = new Svg(0, 0, WIDTH_SIZE, VIEW_BOX);
-   this.carportInnerSvg = new Svg(innerX, innerY, this.length, this.width, getInnerViewBox(width, length));
+   this.carportInnerSvg = new Svg(INNER_SVG_X_START, INNER_SVG_Y_START, this.length, this.width, getInnerViewBox(width, length));
    this.yPositionBottom =  width - POST_EDGE_INSET_CM - 2.5;
    this.yPositionTop = POST_EDGE_INSET_CM + RAFTER_WIDTH_CM;
 
-   this.arrowXLeftMargin = innerX / 2;
-   this.arrowYEnd = width + innerY;
-   this.arrowXEnd = length + innerX;
-   this.arrowYBottomMargin = width + (innerY * 1.5);
-   this.arrowYTopMargin = innerY  * 0.75;
+   this.arrowXLeftMargin = INNER_SVG_X_START / 2;
+   this.arrowYEnd = width + INNER_SVG_Y_START;
+   this.arrowXEnd = length + INNER_SVG_X_START;
+   this.arrowYBottomMargin = width + (INNER_SVG_Y_START * 1.5);
+   this.arrowYTopMargin = INNER_SVG_Y_START * 0.75;
 
    carportTopSvg.addArrowDefs();
    addArrows();
@@ -57,7 +57,6 @@ public CarportSvgTop(int width, int length)
    addPost();
    addMetalStrap();
    carportTopSvg.addSvg(carportInnerSvg);
-
 }
 
 private void addFrame()
@@ -166,8 +165,8 @@ private void addArrows()
     double spacing = (double) length / numberOfSpaces;
 
     for(int i = 0; i < numberOfSpaces; i++) {
-        double x1 = innerX + (i * spacing);
-        double x2 = innerX + ((i + 1) * spacing);
+        double x1 = INNER_SVG_X_START + (i * spacing);
+        double x2 = INNER_SVG_X_START + ((i + 1) * spacing);
         double y = arrowYTopMargin;
 
         carportTopSvg.addLineWithArrows(x1, y, x2, y);
@@ -177,13 +176,13 @@ private void addArrows()
         carportTopSvg.addText(midX, y - 15, 0, String.format("%.2f", spacing_meters));
     }
     // Left arrow
-    carportTopSvg.addLineWithArrows(arrowXLeftMargin,innerY, arrowXLeftMargin, arrowYEnd);
+    carportTopSvg.addLineWithArrows(arrowXLeftMargin, INNER_SVG_Y_START, arrowXLeftMargin, arrowYEnd);
 
     //Left inner arrow
-    carportTopSvg.addLineWithArrows(innerX * 0.75,innerY + POST_EDGE_INSET_CM, innerX * 0.75, arrowYEnd - POST_EDGE_INSET_CM);
+    carportTopSvg.addLineWithArrows(INNER_SVG_X_START * 0.75, INNER_SVG_Y_START + POST_EDGE_INSET_CM, INNER_SVG_X_START * 0.75, arrowYEnd - POST_EDGE_INSET_CM);
 
     // Bottom arrow
-    carportTopSvg.addLineWithArrows(innerX, arrowYBottomMargin, arrowXEnd, arrowYBottomMargin);
+    carportTopSvg.addLineWithArrows(INNER_SVG_X_START, arrowYBottomMargin, arrowXEnd, arrowYBottomMargin);
 }
 
 private void addArrowText()
@@ -193,7 +192,7 @@ private void addArrowText()
 
     //TODO FIX hardcoding Inner text
     int innerArrowLength = (int)(width - (2 * POST_EDGE_INSET_CM));
-    carportTopSvg.addText(innerX * 0.75 - 10, arrowYEnd / 2, -90, String.valueOf(innerArrowLength));
+    carportTopSvg.addText(INNER_SVG_X_START * 0.75 - 10, arrowYEnd / 2, -90, String.valueOf(innerArrowLength));
 }
 
 private String getInnerViewBox(int width, int length)
