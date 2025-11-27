@@ -2,10 +2,15 @@ package app.util;
 
 import app.dto.RafterCalculationDTO;
 import app.entities.Carport;
+import app.entities.MaterialVariant;
 import app.entities.Shed;
 import app.enums.RoofType;
 import app.enums.ShedPlacement;
+import app.persistence.ConnectionPool;
+import app.persistence.MaterialVariantMapper;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -132,5 +137,38 @@ class PartCalculatorTest
 
         Carport carportSmallWithShed = new Carport(0,420,420, RoofType.FLAT,new Shed(0,180,350, ShedPlacement.FULL_WIDTH));
         assertEquals(1, PartCalculator.calculateNumberOfperforatedStripRools(carportSmallWithShed, stripRoolLengthInMeter));
+    }
+
+    @Test
+    void testNumberOfCarriageBoltsAndWashersNeeded()
+    {
+        int beamVariantMaxLength = 720;
+
+        Carport carport = new Carport(0,780,600, RoofType.FLAT,null);
+        assertEquals(16, PartCalculator.calculateNumberOfCarriageBoltsAndWashers(carport, beamVariantMaxLength));
+
+        Carport carportWithFullShed = new Carport(0,780,600, RoofType.FLAT,new Shed(0,210,530,ShedPlacement.FULL_WIDTH));
+        assertEquals(20, PartCalculator.calculateNumberOfCarriageBoltsAndWashers(carportWithFullShed, beamVariantMaxLength));
+
+        Carport carportWithHalfShed = new Carport(0,780,600, RoofType.FLAT,new Shed(0,210,530,ShedPlacement.RIGHT));
+        assertEquals(18, PartCalculator.calculateNumberOfCarriageBoltsAndWashers(carportWithHalfShed, beamVariantMaxLength));
+
+        Carport carportMedium = new Carport(0,690,600, RoofType.FLAT,null);
+        assertEquals(12, PartCalculator.calculateNumberOfCarriageBoltsAndWashers(carportMedium, beamVariantMaxLength));
+
+        Carport carportMediumWithFullShed = new Carport(0,690,600, RoofType.FLAT,new Shed(0,210,530,ShedPlacement.FULL_WIDTH));
+        assertEquals(16, PartCalculator.calculateNumberOfCarriageBoltsAndWashers(carportMediumWithFullShed, beamVariantMaxLength));
+
+        Carport carportMediumWithHalfShed = new Carport(0,690,600, RoofType.FLAT,new Shed(0,210,530,ShedPlacement.RIGHT));
+        assertEquals(14, PartCalculator.calculateNumberOfCarriageBoltsAndWashers(carportMediumWithHalfShed, beamVariantMaxLength));
+
+        Carport carportSmall = new Carport(0,420,420, RoofType.FLAT,null);
+        assertEquals(8, PartCalculator.calculateNumberOfCarriageBoltsAndWashers(carportSmall, beamVariantMaxLength));
+
+        Carport carportSmallWithFullShed = new Carport(0,420,420, RoofType.FLAT,new Shed(0,180,350, ShedPlacement.FULL_WIDTH));
+        assertEquals(12, PartCalculator.calculateNumberOfCarriageBoltsAndWashers(carportSmallWithFullShed, beamVariantMaxLength));
+
+        Carport carportSmallWithHalfShed = new Carport(0,420,420, RoofType.FLAT,new Shed(0,210,530,ShedPlacement.RIGHT));
+        assertEquals(10, PartCalculator.calculateNumberOfCarriageBoltsAndWashers(carportSmallWithHalfShed, beamVariantMaxLength));
     }
 }
