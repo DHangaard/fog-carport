@@ -11,9 +11,9 @@ public class CarportDrawingService implements ICarportDrawingService
     {
         if(carport == null)
         {
-
+            throw new IllegalArgumentException("Carport mål skal være udfyldt");
         }
-        return new CarportSvgTop(carport.getWidth(), carport.getLength());
+        return new CarportSvgTop(carport);
     }
 
     @Override

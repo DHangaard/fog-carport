@@ -2,7 +2,8 @@ package app.dto;
 
 public record RafterCalculationDTO(
         int numberOfRafters,
-        double spacing
+        double spacing,
+        double roundedSpacing
 )
 {
 }

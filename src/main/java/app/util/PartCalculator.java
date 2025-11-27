@@ -83,7 +83,7 @@ public class PartCalculator
         }
         double roundedSpacing = Math.round(spacing * 10) / 10.0;
 
-        return new RafterCalculationDTO(totalNumberOfRafters, roundedSpacing);
+        return new RafterCalculationDTO(totalNumberOfRafters, spacing, roundedSpacing);
     }
 
     private static int getShedPosts(ShedPlacement shedPlacement)
