@@ -82,24 +82,24 @@ public class PartCalculator
         return (int) Math.ceil(((double)carportWidth / roofVariantWidthWithOverlay));
     }
 
-    public static int calculateNumberOfRoofScrewPackagesNeeded(int carportWidth, int carportLength, int numberOfScrewsInPackage)
+    public static int calculateNumberOfRoofScrewPackagesNeeded(int carportWidth, int carportLength, int screwsPerPackage)
     {
         int screwsPerSquareMeter = 12;
 
-        double carportWidthInMeter = carportWidth / 100;
-        double carportLengthInMeter = carportLength / 100;
+        double carportWidthInMeter = carportWidth / 100.0;
+        double carportLengthInMeter = carportLength / 100.0;
 
         double totalCarportArea = carportWidthInMeter * carportLengthInMeter;
         double totalScrews = totalCarportArea * screwsPerSquareMeter;
 
-        return (int) Math.ceil( totalScrews / numberOfScrewsInPackage);
+        return (int) Math.ceil( totalScrews / screwsPerPackage);
     }
 
     public static int calculateNumberOfperforatedStripRools(Carport carport, int stripRoolLength)
     {
         int edgeInsetInCm = 35;
         double rafterWidth = 4.5;
-        double stripRoolLengthInMeter = stripRoolLength / 100;
+        double stripRoolLengthInMeter = stripRoolLength / 100.0;
 
         double rafterSpacing = getRafterSpacing(carport.getLength(), rafterWidth);
 
@@ -119,5 +119,31 @@ public class PartCalculator
         double totalStripNeed =  2 * (diagonal / 100);
 
         return (int) Math.ceil(totalStripNeed / stripRoolLengthInMeter);
+    }
+
+    public static int calculateNumberOfBracketScrewsNeeded(Carport carport, int screwsPerPackage)
+    {
+        int screwsPerFittingSide = 9;
+        int screwsPerStripFixPoint = 2;
+        int numberOfRafters = calculateNumberOfRafters(carport.getLength());
+
+        int totalNumberOfFittingScrews = 2 * (screwsPerFittingSide * numberOfRafters);
+        int totalStripFixPointScrews = 0;
+
+        if(carport.getShed() == null)
+        {
+           totalStripFixPointScrews = numberOfRafters * screwsPerStripFixPoint;
+        }
+        else
+        {
+            int raftersBeforeShed = calculateNumberOfRafters(carport.getLength() - carport.getShed().getLength());
+            int raftersCrossedByStrip = raftersBeforeShed - 1;
+
+            totalStripFixPointScrews = raftersCrossedByStrip * screwsPerStripFixPoint;
+        }
+
+        int totalBracketScrews = totalNumberOfFittingScrews + totalStripFixPointScrews;
+
+        return (int) Math.ceil((double) totalBracketScrews / screwsPerPackage);
     }
 }
