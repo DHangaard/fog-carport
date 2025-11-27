@@ -73,13 +73,13 @@ public class PartCalculator
     {
         int totalNumberOfRafters = calculateNumberOfRafters(length);
         int numberOfMiddleRafters = totalNumberOfRafters - RAFTER_START_END;
-        double spacing = (length - (2 * rafterWidth)) / (totalNumberOfRafters - 1);
+        double spacing = (length - rafterWidth) / (totalNumberOfRafters - 1);
 
         if (spacing > 56.0)
         {
             numberOfMiddleRafters++;
             totalNumberOfRafters = numberOfMiddleRafters + 2;
-            spacing = (length - (2 * rafterWidth)) / (totalNumberOfRafters - 1);
+            spacing = (length - rafterWidth) / (totalNumberOfRafters - 1);
         }
         double roundedSpacing = Math.round(spacing * 10) / 10.0;
 
