@@ -2,15 +2,10 @@ package app.util;
 
 import app.dto.RafterCalculationDTO;
 import app.entities.Carport;
-import app.entities.MaterialVariant;
 import app.entities.Shed;
 import app.enums.RoofType;
 import app.enums.ShedPlacement;
-import app.persistence.ConnectionPool;
-import app.persistence.MaterialVariantMapper;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -170,5 +165,20 @@ class PartCalculatorTest
 
         Carport carportSmallWithHalfShed = new Carport(0,420,420, RoofType.FLAT,new Shed(0,210,530,ShedPlacement.RIGHT));
         assertEquals(10, PartCalculator.calculateNumberOfCarriageBoltsAndWashers(carportSmallWithHalfShed, beamMaxVariantLength));
+    }
+
+    @Test
+    void testNumberOfBracketScrewPackagesNeeded()
+    {
+        int screwsPerPackage = 250;
+
+        Carport carport780x600WithShed = new Carport(0, 780, 600, RoofType.FLAT, new Shed(0, 240, 530, ShedPlacement.FULL_WIDTH));
+        assertEquals(2, PartCalculator.calculateNumberOfBracketScrewsNeeded(carport780x600WithShed, screwsPerPackage));
+
+        Carport carport600x600WithOutShed = new Carport(0, 600, 600, RoofType.FLAT, null);
+        assertEquals(1, PartCalculator.calculateNumberOfBracketScrewsNeeded(carport600x600WithOutShed, screwsPerPackage));
+
+        Carport carport420x420WithOutShed = new Carport(0, 600, 600, RoofType.FLAT, null);
+        assertEquals(1, PartCalculator.calculateNumberOfBracketScrewsNeeded(carport420x420WithOutShed, screwsPerPackage));
     }
 }

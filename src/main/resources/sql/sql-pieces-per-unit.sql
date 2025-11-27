@@ -25,6 +25,18 @@ INSERT INTO material_variant (
 INSERT INTO material (
     name, category, type, material_width, material_height, unit, usage
 ) VALUES (
+             'Beslagskruer', 'FITTINGS_AND_FASTENERS', 'FASTENER', null, null, 'Pakke', 'Til	montering	af	universalbeslag	+	hulbånd	'
+         );
+
+INSERT INTO material_variant (
+    material_id, variant_length, unit_price, pieces_per_unit
+) VALUES (
+             (SELECT material_id FROM material WHERE name = 'Beslagskruer'), 5, 189.75, 250
+         );
+
+INSERT INTO material (
+    name, category, type, material_width, material_height, unit, usage
+) VALUES (
              'bræddebolt', 'FITTINGS_AND_FASTENERS', 'FASTENER', 10, 120, 'Stk', 'Til montering af rem på stolper'
          );
 

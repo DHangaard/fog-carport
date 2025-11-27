@@ -26,6 +26,7 @@ public class BomService
         MaterialLine rafterMaterialLine = calculateNumberOfRafters(carport);
         MaterialLine roofPlateScrewLine = calculateRoofPlateScrews(carport);
         MaterialLine stripRoolLine = calculateNumberOfStripRools(carport);
+        MaterialLine bracketScrewLine = calculateBracketScrews(carport);
 
         List<MaterialLine> beamMaterialLines = calculateNumberOfBeams(carport);
         List<MaterialLine> roofMaterialLines = calculateRoofTiles(carport);
@@ -35,6 +36,7 @@ public class BomService
         billOfMaterial.add(postMaterialLine);
         billOfMaterial.add(roofPlateScrewLine);
         billOfMaterial.add(stripRoolLine);
+        billOfMaterial.add(bracketScrewLine);
 
         beamMaterialLines.stream()
                 .filter(materialLine -> materialLine != null)
@@ -260,6 +262,26 @@ public class BomService
         boltsAndWashers.add(new MaterialVariant());
 
         return boltsAndWashers;
+    }
+
+    private MaterialLine calculateBracketScrews(Carport carport) throws DatabaseException
+    {
+        final String BRACKET_SCREW_NAME = "Beslagskruer";
+        final int BRACKET_SCREW_LENGTH_CM = 5;
+
+        List<MaterialVariant> fastenerVariants = variantMapper.getAllVariantsByType(MaterialType.FASTENER);
+
+        MaterialVariant bracketScrewVariant = fastenerVariants.stream()
+                .filter(materialVariant -> materialVariant != null)
+                .filter(materialVariant -> materialVariant.getMaterial().getName().equals(BRACKET_SCREW_NAME))
+                .filter(materialVariant -> materialVariant.getVariantLength() != null)
+                .filter(materialVariant -> materialVariant.getVariantLength() == BRACKET_SCREW_LENGTH_CM)
+                .min(Comparator.comparing(MaterialVariant::getUnitPrice))
+                .orElseThrow(() -> new DatabaseException("Kunne ikke finde beslagskruer"));
+
+        int bracketScrewPackages = PartCalculator.calculateNumberOfBracketScrewsNeeded(carport, bracketScrewVariant.getPiecesPerUnit());
+
+        return  new MaterialLine(bracketScrewVariant, bracketScrewPackages);
     }
 
     private MaterialVariant findOptimalVariantLength(List<MaterialVariant> variants, int carportLength) throws DatabaseException
