@@ -135,6 +135,15 @@ public class PartCalculator
         int jointsPerSide = isSingleBeamPerRow ? 3 : 4;
         int jointsTotal = jointsPerSide * 2;
 
+        if (carport.getShed() != null && carport.getShed().getShedPlacement() != ShedPlacement.FULL_WIDTH)
+        {
+            jointsTotal ++;
+        }
+        else if (carport.getShed() != null)
+        {
+            jointsTotal += 2;
+        }
+        
         int numberOfBoltsPerJoin = 2; // Washers are the same number as bolts
         int numberOfWashersPerJoin = numberOfBoltsPerJoin; // Redundant
 
