@@ -1,8 +1,7 @@
 BEGIN;
 
--- ============================================
+
 -- MATERIALS
--- ============================================
 
 -- Stolper (Posts)
 INSERT INTO material (name, category, type, material_width, material_height, unit, usage) VALUES
@@ -45,53 +44,53 @@ INSERT INTO material (name, category, type, material_width, material_height, uni
 INSERT INTO material (name, category, type, material_width, material_height, unit, usage) VALUES
     ('firkantskiver', 'FITTINGS_AND_FASTENERS', 'WASHER', 40, 40, 'Stk', 'Til montering af rem på stolper');
 
--- ============================================
--- MATERIAL VARIANTS
--- ============================================
+
+
+-- MATERIAL VARIANTS (unit_price without VAT)
 
 -- Stolpe 97x97 (300 cm)
 INSERT INTO material_variant (material_id, variant_length, unit_price, pieces_per_unit) VALUES
-    ((SELECT material_id FROM material WHERE name = 'trykimp.  Stolpe' AND material_width = 97), 300, 221.85, 1);
+    ((SELECT material_id FROM material WHERE name = 'trykimp.  Stolpe' AND material_width = 97), 300, 177.48, 1);
 
 -- Spærtræ 45x195 BEAM (300-720 cm)
 INSERT INTO material_variant (material_id, variant_length, unit_price, pieces_per_unit) VALUES
-                                                                                            ((SELECT material_id FROM material WHERE type = 'BEAM' AND material_height = 195), 300, 158.85, 1),
-                                                                                            ((SELECT material_id FROM material WHERE type = 'BEAM' AND material_height = 195), 360, 190.61, 1),
-                                                                                            ((SELECT material_id FROM material WHERE type = 'BEAM' AND material_height = 195), 420, 222.39, 1),
-                                                                                            ((SELECT material_id FROM material WHERE type = 'BEAM' AND material_height = 195), 480, 254.15, 1),
-                                                                                            ((SELECT material_id FROM material WHERE type = 'BEAM' AND material_height = 195), 540, 285.93, 1),
-                                                                                            ((SELECT material_id FROM material WHERE type = 'BEAM' AND material_height = 195), 600, 479.70, 1),
-                                                                                            ((SELECT material_id FROM material WHERE type = 'BEAM' AND material_height = 195), 660, 527.66, 1),
-                                                                                            ((SELECT material_id FROM material WHERE type = 'BEAM' AND material_height = 195), 720, 575.64, 1);
+                                                                                            ((SELECT material_id FROM material WHERE type = 'BEAM' AND material_height = 195), 300, 127.08, 1),
+                                                                                            ((SELECT material_id FROM material WHERE type = 'BEAM' AND material_height = 195), 360, 152.49, 1),
+                                                                                            ((SELECT material_id FROM material WHERE type = 'BEAM' AND material_height = 195), 420, 177.91, 1),
+                                                                                            ((SELECT material_id FROM material WHERE type = 'BEAM' AND material_height = 195), 480, 203.32, 1),
+                                                                                            ((SELECT material_id FROM material WHERE type = 'BEAM' AND material_height = 195), 540, 228.74, 1),
+                                                                                            ((SELECT material_id FROM material WHERE type = 'BEAM' AND material_height = 195), 600, 383.76, 1),
+                                                                                            ((SELECT material_id FROM material WHERE type = 'BEAM' AND material_height = 195), 660, 422.13, 1),
+                                                                                            ((SELECT material_id FROM material WHERE type = 'BEAM' AND material_height = 195), 720, 460.51, 1);
 
 -- Spærtræ 45x195 RAFTER (300-720 cm)
 INSERT INTO material_variant (material_id, variant_length, unit_price, pieces_per_unit) VALUES
-                                                                                            ((SELECT material_id FROM material WHERE type = 'RAFTER' AND material_height = 195), 300, 158.85, 1),
-                                                                                            ((SELECT material_id FROM material WHERE type = 'RAFTER' AND material_height = 195), 360, 190.61, 1),
-                                                                                            ((SELECT material_id FROM material WHERE type = 'RAFTER' AND material_height = 195), 420, 222.39, 1),
-                                                                                            ((SELECT material_id FROM material WHERE type = 'RAFTER' AND material_height = 195), 480, 254.15, 1),
-                                                                                            ((SELECT material_id FROM material WHERE type = 'RAFTER' AND material_height = 195), 540, 285.93, 1),
-                                                                                            ((SELECT material_id FROM material WHERE type = 'RAFTER' AND material_height = 195), 600, 479.70, 1),
-                                                                                            ((SELECT material_id FROM material WHERE type = 'RAFTER' AND material_height = 195), 660, 527.66, 1),
-                                                                                            ((SELECT material_id FROM material WHERE type = 'RAFTER' AND material_height = 195), 720, 575.64, 1);
+                                                                                            ((SELECT material_id FROM material WHERE type = 'RAFTER' AND material_height = 195), 300, 127.08, 1),
+                                                                                            ((SELECT material_id FROM material WHERE type = 'RAFTER' AND material_height = 195), 360, 152.49, 1),
+                                                                                            ((SELECT material_id FROM material WHERE type = 'RAFTER' AND material_height = 195), 420, 177.91, 1),
+                                                                                            ((SELECT material_id FROM material WHERE type = 'RAFTER' AND material_height = 195), 480, 203.32, 1),
+                                                                                            ((SELECT material_id FROM material WHERE type = 'RAFTER' AND material_height = 195), 540, 228.74, 1),
+                                                                                            ((SELECT material_id FROM material WHERE type = 'RAFTER' AND material_height = 195), 600, 383.76, 1),
+                                                                                            ((SELECT material_id FROM material WHERE type = 'RAFTER' AND material_height = 195), 660, 422.13, 1),
+                                                                                            ((SELECT material_id FROM material WHERE type = 'RAFTER' AND material_height = 195), 720, 460.51, 1);
 
 -- Plastmo Ecolite tagplader (240-600 cm)
 INSERT INTO material_variant (material_id, variant_length, unit_price, pieces_per_unit) VALUES
-                                                                                            ((SELECT material_id FROM material WHERE name = 'Plastmo Ecolite blåtonet'), 240, 139.00, 1),
-                                                                                            ((SELECT material_id FROM material WHERE name = 'Plastmo Ecolite blåtonet'), 300, 179.00, 1),
-                                                                                            ((SELECT material_id FROM material WHERE name = 'Plastmo Ecolite blåtonet'), 360, 199.00, 1),
-                                                                                            ((SELECT material_id FROM material WHERE name = 'Plastmo Ecolite blåtonet'), 420, 239.00, 1),
-                                                                                            ((SELECT material_id FROM material WHERE name = 'Plastmo Ecolite blåtonet'), 480, 269.00, 1),
-                                                                                            ((SELECT material_id FROM material WHERE name = 'Plastmo Ecolite blåtonet'), 600, 339.00, 1);
+                                                                                            ((SELECT material_id FROM material WHERE name = 'Plastmo Ecolite blåtonet'), 240, 111.20, 1),
+                                                                                            ((SELECT material_id FROM material WHERE name = 'Plastmo Ecolite blåtonet'), 300, 143.20, 1),
+                                                                                            ((SELECT material_id FROM material WHERE name = 'Plastmo Ecolite blåtonet'), 360, 159.20, 1),
+                                                                                            ((SELECT material_id FROM material WHERE name = 'Plastmo Ecolite blåtonet'), 420, 191.20, 1),
+                                                                                            ((SELECT material_id FROM material WHERE name = 'Plastmo Ecolite blåtonet'), 480, 215.20, 1),
+                                                                                            ((SELECT material_id FROM material WHERE name = 'Plastmo Ecolite blåtonet'), 600, 271.20, 1);
 
 -- Plastmo Bundskruer (200 stk pr. pakke)
 INSERT INTO material_variant (material_id, variant_length, unit_price, pieces_per_unit) VALUES
-    ((SELECT material_id FROM material WHERE name = 'Plastmo Bundskruer'), NULL, 149.00, 200);
+    ((SELECT material_id FROM material WHERE name = 'Plastmo Bundskruer'), NULL, 343.20, 200);
 
 -- Universal beslag
 INSERT INTO material_variant (material_id, variant_length, unit_price, pieces_per_unit) VALUES
-                                                                                            ((SELECT material_id FROM material WHERE name = 'Universal højre'), NULL, 9.45, 1),
-                                                                                            ((SELECT material_id FROM material WHERE name = 'Universal venstre'), NULL, 9.45, 1);
+                                                                                            ((SELECT material_id FROM material WHERE name = 'Universal højre'), NULL, 43.96, 1),
+                                                                                            ((SELECT material_id FROM material WHERE name = 'Universal venstre'), NULL, 43.96, 1);
 
 -- Hulbånd
 INSERT INTO material_variant (material_id, variant_length, unit_price, pieces_per_unit) VALUES
@@ -103,25 +102,26 @@ INSERT INTO material_variant (material_id, variant_length, unit_price, pieces_pe
 
 -- Bræddebolt
 INSERT INTO material_variant (material_id, variant_length, unit_price, pieces_per_unit) VALUES
-    ((SELECT material_id FROM material WHERE name = 'bræddebolt'), 12, 29.33, 1);
+    ((SELECT material_id FROM material WHERE name = 'bræddebolt'), 12, 23.46, 1);
 
 -- Firkantskiver
 INSERT INTO material_variant (material_id, variant_length, unit_price, pieces_per_unit) VALUES
-    ((SELECT material_id FROM material WHERE name = 'firkantskiver'), 1, 15.71, 1);
+    ((SELECT material_id FROM material WHERE name = 'firkantskiver'), 1, 12.57, 1);
 
 COMMIT;
 
--- ============================================
+
+
 -- VERIFICATION
--- ============================================
+
 SELECT
     m.name,
     m.type,
-    m. category,
+    m.category,
     COUNT(mv.material_variant_id) as variants,
     MIN(mv.unit_price) as min_price,
     MAX(mv.unit_price) as max_price
 FROM material m
-         LEFT JOIN material_variant mv ON m.material_id = mv. material_id
+         LEFT JOIN material_variant mv ON m.material_id = mv.material_id
 GROUP BY m.name, m.type, m.category
 ORDER BY m.category, m.type;
