@@ -47,8 +47,8 @@ public class CarportSvgSide
         this.yPositionTop = 0;
 
         this.arrowXLeftMargin = INNER_SVG_X_START / 2;
-        this.arrowYEnd = carport.getWidth() + INNER_SVG_Y_START;
-        this.arrowXEnd = carport.getLength() + INNER_SVG_X_START;
+        this.arrowYEnd = CARPORT_TOP_HEIGHT_CM + INNER_SVG_Y_START;
+        this.arrowXEnd = CARPORT_TOP_HEIGHT_CM + INNER_SVG_X_START;
         this.arrowYBottomMargin = carport.getWidth() + (INNER_SVG_Y_START * 1.5);
         this.arrowYTopMargin = INNER_SVG_Y_START * 0.75;
 
