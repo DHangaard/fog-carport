@@ -39,6 +39,7 @@ public class Svg {
             "          style=\"stroke:#000000;\n" +
             " marker-start: url(#beginArrow);\n" +
             "marker-end: url(#endArrow);\"/>";
+    private static final String SVG_POLYGON_TEMPLATE = "<polygon points=\"%s\" style=\"%s\" />";
 
     private StringBuilder svg = new StringBuilder();
 
@@ -81,6 +82,11 @@ public class Svg {
     public void addArrowDefs()
     {
         svg.append(SVG_ARROW_DEFS);
+    }
+
+    public void addPolygon(String points, String style)
+    {
+        svg.append(String.format(SVG_POLYGON_TEMPLATE, points, style));
     }
 
     @Override
