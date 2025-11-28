@@ -13,6 +13,8 @@ public class CarportSvgSide
     private final String WIDTH_SIZE = "100%";
     private final String BASE_STYLE = "stroke-width: 1px; stroke:#000000; fill: #ffffff";
     private final int CARPORT_TOP_HEIGHT_CM = 230;
+    private final int CARPORT_TOP_HEIGHT_END_CM = 220;
+    private final double CARPORT__HEIGHT_OFFSET_TO_TOP_BEAM = 20;
     private final double BEAM_HEIGHT_CM =  19.5;
     private final double WEATHER_BOARD_HEIGHT_CM = 10.0;
     private final double POST_WIDTH_CM = 10.0;
@@ -23,9 +25,10 @@ public class CarportSvgSide
     private double yPositionTop;
     private final int INNER_SVG_X_START = 150;
     private final int INNER_SVG_Y_START = 50;
-    double arrowXLeftMargin;
-    double arrowYEnd;
-    double arrowXEnd;
+    double arrowLeftXStart;
+    double arrowInnerLeftXStart;
+    double arrowBottomY;
+    double arrowBottomXEnd;
     double arrowYBottomMargin;
     double arrowYTopMargin;
 
@@ -46,10 +49,11 @@ public class CarportSvgSide
         this.yPositionBottom = CARPORT_TOP_HEIGHT_CM;
         this.yPositionTop = 0;
 
-        this.arrowXLeftMargin = INNER_SVG_X_START / 2;
-        this.arrowYEnd = CARPORT_TOP_HEIGHT_CM + INNER_SVG_Y_START;
-        this.arrowXEnd = CARPORT_TOP_HEIGHT_CM + INNER_SVG_X_START;
-        this.arrowYBottomMargin = carport.getWidth() + (INNER_SVG_Y_START * 1.5);
+        this.arrowLeftXStart = INNER_SVG_X_START / 2;
+        this.arrowInnerLeftXStart = INNER_SVG_X_START * 0.75;
+        this.arrowBottomY = CARPORT_TOP_HEIGHT_CM + INNER_SVG_Y_START;
+        this.arrowBottomXEnd = CARPORT_TOP_HEIGHT_CM + INNER_SVG_X_START;
+        this.arrowYBottomMargin = CARPORT_TOP_HEIGHT_CM + (INNER_SVG_Y_START * 1.5);
         this.arrowYTopMargin = INNER_SVG_Y_START * 0.75;
 
         carportSideSvg.addArrowDefs();
@@ -133,6 +137,7 @@ public class CarportSvgSide
     {
         double tickLength = 20;
         double xStartOffSet = 4.5 / 2;
+        double innerArrowTopY = INNER_SVG_Y_START + CARPORT__HEIGHT_OFFSET_TO_TOP_BEAM;
 
         RafterCalculationDTO rafterCalculationDTO = PartCalculator.calculateRafters(carport.getLength(),4.5);
         int numberOfSpaces = rafterCalculationDTO.numberOfRafters() - 1;
@@ -154,21 +159,38 @@ public class CarportSvgSide
         }
 
         // Left arrow
-        carportSideSvg.addLineWithArrows(arrowXLeftMargin, INNER_SVG_Y_START, arrowXLeftMargin, arrowYEnd);
+        carportSideSvg.addLineWithArrows(arrowLeftXStart, INNER_SVG_Y_START, arrowLeftXStart, arrowBottomY);
+        //Top measure line
+        carportSideSvg.addLine(arrowLeftXStart - tickLength, INNER_SVG_Y_START, arrowInnerLeftXStart + tickLength, INNER_SVG_Y_START, BASE_STYLE);
+        //Bottom measure line
+        carportSideSvg.addLine(arrowLeftXStart - tickLength, arrowBottomY, arrowInnerLeftXStart + tickLength, arrowBottomY, BASE_STYLE);
+
         //Left inner arrow
-        carportSideSvg.addLineWithArrows(INNER_SVG_X_START * 0.75, INNER_SVG_Y_START + POST_EDGE_INSET_CM, INNER_SVG_X_START * 0.75, arrowYEnd - POST_EDGE_INSET_CM);
+        carportSideSvg.addLineWithArrows(arrowInnerLeftXStart, innerArrowTopY, arrowInnerLeftXStart, arrowBottomY);
+        //Left inner measure line
+        carportSideSvg.addLine(arrowInnerLeftXStart - tickLength, innerArrowTopY, arrowInnerLeftXStart + tickLength, innerArrowTopY, BASE_STYLE);
+
         // Bottom arrow
-        carportSideSvg.addLineWithArrows(INNER_SVG_X_START, arrowYBottomMargin, arrowXEnd, arrowYBottomMargin);
+        carportSideSvg.addLineWithArrows(INNER_SVG_X_START, arrowYBottomMargin, arrowBottomXEnd, arrowYBottomMargin);
     }
 
     private void addArrowText()
     {
-        carportSideSvg.addText(arrowXLeftMargin - 10, arrowYEnd / 2, -90, String.valueOf(carport.getWidth()));
-        carportSideSvg.addText(arrowXEnd / 2, arrowYBottomMargin + 15, 0, String.valueOf(carport.getLength()));
+        int carportHeightToBeamBottom = 20;
+        int innerArrowLength = CARPORT_TOP_HEIGHT_CM - carportHeightToBeamBottom;
 
-        //TODO FIX hardcoding Inner text
-        int innerArrowLength = (int)(carport.getWidth() - (2 * POST_EDGE_INSET_CM));
-        carportSideSvg.addText(INNER_SVG_X_START * 0.75 - 10, arrowYEnd / 2, -90, String.valueOf(innerArrowLength));
+        double carportHeightInMeters = CARPORT_TOP_HEIGHT_CM / 100.0;
+        double carportHeightToBeamBottomInMeters = innerArrowLength / 100.0;
+
+        //Left arrow
+        carportSideSvg.addText(arrowLeftXStart - 10, arrowBottomY / 2, -90, String.valueOf(carportHeightInMeters));
+
+        //Left inner arrow
+        carportSideSvg.addText(INNER_SVG_X_START * 0.75 - 10, arrowBottomY / 2, -90, String.valueOf(carportHeightToBeamBottomInMeters));
+
+        //Bottom arrow
+        carportSideSvg.addText(arrowBottomXEnd / 2, arrowYBottomMargin + 15, 0, String.valueOf(carport.getLength()));
+
     }
 
     private void addBeamOrWeatherBoard(double x1, double y1, double x2, double y2, double offset)
