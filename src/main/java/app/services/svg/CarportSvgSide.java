@@ -9,7 +9,7 @@ public class CarportSvgSide
     private Carport carport;
     private Svg carportSideSvg;
     private Svg carportInnerSvg;
-    private final String VIEW_BOX = "0 0 1000 500";
+    private final String VIEW_BOX = "0 0 1000 400";
     private final String WIDTH_SIZE = "100%";
     private final String BASE_STYLE = "stroke-width: 1px; stroke:#000000; fill: #ffffff";
     private final int CARPORT_TOP_HEIGHT_CM = 230;
@@ -19,6 +19,9 @@ public class CarportSvgSide
     private final double WEATHER_BOARD_HEIGHT_CM = 10.0;
     private final double POST_WIDTH_CM = 10.0;
     private final double POST_HEIGHT_CM = 210.0 - BEAM_HEIGHT_CM;
+    private final double SPACE_BETWEEN_WEATHERBOARD_AND_BEAM_CM = 3.0;
+    private final double RAFTER_WIDTH_CM = 4.5;
+    private final double RAFTER_TOP_OFFSET_CM = 22.0;
     private final double POST_START_POSITION_CM = 100.0;
 
     private double yPositionBottom;
@@ -63,8 +66,6 @@ public class CarportSvgSide
         addBeamAndWeatherBoard();
         addArrows();
         addArrowText();
-
-
         carportSideSvg.addSvg(carportInnerSvg);
     }
 
@@ -80,18 +81,19 @@ public class CarportSvgSide
 
     private void addRafters()
     {
-        double rafterWidth = 4.5;
+        double rafterWidth = RAFTER_WIDTH_CM;
         double rafterHeight = BEAM_HEIGHT_CM;
 
         RafterCalculationDTO rafterCalcDTO = PartCalculator.calculateRafters(carport.getLength(), rafterWidth);
         int numberOfRafters = rafterCalcDTO.numberOfRafters();
+
         double spacing = rafterCalcDTO.spacing();
-        double middlePoint = (rafterHeight + WEATHER_BOARD_HEIGHT_CM) / 2;
-        double currentXPos = middlePoint;
+        double rafterYPoint = WEATHER_BOARD_HEIGHT_CM + SPACE_BETWEEN_WEATHERBOARD_AND_BEAM_CM + BEAM_HEIGHT_CM - RAFTER_TOP_OFFSET_CM;
+        double currentXPos = 0;
 
         for(int i = 0; i < numberOfRafters ; i++)
         {
-            carportInnerSvg.addRectangle(currentXPos, middlePoint, rafterHeight, rafterWidth, BASE_STYLE);
+            carportInnerSvg.addRectangle(currentXPos, rafterYPoint, rafterHeight, rafterWidth, BASE_STYLE);
             currentXPos += spacing;
         }
     }
