@@ -1,8 +1,8 @@
 package app.services;
 
 import app.entities.Carport;
+import app.services.svg.CarportSvgSide;
 import app.services.svg.CarportSvgTop;
-import app.services.svg.Svg;
 
 public class CarportDrawingService implements ICarportDrawingService
 {
@@ -17,8 +17,12 @@ public class CarportDrawingService implements ICarportDrawingService
     }
 
     @Override
-    public Svg getCarportSideSvgView(Carport carport)
+    public CarportSvgSide getCarportSideSvgView(Carport carport)
     {
-        return null;
+        if(carport == null)
+        {
+            throw new IllegalArgumentException("Carport mål skal være udfyldt");
+        }
+        return new CarportSvgSide(carport);
     }
 }

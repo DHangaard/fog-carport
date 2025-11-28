@@ -4,6 +4,7 @@ import app.entities.Carport;
 import app.entities.Shed;
 import app.enums.RoofType;
 import app.enums.ShedPlacement;
+import app.services.svg.CarportSvgSide;
 import app.services.svg.CarportSvgTop;
 import app.services.ICarportDrawingService;
 import app.services.IOrderService;
@@ -40,7 +41,9 @@ public class OrderController
 
         Carport carport = new Carport(0,carportLength, carportWidth, RoofType.FLAT,new Shed(0,180,530, ShedPlacement.FULL_WIDTH));
         CarportSvgTop carportSvgTop = carportDrawingService.getCarportTopSvgView(carport);
+        CarportSvgSide carportSvgSide = carportDrawingService.getCarportSideSvgView(carport);
         ctx.attribute("carportTop", carportSvgTop.toString());
+        ctx.attribute("carportSide", carportSvgSide);
         ctx.render("carport-drawing");
     }
 }
