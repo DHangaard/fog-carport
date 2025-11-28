@@ -64,6 +64,7 @@ CREATE TABLE IF NOT EXISTS public.material_variant
     material_id integer NOT NULL,
     variant_length integer,
     unit_price double precision NOT NULL,
+    pieces_per_unit integer,
     CONSTRAINT material_variant_pkey PRIMARY KEY (material_variant_id)
     );
 
@@ -83,7 +84,7 @@ CREATE TABLE IF NOT EXISTS public."orders"
     CONSTRAINT order_pkey PRIMARY KEY (order_id)
     );
 
-CREATE TABLE IF NOT EXISTS public.material_line
+CREATE TABLE IF NOT EXISTS public. material_line
 (
     material_line_id serial NOT NULL,
     order_id integer NOT NULL,
@@ -100,7 +101,7 @@ ALTER TABLE IF EXISTS public.users
 
 ALTER TABLE IF EXISTS public.carport
     ADD CONSTRAINT carport_shed_fk FOREIGN KEY (shed_id)
-    REFERENCES public.shed (shed_id) MATCH SIMPLE
+    REFERENCES public. shed (shed_id) MATCH SIMPLE
     ON UPDATE CASCADE
        ON DELETE SET NULL;
 
@@ -134,7 +135,7 @@ ALTER TABLE IF EXISTS public.material_line
     ON UPDATE CASCADE
        ON DELETE CASCADE;
 
-ALTER TABLE IF EXISTS public.material_line
+ALTER TABLE IF EXISTS public. material_line
     ADD CONSTRAINT material_line_variant_fk FOREIGN KEY (material_variant_id)
     REFERENCES public.material_variant (material_variant_id) MATCH SIMPLE
     ON UPDATE CASCADE
