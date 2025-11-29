@@ -21,6 +21,7 @@ public class SendGridClient
     public SendGridClient(String apiKey)
     {
         this.apiKey = apiKey;
+        System.out.println(apiKey);
     }
 
     public boolean sendMail(String sendEmailTo, String templateId, Map<String,Object> dynamicData) {
@@ -52,6 +53,10 @@ public class SendGridClient
             request.setBody(mail.build());
 
             Response response = sg.api(request);
+            System.out.println("response");
+            System.out.println(response.getBody());
+            System.out.println(response.getHeaders());
+            System.out.println(response.getStatusCode());
             return response.getStatusCode() == 202;
         }
         catch (IOException ex)
