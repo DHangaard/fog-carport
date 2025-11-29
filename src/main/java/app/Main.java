@@ -46,5 +46,6 @@ public class Main
         UserController userController = new UserController(userService);
 
         userController.addRoutes(app);
+
     }
 }
