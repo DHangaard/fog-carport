@@ -2,10 +2,13 @@ package app;
 
 import app.config.ThymeleafConfig;
 import app.controllers.UserController;
+import app.dto.UserDTO;
 import app.persistence.ConnectionPool;
 import app.persistence.UserMapper;
 import app.persistence.ZipCodeMapper;
+import app.services.IEmailService;
 import app.services.IUserService;
+import app.services.SendGridEmailService;
 import app.services.UserService;
 import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinThymeleaf;
@@ -46,6 +49,13 @@ public class Main
         UserController userController = new UserController(userService);
 
         userController.addRoutes(app);
+
+        UserDTO userDTO = new UserDTO(0,"Morten", "Jensen",null,1362,null,"mo_ten@hotmail.com",null,null);
+
+        IEmailService iEmailService = new SendGridEmailService();
+        boolean result = iEmailService.sendRequestConfirmation(userDTO);
+        System.out.println(result);
+
 
     }
 }

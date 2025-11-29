@@ -2,6 +2,9 @@ package app.services;
 
 import app.dto.UserDTO;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class SendGridEmailService implements IEmailService
 {
     private SendGridClient sendGridClient;
@@ -18,7 +21,14 @@ public class SendGridEmailService implements IEmailService
     @Override
     public boolean sendRequestConfirmation(UserDTO user)
     {
-        return false;
+        Map<String,Object> dynamicData = buildDynamicData(user);
+
+        if(!hasDataToSend(dynamicData))
+        {
+            return false;
+        }
+
+        return sendGridClient.sendMail(user.email(), REQUEST_CONFIRMATION_TEMPLATE, dynamicData);
     }
 
     @Override
@@ -31,5 +41,33 @@ public class SendGridEmailService implements IEmailService
     public boolean sendOrderConfirmation(UserDTO user)
     {
         return false;
+    }
+
+    private Map<String, Object> buildDynamicData(UserDTO user)
+    {
+        Map<String, Object> dynamicData = new HashMap<>();
+
+        if (user == null)
+        {
+            return dynamicData;
+        }
+
+        if (user.firstName() != null && !user.firstName().isEmpty())
+        {
+            dynamicData.put("firstName", user.firstName());
+        }
+
+        if (user.lastName() != null && !user.lastName().isEmpty())
+
+        {
+            dynamicData.put("lastName", user.lastName());
+        }
+
+        return dynamicData;
+    }
+
+    private boolean hasDataToSend(Map<String, Object> dynamicData)
+    {
+        return dynamicData != null && !dynamicData.isEmpty();
     }
 }
