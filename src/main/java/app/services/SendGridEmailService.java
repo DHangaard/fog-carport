@@ -10,8 +10,8 @@ public class SendGridEmailService implements IEmailService
 {
     private SendGridClient sendGridClient;
     private final String REQUEST_CONFIRMATION_TEMPLATE = "d-2f92a4eacaea449b99167a35094140c5";
-    private final String OFFER_READY_TEMPLATE = " d-a16e0ee9ed34411ca0acee887bfdb22a";
-    private final String ORDER_CONFIRMATION_TEMPLATE = " d-ae86cc47271143398d6064a7e7de3d4f";
+    private final String OFFER_READY_TEMPLATE = "d-a16e0ee9ed34411ca0acee887bfdb22a";
+    private final String ORDER_CONFIRMATION_TEMPLATE = "d-ae86cc47271143398d6064a7e7de3d4f";
 
     public SendGridEmailService()
     {
@@ -54,8 +54,8 @@ public class SendGridEmailService implements IEmailService
         {
             return false;
         }
-        
-        return sendGridClient.sendMail(user.email(), ORDER_CONFIRMATION_TEMPLATE, );
+
+        return sendGridClient.sendMail(user.email(), ORDER_CONFIRMATION_TEMPLATE, dynamicData);
     }
 
     private Map<String, Object> buildDynamicUserData(UserDTO user)
@@ -83,28 +83,28 @@ public class SendGridEmailService implements IEmailService
 
     private Map<String, Object> buildDynamicOrderAndUserData(UserDTO user, OrderDetail orderDetail)
     {
-        Map<String, Object> dynaimicData = buildDynamicUserData(user);
+        Map<String, Object> dynamicData = buildDynamicUserData(user);
 
         if (orderDetail == null)
         {
-            return dynaimicData;
+            return dynamicData;
         }
 
-        dynaimicData.put("orderId", orderDetail.getOrderId());
+        dynamicData.put("orderId", orderDetail.getOrderId());
 
         if (orderDetail.getCarport() != null)
         {
-            dynaimicData.put("carportLength", orderDetail.getCarport().getLength());
-            dynaimicData.put("carportWidth", orderDetail.getCarport().getWidth());
+            dynamicData.put("carportLength", orderDetail.getCarport().getLength());
+            dynamicData.put("carportWidth", orderDetail.getCarport().getWidth());
         }
 
         if (orderDetail.getPricingDetails() != null)
         {
-            dynaimicData.put("pricingWithoutVat", orderDetail.getPricingDetails().getPriceWithoutVat());
-            dynaimicData.put("totalPrice", orderDetail.getPricingDetails().getTotalPrice());
+            dynamicData.put("pricingWithoutVat", orderDetail.getPricingDetails().getPriceWithoutVat());
+            dynamicData.put("totalPrice", orderDetail.getPricingDetails().getTotalPrice());
         }
 
-        return dynaimicData;
+        return dynamicData;
     }
 
     private boolean hasDataToSend(Map<String, Object> dynamicData)

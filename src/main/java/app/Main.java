@@ -50,12 +50,12 @@ public class Main
 
         userController.addRoutes(app);
 
-        UserDTO userDTO = new UserDTO(0,"Morten", "Jensen",null,1362,null,"mo_ten@hotmail.com",null,null);
+        UserDTO userDTO = new UserDTO(0,"Morten", "Jensen",null,1362,null,"mortenjenne@gmail.com",null,null);
 
         IEmailService iEmailService = new SendGridEmailService();
         boolean result = iEmailService.sendRequestConfirmation(userDTO);
+        boolean result2 = iEmailService.sendOfferReady(userDTO);
         System.out.println(result);
-
-
+        System.out.println(result2);
     }
 }
