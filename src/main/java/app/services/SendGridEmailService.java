@@ -15,7 +15,6 @@ public class SendGridEmailService implements IEmailService
     public SendGridEmailService()
     {
         String apiKey = System.getenv("SENDGRID_API_KEY");
-        System.out.println(apiKey + "Apikey in service");
         this.sendGridClient = new SendGridClient(apiKey);
     }
 
