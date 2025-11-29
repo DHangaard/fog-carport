@@ -11,7 +11,25 @@
 <div th:replace="~{fragments :: headerFragment}"></div>
 
 <main>
-
+    <section class="hero">
+        <div class="hero-content">
+            <div class="logo">
+                <img src="/images/logo.svg"
+                     alt="Fog logo"
+                     th:src="@{/images/logo.svg}">
+            </div>
+            <h1>Vi hjælper dig helt i mål med din nye byg-selv carport</h1>
+            <p class="hero-text">
+                Vores specialister har mere end 25 års erfaring med levering af byg-selv carporte og skure og sidder klar til at rådgive dig. I Fog tilbyder vi både standardløsninger og individuelle løsninger tilpasset dine behov og ønsker - altid baseret på kvalitetsbyggematerialer. Og så får du leveret til døren med vores egne kranbiler eller i samarbejde med vores leverandører.
+            </p>
+            <button class="cta-button">Se udvalget af carporte</button>
+        </div>
+        <div class="hero-image">
+            <img src="/images/byg-selv-carporte.webp"
+                 alt="Carport med bil"
+                 th:src="@{/images/byg-selv-carporte}">
+        </div>
+    </section>
 </main>
 
 
