@@ -12,6 +12,53 @@
 <div th:replace="~{fragments :: headerFragment}"></div>
 
 <main>
+    <div class="page-content">
+
+        <div class="build-carport-img">
+            <img th:src="@{/images/carport-byg-selv-hero.webp}" alt="Billed af carport med bil og trailer">
+        </div>
+
+        <div class="build-carport-text">
+            <h1>Lad os tegne din carport drøm - bestil et Quick-Byg tilbud</h1>
+
+            <p>Med et specialudviklet computerprogram kan vi lynhurtigt beregne prisen og udskrive en skitsetegning på en carport indenfor vores standardprogram.</p>
+
+            <p>Tilbud og skitsetegning fremsendes på mail hurtigst muligt.</p>
+
+            <p>Ved bestilling medfølger standardbyggevejledning.</p>
+
+            <p>Vælg nedenfor, om du ønsker tilbud på carport med fladt tag eller carport med høj rejsning.</p>
+        </div>
+
+        <div class="carport-cards">
+
+        <div class="link-card">
+            <a th:href="@{/carport-formular}">
+            <img th:src="@{/images/carport-flatroof.svg}" alt="Carport med fladt tag">
+
+            <h5>Carport med fladt tag</h5>
+
+            <p>Bestil Quick-byg tilbud carport med fladt tag</p>
+
+            <img th:src="@{/images/arrow.svg}" alt="Pil">
+            </a>
+        </div>
+
+        <div class="link-card">
+            <a th:href="@{/carport-formular}" th:disabled="">
+            <img th:src="@{/images/carport-highroof.svg}" alt="Carport med fladt tag">
+
+            <h5>Carport med høj rejsning</h5>
+
+            <p>Bestil Quick-byg tilbud carport med høj rejsning</p>
+
+            <img th:src="@{/images/arrow.svg}" alt="Pil">
+            </a>
+        </div>
+
+        </div>
+
+    </div>
 
 </main>
 
