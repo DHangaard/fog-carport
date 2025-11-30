@@ -170,10 +170,38 @@ public class UserMapper
         return users;
     }
 
-    public boolean updateUser(User user)
+    public boolean updateUser(User user) throws DatabaseException
     {
-        //TODO
-        return false;
+        String sql = """
+                UPDATE users
+                SET first_name = ?,
+                last_name = ?,
+                email = ?,
+                phone_number = ?,
+                zip_code = ?,
+                street = ?,
+                WHERE user_id = ?
+                """;
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql))
+        {
+            ps.setString(1, user.getFirstName());
+            ps.setString(2, user.getLastName());
+            ps.setString(3, user.getEmail());
+            ps.setString(4, user.getPhoneNumber());
+            ps.setInt(5, user.getZipCode());
+            ps.setString(6, user.getCity());
+            ps.setInt(7, user.getUserId());
+
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected == 1;
+
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl ved opdatering af bruger: " + e.getMessage());
+        }
     }
 
     private User buildUserFromResultSet(ResultSet rs) throws SQLException
