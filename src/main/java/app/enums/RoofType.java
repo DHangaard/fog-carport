@@ -2,7 +2,8 @@ package app.enums;
 
 public enum RoofType
 {
-    FLAT("Fladt tag");
+    FLAT("Fladt tag"),
+    TRAPEZ_ROOF("Trapez tag");
 
     private final String displayName;
 
