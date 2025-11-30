@@ -37,7 +37,7 @@
         <form th:action="@{/request-offer}" method="post" class="form">
 
             <div class="form-field">
-                <label for="carportWidth">Carport bredde *</label>
+                <label for="carportWidth">Carport bredde <span class="required-asterisk">*</span></label>
                 <select name="carportWidth" id="carportWidth" required>
                     <option value="" disabled selected>Vælg bredde</option>
 
@@ -61,7 +61,7 @@
             </div>
 
             <div class="form-field">
-                <label for="roofType">Carport trapeztag *</label>
+                <label for="roofType">Carport trapeztag <span class="required-asterisk">*</span></label>
                 <select name="roofType" id="roofType" required>
                     <option value="" disabled selected>Vælg tag</option>
 
@@ -70,15 +70,16 @@
                 </select>
             </div>
 
+            <div class="form-field">
             <h4>Redskabsrum</h4>
 
             <p>
                 NB! Der skal beregnes 15 cm tagudhæng på hver side af redskabsrummet*
-                Redskabsrum bredde *
             </p>
+            </div>
 
             <div class="form-field">
-                <label for="shedWidth">Redskabsrum bredde *</label>
+                <label for="shedWidth">Redskabsrum bredde <span class="required-asterisk">*</span></label>
                 <select name="shedWidth" id="shedWidth" required>
                     <option value="" disabled selected>Vælg bredde</option>
                     <option value="NONE">Uden redskabsrum</option>
@@ -91,7 +92,7 @@
             </div>
 
             <div class="form-field">
-                <label for="shedLength">Redskabsrum længde *</label>
+                <label for="shedLength">Redskabsrum længde <span class="required-asterisk">*</span></label>
                 <select name="shedLength" id="shedLength" required>
                     <option value="" disabled selected>Vælg længde</option>
                     <option value="NONE">Uden redskabsrum</option>

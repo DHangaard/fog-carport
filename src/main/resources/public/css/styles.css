@@ -285,11 +285,8 @@ footer {
     align-items: center;
     max-width: 1400px;
     margin: 0 auto;
-}
-
-.hero-text {
-    padding: 60px;
-    padding-left: 80px;
+    padding: 60px 0 60px 40px;
+    gap: 1rem;
 }
 
 .hero-logo img {
@@ -301,10 +298,11 @@ footer {
     font-size: 42px;
     margin-bottom: 30px;
     margin-top: 30px;
+    color: var(--color-text-header);
 }
 
 .hero-text p {
-    margin-bottom: 30px;
+    margin-bottom: 50px;
 }
 
 .hero-image img {
@@ -314,7 +312,7 @@ footer {
 }
 
 .hero-image {
-    height: 600px;
+    height: 625px;
 }
 
 .info-grid {
@@ -335,19 +333,18 @@ footer {
 .info-left h2 {
     font-size: 36px;
     margin-bottom: 25px;
-}
-
-.info-left h2 {
-    font-size: 36px;
-    margin-bottom: 25px;
+    color: var(--color-text-header);
 }
 
 .info-left p {
     margin-bottom: 20px;
 }
 
-.info-left .btn .btn-primary {
-    margin-top: 2.5rem;
+.hero-text .btn,
+.info-left .btn {
+    display: inline-block;
+    width: auto;
+    margin-top: 1rem;
 }
 
 .info-right {
@@ -392,11 +389,31 @@ footer {
 }
 
 /* Form */
+
+.content {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+    text-align: left;
+}
+
+.content h1 {
+    color: var(--color-text-header);
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.content p {
+    text-align: left;
+    margin-bottom: 1rem;
+}
+
+
 .form-container {
     width: 100%;
-    max-width: 500px;
+    max-width: 800px;
     margin: 0 auto;
-    padding: 2.5rem;
+    padding: 3rem;
     background-color: var(--color-cards);
     border: 1px solid #ddd;
     border-radius: var(--radius-md);
@@ -407,6 +424,32 @@ footer {
     font-size: 1.75rem;
     margin-bottom: 2rem;
     text-align: center;
+}
+
+.form-container h2 {
+    color: var(--color-text-header);
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.form-container > p {
+    margin-bottom: 2rem;
+    text-align: left;
+}
+
+.form-field h4 {
+    color: var(--color-text-header);
+    font-weight: 700;
+    font-size: 1.5rem;
+    margin-top: 1rem;
+}
+
+.form-field h4 + p {
+    text-align: left;
+    font-size: 1.0rem;
+    color: var(--color-text-dark);
+    margin-bottom: 1rem;
+    margin-top: 0;
 }
 
 .form {
@@ -421,10 +464,27 @@ footer {
     gap: 0.5rem;
 }
 
+.form-field select,
+.form-field textarea {
+    padding: 0.875rem;
+    border: 1px solid #ddd;
+    border-radius: var(--radius-sm);
+    font-size: 1rem;
+    background-color: #fff;
+    transition: border-color 0.2s;
+    width: 100%;
+}
+
+.form-field select:focus,
+.form-field textarea:focus {
+    outline: none;
+    border-color: var(--color-fog-blue);
+}
+
 .form-field label {
     color: var(--color-text-header);
-    font-weight: 500;
-    font-size: 0.9rem;
+    font-weight: 600;
+    font-size: 1.5rem;
 }
 
 .form-input {
@@ -465,6 +525,10 @@ footer {
     text-decoration: underline;
 }
 
+.required-asterisk {
+    color: #c33;
+}
+
 /* Button */
 .btn {
     padding: 0.875rem 1.5rem;
@@ -476,6 +540,7 @@ footer {
     transition: background-color 0.2s;
     width: 100%;
 }
+
 
 .btn-primary {
     background-color: var(--color-button-blue);
