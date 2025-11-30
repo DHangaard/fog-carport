@@ -43,9 +43,13 @@ body {
 main {
     flex: 1;
     padding: 3rem 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+}
+
+p {
+    font-size: 1.125rem;
+    color: #444;
+    line-height: 1.7;
+    margin-bottom: 0.75rem;
 }
 
 a {
@@ -191,6 +195,80 @@ footer {
 .footer-contact a:hover {
     color: var(--color-outline-blue);
     text-decoration: underline;
+}
+
+/* Build carport info */
+
+.carport-content{
+    display: flex;
+    flex-direction: column;
+    max-width: 1400px;
+    margin: 0 auto;
+    gap: 2rem;
+}
+
+.build-carport-img img{
+    width: 100%;
+    object-fit: cover;
+}
+.carport-cards {
+    display: flex;
+    gap: 10rem;
+    justify-content: center;
+    margin-top: 3rem;
+    width: 100%;
+}
+
+.build-carport-text {
+    max-width: 1400px;
+    padding-left: 0;
+    text-align: left;
+}
+
+.build-carport-text h1{
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    color: var(--color-text-header);
+}
+
+.link-card {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: var(--radius-md);
+    padding: 2rem;
+    width: 300px;
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.link-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+.link-card:hover .arrow {
+    transform: translatex(3rem);
+}
+
+.link-card img {
+    width: 120px;
+    margin-bottom: 1rem;
+}
+
+.link-card h5 {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    color: var(--color-text-header);
+}
+
+.link-card p {
+    font-size: 0.95rem;
+    color: var(--color-text-dark);
+}
+
+.link-card .arrow {
+    width: 30px;
+    margin-top: 1rem;
 }
 
 /* Hero grid - text left, image right */

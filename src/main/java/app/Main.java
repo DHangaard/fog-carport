@@ -1,15 +1,13 @@
 package app;
 
 import app.config.ThymeleafConfig;
+import app.controllers.CarportController;
 import app.controllers.UserController;
 import app.dto.UserDTO;
 import app.persistence.ConnectionPool;
 import app.persistence.UserMapper;
 import app.persistence.ZipCodeMapper;
-import app.services.IEmailService;
-import app.services.IUserService;
-import app.services.SendGridEmailService;
-import app.services.UserService;
+import app.services.*;
 import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinThymeleaf;
 
@@ -45,10 +43,13 @@ public class Main
         UserMapper userMapper = new UserMapper(connectionPool);
         ZipCodeMapper zipCodeMapper = new ZipCodeMapper(connectionPool);
         IUserService userService = new UserService(userMapper, zipCodeMapper);
+        ICarportService carportService = new CarportService();
 
         UserController userController = new UserController(userService);
+        CarportController carportController = new CarportController(carportService);
 
         userController.addRoutes(app);
+        carportController.addRoutes(app);
 
         UserDTO userDTO = new UserDTO(0,"Morten", "Jensen",null,1362,null,"mortenjenne@gmail.com",null,null);
 
