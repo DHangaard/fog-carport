@@ -147,7 +147,6 @@ public class UserService implements IUserService
         {
             userMapper.updateUser(user);
         }
-
         return changed;
     }
 

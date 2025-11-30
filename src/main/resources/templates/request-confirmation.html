@@ -27,7 +27,7 @@
 
         <p>
             Der er sendt en bekræftelse til:
-            <strong th:text="${session.currentUser.email}">kunde@email.dk</strong>
+            <strong th:text="${session.currentUser.email}"></strong>
         </p>
 
         <hr class="horizontal-line">
@@ -42,7 +42,7 @@
             </p>
 
             <p><strong>Tagtype:</strong>
-                <span th:text="${session.carport.roofType != null ? session.carport.roofType.displayName : ''}"></span>
+                <span th:text="${session.carport.roofType}"></span>
             </p>
 
             <div th:if="${session.carport.shed != null}">

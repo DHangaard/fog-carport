@@ -3,7 +3,6 @@ package app;
 import app.config.ThymeleafConfig;
 import app.controllers.CarportController;
 import app.controllers.UserController;
-import app.dto.UserDTO;
 import app.persistence.ConnectionPool;
 import app.persistence.UserMapper;
 import app.persistence.ZipCodeMapper;
@@ -51,7 +50,5 @@ public class Main
 
         userController.addRoutes(app);
         carportController.addRoutes(app);
-
-
     }
 }

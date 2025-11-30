@@ -191,7 +191,7 @@ public class UserMapper
             ps.setString(3, user.getEmail());
             ps.setString(4, user.getPhoneNumber());
             ps.setInt(5, user.getZipCode());
-            ps.setString(6, user.getCity());
+            ps.setString(6, user.getStreet());
             ps.setInt(7, user.getUserId());
 
             int rowsAffected = ps.executeUpdate();

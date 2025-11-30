@@ -159,6 +159,7 @@ header {
 }
 
 /* Footer */
+
 footer {
     background-color: var(--color-footer);
     border-top: 1px solid #ddd;
@@ -271,7 +272,7 @@ footer {
     margin-top: 1rem;
 }
 
-/* Hero grid - text left, image right */
+/* Index content  */
 
 .page-content {
     display: block;

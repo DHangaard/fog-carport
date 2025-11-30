@@ -110,6 +110,4 @@ public class UserController
         ctx.attribute("street", ctx.formParam("street"));
         ctx.attribute("zipCode", ctx.formParam("zipCode"));
     }
-
-
 }
