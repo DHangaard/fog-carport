@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Fog - Tak for din forespørgsel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="/public/css/styles.css" th:href="@{/css/styles.css}"/>
+    <link rel="icon" th:href="@{/images/logo.svg}">
+</head>
+<body>
+
+<div th:replace="~{fragments :: headerFragment}"></div>
+
+<main>
+    <div class="content-contact">
+        <h1>Tak for din forespørgsel</h1>
+    </div>
+
+    <div class="form-container">
+
+        <h2>Vi har modtaget din anmodning</h2>
+
+        <p>
+            Mange tak, <span th:text="${session.currentUser.firstName}">kunde</span>!<br/>
+            Du vil blive kontaktet af Fog snarest muligt.
+        </p>
+
+        <p>
+            Der er sendt en bekræftelse til:
+            <strong th:text="${session.currentUser.email}">kunde@email.dk</strong>
+        </p>
+
+        <hr class="horizontal-line">
+
+        <h3>Din forespørgsel</h3>
+
+        <div class="form-field">
+
+            <p><strong>Carport mål:</strong>
+                <span th:text="${session.carport.width}"></span> ×
+                <span th:text="${session.carport.length}"></span> cm
+            </p>
+
+            <p><strong>Tagtype:</strong>
+                <span th:text="${session.carport.roofType != null ? session.carport.roofType.displayName : ''}"></span>
+            </p>
+
+            <div th:if="${session.carport.shed != null}">
+                <p><strong>Skur:</strong>
+                    <span th:text="${session.carport.shed.width}"></span> ×
+                    <span th:text="${session.carport.shed.length}"></span> cm
+                </p>
+            </div>
+
+            <div th:if="${session.carport.shed == null}">
+                <p><strong>Skur:</strong> Ikke valgt</p>
+            </div>
+
+            <div th:if="${session.customerNote != null and session.customerNote != ''}">
+                <p><strong>Bemærkning:</strong><br>
+                    <span th:text="${session.customerNote}"></span>
+                </p>
+            </div>
+        </div>
+
+        <hr class="horizontal-line">
+
+            <a class="btn btn-primary" th:href="@{/}">Tilbage til forsiden</a>
+
+    </div>
+</main>
+
+<div th:replace="~{fragments :: footerFragment}"></div>
+
+</body>
+</html>

@@ -397,7 +397,14 @@ footer {
     text-align: left;
 }
 
-.content h1 {
+.content-contact{
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+    text-align: center;
+}
+
+.content .content-contact h1 {
     color: var(--color-text-header);
     font-size: 2rem;
     margin-bottom: 1.5rem;
@@ -527,6 +534,10 @@ footer {
 
 .required-asterisk {
     color: #c33;
+}
+
+.horizontal-line {
+    margin: 2rem 0;
 }
 
 /* Button */

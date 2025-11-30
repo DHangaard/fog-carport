@@ -5,7 +5,10 @@ import app.entities.Carport;
 import app.entities.Shed;
 import app.enums.RoofType;
 import app.enums.ShedPlacement;
+import app.exceptions.DatabaseException;
 import app.services.ICarportService;
+import app.services.IEmailService;
+import app.services.IUserService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 
@@ -15,10 +18,14 @@ import java.util.List;
 public class CarportController
 {
     private ICarportService carportService;
+    private IUserService userService;
+    private IEmailService emailService;
 
-    public CarportController(ICarportService carportService)
+    public CarportController(ICarportService carportService, IUserService userService, IEmailService emailService)
     {
         this.carportService = carportService;
+        this.userService = userService;
+        this.emailService = emailService;
     }
 
     public void addRoutes(Javalin app)
@@ -26,7 +33,52 @@ public class CarportController
         app.get("/carporte", ctx -> showBuildCarportPage(ctx));
         app.get("/carport-formular", ctx -> showCarportFormular(ctx));
 
-        app.post("/request-offer", ctx -> handleCarportRequest(ctx));
+        app.post("/request-carport", ctx -> handleCarportRequest(ctx));
+        app.post("/confirm-request", ctx -> confirmCarportRequest(ctx));
+    }
+
+    private void confirmCarportRequest(Context ctx)
+    {
+        if(!requireLogin(ctx)) {return;}
+
+        UserDTO currentUser = ctx.sessionAttribute("currentUser");
+        Carport carport = ctx.sessionAttribute("carport");
+
+        if (currentUser == null || carport == null)
+        {
+            ctx.attribute("error", "Session udløbet. Prøv igen.");
+            ctx.redirect("/");
+            return;
+        }
+
+        UserDTO userFromContactPage = new UserDTO(
+                currentUser.userId(),
+                ctx.formParam("firstName"),
+                ctx.formParam("lastName"),
+                ctx.formParam("street"),
+                Integer.parseInt(ctx.formParam("zipCode")),
+                ctx.formParam("city"),
+                ctx.formParam("email"),
+                ctx.formParam("phoneNumber"),
+                currentUser.role()
+        );
+
+        try
+        {
+            boolean userChangedContactInformation = userService.updateUser(userFromContactPage);
+
+            if(userChangedContactInformation)
+            {
+                ctx.sessionAttribute("successMessage", "Dine kontakt oplysninger er opdateret!");
+            }
+
+            emailService.sendRequestConfirmation(userFromContactPage);
+            ctx.render("request-confirmation");
+        }
+        catch (DatabaseException | IllegalArgumentException e)
+        {
+            ctx.attribute("errorMessage", e.getMessage());
+        }
     }
 
     private void handleCarportRequest(Context ctx)

@@ -93,6 +93,79 @@ public class UserService implements IUserService
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public boolean updateUser(UserDTO userDTO) throws DatabaseException
+    {
+        validateUpdate(userDTO);
+
+        User user = userMapper.getUserById(userDTO.userId());
+        boolean changed = false;
+
+        if (!user.getFirstName().equals(userDTO.firstName()))
+        {
+            user.setFirstName(userDTO.firstName());
+            changed = true;
+        }
+
+        if (!user.getLastName().equals(userDTO.lastName()))
+        {
+            user.setLastName(userDTO.lastName());
+            changed = true;
+        }
+
+        if (!user.getEmail().equals(userDTO.email()))
+        {
+            user.setEmail(userDTO.email());
+            changed = true;
+        }
+
+        if (!user.getPhoneNumber().equals(userDTO.phoneNumber()))
+        {
+            user.setPhoneNumber(userDTO.phoneNumber());
+            changed = true;
+        }
+
+        if (!user.getStreet().equals(userDTO.street()))
+        {
+            user.setStreet(userDTO.street());
+            changed = true;
+        }
+
+        if (user.getZipCode() != userDTO.zipCode())
+        {
+            user.setZipCode(userDTO.zipCode());
+            changed = true;
+        }
+
+        if (!user.getCity().equals(userDTO.city()))
+        {
+            user.setCity(userDTO.city());
+            changed = true;
+        }
+
+        if (changed)
+        {
+            userMapper.updateUser(user);
+        }
+
+        return changed;
+    }
+
+    private void validateUpdate(UserDTO dto) throws DatabaseException
+    {
+        ValidationUtil.validateName(dto.firstName(), "Fornavn");
+        ValidationUtil.validateName(dto.lastName(), "Efternavn");
+        ValidationUtil.validateStreet(dto.street());
+        ValidationUtil.validateZipCode(dto.zipCode());
+        ValidationUtil.validateEmail(dto.email());
+        ValidationUtil.validatePhoneNumber(dto.phoneNumber());
+
+        if (!zipCodeMapper.zipCodeExists(dto.zipCode()))
+        {
+            throw new DatabaseException("Postnummer findes ikke: " + dto.zipCode());
+        }
+    }
+
     private UserDTO buildUserDTO(User user)
     {
         return new UserDTO(

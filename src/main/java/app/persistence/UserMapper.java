@@ -170,6 +170,12 @@ public class UserMapper
         return users;
     }
 
+    public boolean updateUser(User user)
+    {
+        //TODO
+        return false;
+    }
+
     private User buildUserFromResultSet(ResultSet rs) throws SQLException
     {
         return new User(
@@ -185,4 +191,5 @@ public class UserMapper
                 Role.valueOf(rs.getString("role"))
         );
     }
+
 }

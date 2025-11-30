@@ -44,19 +44,14 @@ public class Main
         ZipCodeMapper zipCodeMapper = new ZipCodeMapper(connectionPool);
         IUserService userService = new UserService(userMapper, zipCodeMapper);
         ICarportService carportService = new CarportService();
+        IEmailService emailService = new SendGridEmailService();
 
         UserController userController = new UserController(userService);
-        CarportController carportController = new CarportController(carportService);
+        CarportController carportController = new CarportController(carportService, userService, emailService);
 
         userController.addRoutes(app);
         carportController.addRoutes(app);
 
-        UserDTO userDTO = new UserDTO(0,"Morten", "Jensen",null,1362,null,"mortenjenne@gmail.com",null,null);
 
-        //IEmailService iEmailService = new SendGridEmailService();
-        //boolean result = iEmailService.sendRequestConfirmation(userDTO);
-        //boolean result2 = iEmailService.sendOfferReady(userDTO);
-        //System.out.println(result);
-        //System.out.println(result2);
     }
 }
