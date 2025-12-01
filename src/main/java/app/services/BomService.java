@@ -230,7 +230,7 @@ public class BomService
 
         return new MaterialLine(stripRoolVariant, numberOfStripRoolsNeeded);
     }
-    
+
     private List<MaterialLine> calculateNumberOfCarriageBoltsAndWashers(Carport carport) throws DatabaseException, MaterialNotFoundException
     {
         final String CARRIAGE_BOLT_NAME = "bræddebolt";
