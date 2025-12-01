@@ -1,5 +1,6 @@
 package app.entities;
 
+import app.util.TimeUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -21,5 +22,9 @@ public class OrderTimeLine
     public void calculateExpirationDate()
     {
         //TODO implement body
+    }
+
+    public String getRelativeTime() {
+        return TimeUtil.getRelativeTime(customerRequestCreatedAt);
     }
 }

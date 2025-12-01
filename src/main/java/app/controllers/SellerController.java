@@ -55,7 +55,6 @@ public class SellerController
     private boolean userIsAdmin(Context ctx)
     {
         UserDTO userDTO = ctx.sessionAttribute("currentUser");
-        System.out.println(userDTO);
 
         if(userDTO == null)
         {

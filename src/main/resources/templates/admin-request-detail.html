@@ -12,7 +12,134 @@
 <div th:replace="~{fragments :: headerFragment}"></div>
 
 <main>
+    <div class="request-details-page">
+        <div class="hero-content">
+            <h1>Forespørgsel #<span th:text="${orderDetail.order.orderId}"></span></h1>
+            <p>Oprettet : <span th:text="orderDetail.orderTimeLine.relativeTime"></span></p>
+            <p>Status : <span th:text="orderDetail.orderStatus.displayName"></span></p>
+        </div>
 
+        <section class="section">
+            <h2>Carport & Kunde information</h2>
+
+            <div class="info-grid">
+
+                <div class="info-content">
+                    <h3>Carport Specifikationer</h3>
+                    <div class="info-item">
+                        <strong>Længde:</strong>
+                        <span th:text="${orderDetail.carport.length} + ' cm'"></span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Bredde:</strong>
+                        <span th:text="${orderDetail.carport.width} + ' cm'"></span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Tagtype:</strong>
+                        <span th:text="${orderDetail.carport.Rooftype.displayName}"></span>
+                    </div>
+                    <div class="info-item" th:if="${orderDetail.carport.shed != null}">
+                        <strong>Skur:</strong>
+                        <span th:text="${orderDetail.carport.shed.length} + ' x ' + ${orderDetail.carport.shed.width} + ' cm'"></span>
+                    </div>
+                </div>
+
+                <div class="info-content">
+                    <h3>Kunde information</h3>
+
+                    <div class="info-item">
+                        <strong>Navn:</strong>
+                        <span th:text="${orderDetail.customer.firstName} + ' ' + ${orderDetail.customer.lastName}"></span>
+                    </div>
+
+                    <div class="info-item">
+                        <strong>E-mail:</strong>
+                        <a th:href="'mailto:' + ${orderDetail. customer.email}"
+                           th:text="${orderDetail.customer.email}"></a>
+                    </div>
+
+                    <div class="info-item">
+                        <strong>Telefon:</strong>
+                        <a th:href="'tel:+45' + ${orderDetail.customer.phoneNumber}"
+                           th:text="${orderDetail.customer.phoneNumber}"></a>
+                    </div>
+
+                    <div class="info-item">
+                        <strong>Adresse:</strong>
+                        <span th:text="${orderDetail.customer.street} + ', ' + ${orderDetail.customer.zipCode} + ' ' + ${orderDetail.customer.city}"></span>
+                    </div>
+
+                    <div th:if="@{orderDetail.customerComment}" class="info-item">
+                        <strong>Kommentar fra kunden:</strong>
+                        <span th:text="${orderDetail.customerComment}"></span>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Tegning</h2>
+            <div class="drawing-grid">
+                <div>
+                    <h3>Oversigt fra toppen</h3>
+                    <div th:utext="${orderDetail.carportSvgTop.toString()}"></div>
+                </div>
+                <div>
+                    <h3>Sidevisning</h3>
+                    <div th:utext="${orderDetail.carportSvgSide.toString()}"></div>
+                </div>
+            </div>
+
+            <a th:href="@{/show-carport-drawing}" class="btn-primary">Se stor tegning her</a>
+        </section>
+
+        <section class="section">
+            <h2>Stykliste & Prisberegning</h2>
+
+            <table class="bom-table">
+                <thead>
+                <tr>
+                    <th>Antal</th>
+                    <th>Vare nr.</th>
+                    <th>Vare beskrivelse</th>
+                    <th>Hjælpe tekst</th>
+                    <th>Længde</th>
+                    <th>Bredde</th>
+                    <th>Højde</th>
+                    <th>Enhed</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="line : ${orderDetail.materialLines}">
+                    <td>
+                        <form th:action="@{/requests/{id}/update-bom(id=${orderDetail.orderId})}" method="post">
+                            <input type="hidden" name="materialLineId" th:value="${line.materialLineId}">
+                            <input type="number" name="quantity" th:value="${line.quantity}" min="0" onchange="this.form.submit()">
+                        </form>
+                    </td>
+                    <td th:text="${line.quantity}"></td>
+                    <td th:text="${line.materialVariant.materialVariantId}"></td>
+                    <td th:text="${line.materialVariant.description}"></td>
+                    <td th:text="${line.materialVariant.material.usage}"></td>
+                    <td th:text="${line.materialVariant.variantLength != null ? line.materialVariant.variantLength + ' cm' : '-'}"></td>
+                    <td th:text="${line.materialVariant.material.materialWidth != null ? line.materialVariant.material.materialWidth + ' cm' : '-'}"></td>
+                    <td th:text="${line.materialVariant.material.materialHeight != null ? line.materialVariant.material.materialHeight + ' cm' : '-'}"></td>
+                    <td th:text="${line. materialVariant.material.unit}"></td>
+                    <td>
+                        <form th:action="@{/requests/{id}/delete-bom-line(id=${orderDetail.orderId})}" method="post">
+                            <input type="hidden" name="materialLineId" th:value="${line.materialLineId}">
+                            <button type="submit" class="btn-delete">Slet</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            
+        </section>
+
+    </div>
 </main>
 
 

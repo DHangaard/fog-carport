@@ -592,42 +592,53 @@ footer {
     background-color: #f0f4f8;
 }
 
-.action-btn {
+.table-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.table-actions form {
+    margin: 0;
+    display: inline-flex;
+}
+
+.btn-table {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 0.4rem 0.6rem;
-    border: solid var(--color-outline-blue);
+    padding: 0.5rem;
+    border: none;
     border-radius: var(--radius-sm);
     cursor: pointer;
     transition: background-color 0.2s;
 }
 
-.action-btn img {
+.btn-table img {
     width: 20px;
     height: 20px;
     display: block;
 }
 
-.action-btn:active {
+.btn-table:active {
     transform: translateY(1px);
 }
 
-.view-btn {
+.btn-view {
     background-color: var(--color-button-blue);
     color: var(--color-text-primary);
 }
 
-.view-btn:hover {
+.btn-view:hover {
     background-color: var(--color-fog-blue);
 }
 
-.delete-btn {
+.btn-delete {
     background-color: #c33;
     color: var(--color-text-primary);
 }
 
-.delete-btn:hover {
+.btn-delete:hover {
     background-color: #a00;
 }
 

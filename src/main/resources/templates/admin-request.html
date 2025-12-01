@@ -52,10 +52,10 @@
             <table>
                 <thead>
                 <tr>
-                    <th>Ordre Id</th>
+                    <th>Ordre-nr.</th>
                     <th>Kunde</th>
-                    <th>Email</th>
-                    <th>Forespørgsel dato</th>
+                    <th>E-mail</th>
+                    <th>Oprettet</th>
                     <th>Status</th>
                     <th>Handlinger</th>
                 </tr>
@@ -67,21 +67,22 @@
                     <td><span th:text="${orderOverview.email}"></span></td>
                     <td th:text="${orderOverview.relativeTime}"></td>
                     <td><span th:text="${orderOverview.orderStatus.displayName}"></span></td>
-
-
-                    <td class="action-buttons">
+                    <td>
+                        <div class="table-actions">
                         <a th:href="@{/carport-request/details/{id}(id=${orderOverview.orderId})}"
-                           class="action-btn view-btn">
+                           class="btn-table btn-view"
+                           title="Se detajler">
                             <img th:src="@{/images/view.svg}" alt="Se detaljer"/>
                         </a>
 
                         <form method="post"
-                              th:href="@{/carport-request/details/{id}(id=${orderOverview.orderId})}"
+                              th:action="@{/carport-request/details/{id}(id=${orderOverview.orderId})}"
                               onsubmit="return confirm('Er du sikker på du vil slette forespørgsel?')">
-                            <button type="submit" class="action-btn delete-btn" title="Slet ordre">
+                            <button type="submit" class="btn-table btn-delete" title="Slet ordre">
                                 <img th:src="@{/images/delete.svg}" alt="Slet"/>
                             </button>
                         </form>
+                        </div>
                     </td>
                 </tr>
                 </tbody>
