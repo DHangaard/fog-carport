@@ -5,13 +5,98 @@
     <title>Fog - Holder i længden</title>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link rel="stylesheet" href="/public/css/styles.css" th:href="@{/css/styles.css}"/>
+    <link rel="icon" th:href="@{/images/logo.svg}">
 </head>
 <body>
 
 <div th:replace="~{fragments :: headerFragment}"></div>
 
 <main>
+    <div class="page-content">
 
+    <div class="hero-grid">
+        <div class="hero-text">
+            <div class="hero-logo">
+                <img alt="Logo af Fog" th:src="@{/images/logo.svg}">
+            </div>
+            <h1>Vi hjælper dig helt i mål med din nye byg-selv carport</h1>
+            <p>
+                Vores specialister har mere end 25 års erfaring med levering af byg-selv carporte og skure og sidder klar til at rådgive dig. I Fog tilbyder vi både standardløsninger og individuelle løsninger tilpasset dine behov og ønsker - altid baseret på kvalitetsbyggematerialer. Og så får du leveret til døren med vores egne kranbiler eller i samarbejde med vores leverandører.
+            </p>
+            <a class=" btn btn-primary" th:href="@{/carporte}">Se udvalget af vores byg selv carporte</a>
+        </div>
+        <div class="hero-image">
+            <img alt="Moderne carport med bil" th:src="@{/images/carport-byg-selv-hero.webp}">
+        </div>
+    </div>
+
+        <div class="info-grid">
+
+            <div class="info-left">
+                <h2>Kan jeg selv bygge en carport?</h2>
+
+                <p>
+                    At bygge en carport eller et skur kræver lidt håndværksmæssig erfaring i brug af værktøj, opmåling osv., men er ellers et projekt, du sagtens kan kaste dig ud i. Der medfølger udførlig monteringsvejledning med alle vores Byg-selv produkter.
+                </p>
+                <p>
+                    Vi anbefaler, at du sikrer dig nogle hjælpende hænder til projektet, da der kan være høje og tunge løft, hvor det er nødvendigt at være flere på opgaven.
+                </p>
+
+                <p>
+                    Sørg også for at have det nødvendige værktøj til rådighed. Du kan købe eller leje dit værktøj i vores forretninger, hvis du ikke har det i forvejen.
+                </p>
+
+                <p>
+                    OBS! Husk altid at undersøge, om din nye carport kræver byggetilladelse eller anmeldelse hos kommunen.
+                </p>
+
+                <p><b>Har du spørgsmål eller brug for hjælp til din byg-selv carport?</b></p>
+
+                <p>Kontakt vores carport specialister direkte på mail <a href="mailto:quickbyg@johannesfog.dk">quickbyg@johannesfog.dk</a></p>
+
+                <p>Vores standardprogram indeholder fladtagsmodeller i enkelt eller dobbelt størrelse med plastik trapeztag og med eller uden skur samt modeller med sadeltag, hvor tagbeklædning er B&C betontagsten. Kontakt os, hvis du har behov for at ændre til en anden tagtype.</p>
+
+                <h2>Standard eller individuel løsning?</h2>
+
+                <p>Alle sadeltagsmodeller leveres med færdigsamlede kassespær direkte fra fabrik, hvilket sikrer dig kvalitet og sikkerhed i byggeriet.</p>
+
+                <p>Alle standardmodeller med skur eller beklædning leveres med 19 x 100 mm 1-på-2 beklædning.</p>
+
+                <h2>Individuelle løsninger</h2>
+
+                <p>Med et specialudviklet computerprogram kan vi lynhurtigt beregne prisen på en carport i de mål, der passer nøjagtigt til dit behov.</p>
+
+                <p>Vi indgår rigtig gerne i dialog omkring størrelse og udformning. Er du i tvivl om valget eller udformningen af din byg-selv carport, kan du skrive direkte til os på
+                    <a href="mailto:quickbyg@johannesfog.dk">quickbyg@johannesfog.dk</a>
+                    eller indtaste dine specifikationer direkte i <a th:href="@{/carporte}">formularen</a>.
+                </p>
+
+                <p>Vær opmærksom på, at der stilles ekstra kravdimensionering, hvis din carport skal monteres på eksisterende hus.</p>
+
+                <a class="btn btn-primary" th:href="@{/carporte}">Bestil et Quick-Byg-tilbud</a>
+            </div>
+
+            <aside class="info-right">
+                <div class="info-image">
+                    <img alt="Blå himmel med skyer og carport"
+                         src="/images/carport-byg-selv-index.webp"
+                         th:src="@{/images/carport-byg-selv-index.webp}">
+                </div>
+
+                <div class="info-video">
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/B_JckxZkpkY?si=5aDsWeagx9YlzlfJ"
+                                title="YouTube video player"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                referrerpolicy="strict-origin-when-cross-origin"
+                                allowfullscreen>
+                        </iframe>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
 </main>
 
 

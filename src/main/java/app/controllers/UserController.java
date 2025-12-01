@@ -6,7 +6,6 @@ import app.exceptions.DatabaseException;
 import app.services.IUserService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
-import org.jetbrains.annotations.NotNull;
 
 public class UserController
 {
@@ -111,6 +110,4 @@ public class UserController
         ctx.attribute("street", ctx.formParam("street"));
         ctx.attribute("zipCode", ctx.formParam("zipCode"));
     }
-
-
 }
