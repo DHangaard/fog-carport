@@ -26,7 +26,7 @@ public class BomService
         MaterialLine postMaterialLine = calculateNumberOfPosts(carport);
         MaterialLine rafterMaterialLine = calculateNumberOfRafters(carport);
         MaterialLine roofPlateScrewLine = calculateRoofPlateScrews(carport);
-        MaterialLine stripRoolLine = calculateNumberOfStripRools(carport);
+        MaterialLine stripRoolLine = calculateNumberOfStripRolls(carport);
         MaterialLine bracketScrewLine = calculateBracketScrews(carport);
 
         List<MaterialLine> beamMaterialLines = calculateNumberOfBeams(carport);
@@ -148,43 +148,25 @@ public class BomService
         List<MaterialLine> beamsNeeded = new ArrayList<>();
         List<MaterialVariant> beamVariants = variantMapper.getAllVariantsByType(MaterialType.BEAM);
         final int NUMBER_OF_BEAM_ROWS = 2;
-        final int MAX_VARIANT_lENGTH = beamVariants.stream()
-                .filter(materialVariant -> materialVariant.getVariantLength() != null)
-                .mapToInt(MaterialVariant::getVariantLength)
-                .max()
-                .orElseThrow(() -> new MaterialNotFoundException("Ingen kombination af remme passer til længde: " + carport.getLength() + " cm."));
+        final int MAX_VARIANT_lENGTH = getMaxVariantLength(beamVariants);
 
         if (carport.getLength() > MAX_VARIANT_lENGTH) // When longer than max variant, the carport will have 6 posts
         {
-            final int DISTANCE_TO_CENTER_POST = 420; // Should this be 410 ?
+            final int DISTANCE_TO_CENTER_POST = 420;
 
-            MaterialVariant beamVariant = beamVariants.stream()
-                    .filter(v -> v.getVariantLength() != null)
-                    .filter(v -> v.getVariantLength() >= DISTANCE_TO_CENTER_POST)
-                    .min(Comparator.comparingInt(MaterialVariant::getVariantLength))
-                    .orElseThrow(() -> new MaterialNotFoundException("Ingen kombination af remme passer til længde: " + carport.getLength() + " cm."));
-
+            MaterialVariant beamVariant = findOptimalVariantLength(beamVariants, DISTANCE_TO_CENTER_POST);
             beamsNeeded.add(new MaterialLine(beamVariant, NUMBER_OF_BEAM_ROWS));
 
             int remainingPerSide = carport.getLength() - DISTANCE_TO_CENTER_POST;
             int remainingTotal = remainingPerSide * NUMBER_OF_BEAM_ROWS;
+            int remainingBeams = (int) Math.ceil(NUMBER_OF_BEAM_ROWS / 2);
 
-            MaterialVariant remainingVariant = beamVariants.stream()
-                    .filter(v -> v.getVariantLength() != null)
-                    .filter(v -> v.getVariantLength() >= remainingTotal)
-                    .min(Comparator.comparingInt(MaterialVariant::getVariantLength))
-                    .orElseThrow(() -> new MaterialNotFoundException("Ingen kombination af remme passer til længde: " + carport.getLength() + " cm."));
-
-            beamsNeeded.add(new MaterialLine(remainingVariant, 1));
+            MaterialVariant remainingVariant = findOptimalVariantLength(beamVariants, remainingTotal);
+            beamsNeeded.add(new MaterialLine(remainingVariant, remainingBeams));
         }
         else
         {
-            MaterialVariant beamVariant = beamVariants.stream()
-                    .filter(variant -> variant.getVariantLength() != null)
-                    .filter(variant -> variant.getVariantLength() >= carport.getLength())
-                    .min(Comparator.comparingInt(MaterialVariant::getVariantLength))
-                    .orElseThrow(() -> new MaterialNotFoundException("Ingen kombination af remme passer til længde: " + carport.getLength() + " cm."));
-
+            MaterialVariant beamVariant = findOptimalVariantLength(beamVariants, carport.getLength());
             beamsNeeded.add(new MaterialLine(beamVariant, NUMBER_OF_BEAM_ROWS));
         }
 
@@ -209,7 +191,7 @@ public class BomService
         return new MaterialLine(roofFastenerVariant, numberOfPackagesNeeded);
     }
 
-    private List<MaterialLine> getFittingsForCarport(int numberOfFittings) throws DatabaseException
+    private List<MaterialLine> getFittingsForCarport(int numberOfFittings) throws DatabaseException, MaterialNotFoundException
     {
         final String FITTING_RIGHT = "Universal højre";
         final String FITTING_LEFT= "Universal venstre";
@@ -235,7 +217,7 @@ public class BomService
                 .orElseThrow(() -> new MaterialNotFoundException("Kunne ikke finde beslag"));
     }
 
-    private MaterialLine calculateNumberOfStripRools(Carport carport) throws DatabaseException, MaterialNotFoundException
+    private MaterialLine calculateNumberOfStripRolls(Carport carport) throws DatabaseException, MaterialNotFoundException
     {
         List<MaterialVariant> stripRoolVariants = variantMapper.getAllVariantsByType(MaterialType.METAL_STRAP);
 
@@ -248,7 +230,7 @@ public class BomService
 
         return new MaterialLine(stripRoolVariant, numberOfStripRoolsNeeded);
     }
-
+    
     private List<MaterialLine> calculateNumberOfCarriageBoltsAndWashers(Carport carport) throws DatabaseException, MaterialNotFoundException
     {
         final String CARRIAGE_BOLT_NAME = "bræddebolt";
@@ -305,16 +287,16 @@ public class BomService
         return  new MaterialLine(bracketScrewVariant, bracketScrewPackages);
     }
 
-    private MaterialVariant findOptimalVariantLength(List<MaterialVariant> variants, int carportLength) throws DatabaseException, MaterialNotFoundException
+    private MaterialVariant findOptimalVariantLength(List<MaterialVariant> variants, int length) throws MaterialNotFoundException
     {
         return variants.stream()
                 .filter(variant -> variant.getVariantLength() != null)
-                .filter(variant -> variant.getVariantLength() >= carportLength)
+                .filter(variant -> variant.getVariantLength() >= length)
                 .min(Comparator.comparingInt(MaterialVariant::getVariantLength))
-                .orElseThrow(() -> new MaterialNotFoundException("Ingen kombination af materialer passer til længde: " + carportLength + " cm."));
+                .orElseThrow(() -> new MaterialNotFoundException("Ingen kombination af materialer passer til længde: " + length + " cm."));
     }
 
-    private int getMaxVariantLength(List<MaterialVariant> variants) throws DatabaseException, MaterialNotFoundException
+    private int getMaxVariantLength(List<MaterialVariant> variants) throws MaterialNotFoundException
     {
         return variants.stream()
                 .filter(materialVariant -> materialVariant.getVariantLength() != null)
