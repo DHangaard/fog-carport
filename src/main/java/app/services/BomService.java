@@ -19,7 +19,7 @@ public class BomService
         this.variantMapper = variantMapper;
     }
 
-    public List<MaterialLine> getBillOfMaterialByCarport(Carport carport) throws DatabaseException
+    public List<MaterialLine> getBillOfMaterialByCarport(Carport carport) throws DatabaseException, MaterialNotFoundException
     {
         List<MaterialLine> billOfMaterial = new ArrayList<>();
 
