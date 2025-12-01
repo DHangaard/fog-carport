@@ -1,6 +1,9 @@
 package app.util;
 
 import app.dto.RafterCalculationDTO;
+import app.entities.Carport;
+import app.entities.Shed;
+import app.enums.RoofType;
 import app.enums.ShedPlacement;
 import org.junit.jupiter.api.Test;
 
@@ -71,5 +74,111 @@ class PartCalculatorTest
         assertEquals(7, rafters300.numberOfRafters());
         assertTrue(rafters300.spacing() <= MAX_ACCEPTABLE_SPACING);
         assertTrue(rafters300.spacing() >= MIN_ACCEPTABLE_SPACING);
+    }
+
+    @Test
+    void testNumberOfRoofTileRows()
+    {
+        int numberOfRoofTilesWith420Width = PartCalculator.calculateNumberOfRoofTileRows(420, 109);
+        assertEquals(5, numberOfRoofTilesWith420Width);
+
+        int numberOfRoofTilesWith450Width = PartCalculator.calculateNumberOfRoofTileRows(450, 109);
+        assertEquals(5, numberOfRoofTilesWith450Width);
+
+        int numberOfRoofTilesWith480Width = PartCalculator.calculateNumberOfRoofTileRows(480, 109);
+        assertEquals(5, numberOfRoofTilesWith480Width);
+
+        int numberOfRoofTilesWith510Width = PartCalculator.calculateNumberOfRoofTileRows(510, 109);
+        assertEquals(6, numberOfRoofTilesWith510Width);
+
+        int numberOfRoofTilesWith540Width = PartCalculator.calculateNumberOfRoofTileRows(540, 109);
+        assertEquals(6, numberOfRoofTilesWith540Width);
+
+        int numberOfRoofTilesWith570Width = PartCalculator.calculateNumberOfRoofTileRows(570, 109);
+        assertEquals(6, numberOfRoofTilesWith570Width);
+
+        int numberOfRoofTilesWith600Width = PartCalculator.calculateNumberOfRoofTileRows(600, 109);
+        assertEquals(6, numberOfRoofTilesWith600Width);
+    }
+
+    @Test
+    void testNumberOfRoofScrewPackagesNeeded()
+    {
+        int screwsPerPackage = 200;
+
+        int carportWidth420Length600 = PartCalculator.calculateNumberOfRoofScrewPackagesNeeded(420, 600, screwsPerPackage);
+        assertEquals(2, carportWidth420Length600);
+
+        int carportWidth450Length690 = PartCalculator.calculateNumberOfRoofScrewPackagesNeeded(450, 690, screwsPerPackage);
+        assertEquals(2, carportWidth450Length690);
+
+        int carportWidth600Length780 = PartCalculator.calculateNumberOfRoofScrewPackagesNeeded(600, 780, screwsPerPackage);
+        assertEquals(3, carportWidth600Length780);
+    }
+
+    @Test
+    void testNumberOfStripRoolsNeeded()
+    {
+        int stripRoolLengthInMeter = 1000;
+
+        Carport carport = new Carport(0,780,600, RoofType.FLAT,new Shed(0,210,530,ShedPlacement.FULL_WIDTH));
+        assertEquals(2, PartCalculator.calculateNumberOfperforatedStripRools(carport, stripRoolLengthInMeter));
+
+        Carport carportWithOutShed = new Carport(0,780,600, RoofType.FLAT,null);
+        assertEquals(2, PartCalculator.calculateNumberOfperforatedStripRools(carportWithOutShed, stripRoolLengthInMeter));
+
+        Carport carportSmall = new Carport(0,420,420, RoofType.FLAT,null);
+        assertEquals(1, PartCalculator.calculateNumberOfperforatedStripRools(carportSmall, stripRoolLengthInMeter));
+
+        Carport carportSmallWithShed = new Carport(0,420,420, RoofType.FLAT,new Shed(0,180,350, ShedPlacement.FULL_WIDTH));
+        assertEquals(1, PartCalculator.calculateNumberOfperforatedStripRools(carportSmallWithShed, stripRoolLengthInMeter));
+    }
+
+    @Test
+    void testNumberOfCarriageBoltsAndWashersNeeded()
+    {
+        int beamMaxVariantLength = 720;
+
+        Carport carport = new Carport(0,780,600, RoofType.FLAT,null);
+        assertEquals(16, PartCalculator.calculateNumberOfCarriageBoltsAndWashers(carport, beamMaxVariantLength));
+
+        Carport carportWithFullShed = new Carport(0,780,600, RoofType.FLAT,new Shed(0,210,530,ShedPlacement.FULL_WIDTH));
+        assertEquals(20, PartCalculator.calculateNumberOfCarriageBoltsAndWashers(carportWithFullShed, beamMaxVariantLength));
+
+        Carport carportWithHalfShed = new Carport(0,780,600, RoofType.FLAT,new Shed(0,210,530,ShedPlacement.RIGHT));
+        assertEquals(18, PartCalculator.calculateNumberOfCarriageBoltsAndWashers(carportWithHalfShed, beamMaxVariantLength));
+
+        Carport carportMedium = new Carport(0,690,600, RoofType.FLAT,null);
+        assertEquals(12, PartCalculator.calculateNumberOfCarriageBoltsAndWashers(carportMedium, beamMaxVariantLength));
+
+        Carport carportMediumWithFullShed = new Carport(0,690,600, RoofType.FLAT,new Shed(0,210,530,ShedPlacement.FULL_WIDTH));
+        assertEquals(16, PartCalculator.calculateNumberOfCarriageBoltsAndWashers(carportMediumWithFullShed, beamMaxVariantLength));
+
+        Carport carportMediumWithHalfShed = new Carport(0,690,600, RoofType.FLAT,new Shed(0,210,530,ShedPlacement.RIGHT));
+        assertEquals(14, PartCalculator.calculateNumberOfCarriageBoltsAndWashers(carportMediumWithHalfShed, beamMaxVariantLength));
+
+        Carport carportSmall = new Carport(0,420,420, RoofType.FLAT,null);
+        assertEquals(8, PartCalculator.calculateNumberOfCarriageBoltsAndWashers(carportSmall, beamMaxVariantLength));
+
+        Carport carportSmallWithFullShed = new Carport(0,420,420, RoofType.FLAT,new Shed(0,180,350, ShedPlacement.FULL_WIDTH));
+        assertEquals(12, PartCalculator.calculateNumberOfCarriageBoltsAndWashers(carportSmallWithFullShed, beamMaxVariantLength));
+
+        Carport carportSmallWithHalfShed = new Carport(0,420,420, RoofType.FLAT,new Shed(0,210,530,ShedPlacement.RIGHT));
+        assertEquals(10, PartCalculator.calculateNumberOfCarriageBoltsAndWashers(carportSmallWithHalfShed, beamMaxVariantLength));
+    }
+
+    @Test
+    void testNumberOfBracketScrewPackagesNeeded()
+    {
+        int screwsPerPackage = 250;
+
+        Carport carport780x600WithShed = new Carport(0, 780, 600, RoofType.FLAT, new Shed(0, 240, 530, ShedPlacement.FULL_WIDTH));
+        assertEquals(2, PartCalculator.calculateNumberOfBracketScrewsNeeded(carport780x600WithShed, screwsPerPackage));
+
+        Carport carport600x600WithOutShed = new Carport(0, 600, 600, RoofType.FLAT, null);
+        assertEquals(1, PartCalculator.calculateNumberOfBracketScrewsNeeded(carport600x600WithOutShed, screwsPerPackage));
+
+        Carport carport420x420WithOutShed = new Carport(0, 600, 600, RoofType.FLAT, null);
+        assertEquals(1, PartCalculator.calculateNumberOfBracketScrewsNeeded(carport420x420WithOutShed, screwsPerPackage));
     }
 }

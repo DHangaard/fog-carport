@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 public class OrderDetail
 {
-    private int offerId;
+    private int orderId;
     private User seller;
     private User customer;
     private Carport carport;

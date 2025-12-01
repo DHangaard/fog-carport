@@ -8,7 +8,9 @@ public enum MaterialType
     ROOF("Tag"),
     BOARD("Bræt"),
     FASTENER("Skrue"),
-    FITTING("Beslag");
+    FITTING("Beslag"),
+    METAL_STRAP("Hulbånd"),
+    WASHER("Spændeskive");
 
     private final String displayCategory;
 

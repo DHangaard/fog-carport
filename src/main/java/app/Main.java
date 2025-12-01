@@ -1,7 +1,7 @@
 package app;
 
 import app.config.ThymeleafConfig;
-import app.controllers.OrderController;
+import app.controllers.CarportController;
 import app.controllers.UserController;
 import app.persistence.ConnectionPool;
 import app.persistence.UserMapper;
@@ -42,13 +42,13 @@ public class Main
         UserMapper userMapper = new UserMapper(connectionPool);
         ZipCodeMapper zipCodeMapper = new ZipCodeMapper(connectionPool);
         IUserService userService = new UserService(userMapper, zipCodeMapper);
-        ICarportDrawingService carportDrawingService = new CarportDrawingService();
-        IOrderService orderService = new OrderService();
+        ICarportService carportService = new CarportService();
+        IEmailService emailService = new SendGridEmailService();
 
         UserController userController = new UserController(userService);
-        OrderController orderController = new OrderController(orderService, carportDrawingService);
+        CarportController carportController = new CarportController(carportService, userService, emailService);
 
         userController.addRoutes(app);
-        orderController.addRoutes(app);
+        carportController.addRoutes(app);
     }
 }

@@ -5,6 +5,7 @@
     <title>Fog - Bestil carport i specialmål</title>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link rel="stylesheet" href="/public/css/styles.css" th:href="@{/css/styles.css}"/>
+    <link rel="icon" th:href="@{/images/logo.svg}">
 </head>
 <body>
 
@@ -17,11 +18,10 @@
     <p>
         Med et specialudviklet computerprogram kan vi lynhurtigt beregne prisen og udskrive en skitsetegning på en carport indenfor vores standardprogram.
         Tilbud og skitsetegning fremsendes på din side hurtigst muligt.
-        Ved bestilling medfølger standardbyggevejledning.
+        Ved bestilling medfølger standard byggevejledning.
 
         Udfyld formularen omhyggeligt og klik på "Bestil tilbud".
         Felter markeret med * SKAL udfyldes!
-
     </p>
     </div>
 
@@ -33,10 +33,10 @@
             Så vender vi hurtigst muligt tilbage med et tilbud til dig.
         </p>
 
-        <form th:action="@{/request-offer}" method="post" class="form">
+        <form th:action="@{/request-carport}" method="post" class="form">
 
             <div class="form-field">
-                <label for="carportWidth">Carport bredde *</label>
+                <label for="carportWidth">Carport bredde <span class="required-asterisk">*</span></label>
                 <select name="carportWidth" id="carportWidth" required>
                     <option value="" disabled selected>Vælg bredde</option>
 
@@ -60,7 +60,7 @@
             </div>
 
             <div class="form-field">
-                <label for="roofType">Carport trapeztag *</label>
+                <label for="roofType">Carport trapeztag <span class="required-asterisk">*</span></label>
                 <select name="roofType" id="roofType" required>
                     <option value="" disabled selected>Vælg tag</option>
 
@@ -69,15 +69,16 @@
                 </select>
             </div>
 
+            <div class="form-field">
             <h4>Redskabsrum</h4>
 
             <p>
                 NB! Der skal beregnes 15 cm tagudhæng på hver side af redskabsrummet*
-                Redskabsrum bredde *
             </p>
+            </div>
 
             <div class="form-field">
-                <label for="shedWidth">Redskabsrum bredde *</label>
+                <label for="shedWidth">Redskabsrum bredde <span class="required-asterisk">*</span></label>
                 <select name="shedWidth" id="shedWidth" required>
                     <option value="" disabled selected>Vælg bredde</option>
                     <option value="NONE">Uden redskabsrum</option>
@@ -90,7 +91,7 @@
             </div>
 
             <div class="form-field">
-                <label for="shedLength">Redskabsrum længde *</label>
+                <label for="shedLength">Redskabsrum længde <span class="required-asterisk">*</span></label>
                 <select name="shedLength" id="shedLength" required>
                     <option value="" disabled selected>Vælg længde</option>
                     <option value="NONE">Uden redskabsrum</option>
@@ -122,11 +123,10 @@
         </div>
 
     </div>
+
 </main>
 
-
 <div th:replace="~{fragments :: footerFragment}"></div>
-
 
 </body>
 </html>
