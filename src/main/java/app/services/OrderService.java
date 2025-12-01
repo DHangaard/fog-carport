@@ -1,6 +1,7 @@
 package app.services;
 
 import app.dto.CreateOrderRequest;
+import app.dto.OrderOverviewDTO;
 import app.dto.UserDTO;
 import app.entities.*;
 import app.enums.OrderStatus;
@@ -9,6 +10,7 @@ import app.persistence.*;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class OrderService implements IOrderService
@@ -134,8 +136,9 @@ public class OrderService implements IOrderService
     }
 
     @Override
-    public List<OrderDetail> getAllOrdersByStatus(OrderStatus orderStatus) throws DatabaseException
+    public List<OrderOverviewDTO> getAllOrdersByStatus(OrderStatus orderStatus) throws DatabaseException
     {
-        return List.of();
+        return orderMapper.getAllOrderOverviewsByStatus(orderStatus);
     }
+    
 }

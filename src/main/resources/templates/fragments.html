@@ -13,7 +13,7 @@
                 <!-- Sales links (conditional) -->
                 <div th:if="${session.currentUser != null and session.currentUser.role.name() == 'SALESREP'}"
                      class="admin-links">
-                    <a href="requests.html" th:href="@{/requests}" class="nav-link">Forespørgsler</a>
+                    <a href="requests.html" th:href="@{/carport-requests}" class="nav-link">Forespørgsler</a>
                     <a href="offers.html" th:href="@{/offers}" class="nav-link">Tilbud</a>
                     <a href="orders.html" th:href="@{/orders}" class="nav-link">Ordrer</a>
                 </div>

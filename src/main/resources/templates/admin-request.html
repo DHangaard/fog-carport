@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Fog - Carport forespørgsler</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="/public/css/styles.css" th:href="@{/css/styles.css}"/>
+    <link rel="icon" th:href="@{/images/logo.svg}">
+</head>
+<body>
+
+<div th:replace="~{fragments :: headerFragment}"></div>
+
+<main>
+    <div class="orders-view">
+        <h1>Carport forespørgsler</h1>
+
+        <div th:if="${session.currentUser.isAdmin}" class="order-search">
+            <h2>Søg efter forespørgsel</h2>
+            <form method="get" th:action="@{/orders/search}">
+                <div class="search-form">
+                    <select name="searchType" required>
+                        <option value="">Vælg søgetype</option>
+                        <option value="id" th:selected="${searchType == 'id'}">Ordre ID</option>
+                        <option value="name" th:selected="${searchType == 'name'}">Kundenavn</option>
+                        <option value="email" th:selected="${searchType == 'email'}">Kundeemail</option>
+                    </select>
+
+                    <input type="text"
+                           name="searchQuery"
+                           th:value="${searchQuery}"
+                           placeholder="Indtast søgeord..."
+                           required>
+
+                    <button class="search-button" type="submit">Søg</button>
+                    <a th:href="@{/orders}" class="reset-button">Nulstil</a>
+                </div>
+            </form>
+        </div>
+
+        <div th:if="${successMessage}" class="success-message">
+            <p th:text="${successMessage}"></p>
+        </div>
+
+        <div th:if="${errorMessage}" class="error-message">
+            <p th:text="${errorMessage}"></p>
+        </div>
+
+        <h2>Carport forespørgsler der mangler gennemsyn</h2>
+        <div th:if="${orders != null and !orders.isEmpty()}" class="orders-table">
+            <table>
+                <thead>
+                <tr>
+                    <th>Ordre Id</th>
+                    <th>Kunde</th>
+                    <th>Email</th>
+                    <th>Forespørgsel dato</th>
+                    <th>Total pris</th>
+                    <th>Status</th>
+                    <th>Handlinger</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="order : ${orders}">
+                    <td th:text="${order.orderId}"></td>
+                    <td th:if="${session.currentUser.isAdmin}">
+                        <span th:text="${order.userDTO.firstName + ' ' + order.userDTO.lastName}"></span>
+                    </td>
+                    <td><span th:text="${order.userDTO.email}"></span></td>
+                    <td th:text="${#temporals.format(order.customerRequestCreatedAt, 'dd-MM-yyyy HH:mm')}"></td>
+                    <td th:text="${order.pricingDetails.totalPrice + ' kr.'}"></td>
+
+
+                    <td class="action-buttons">
+                        <a th:href="@{/carport-request/details/{id}(id=${order.orderId})}"
+                           class="action-btn view-btn">
+                            <img th:src="@{/images/view-w.svg}" alt="Se detaljer"/>
+                        </a>
+
+                        <form th:if="${session.currentUser.isAdmin}" method="post"
+                              th:action="@{/orders/delete/{id}(id=${order.orderId})}"
+                              onsubmit="return confirm('Er du sikker på du vil slette forespørgsel?')">
+                            <button type="submit" class="action-btn delete-btn" title="Slet ordre">
+                                <img th:src="@{/images/delete-w.svg}" alt="Slet"/>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <p th:if="${orderDetails == null or orderDetails.isEmpty()}">
+            Ingen nye forespørgsler
+        </p>
+
+    </div>
+</main>
+
+
+<div th:replace="~{fragments :: footerFragment}"></div>
+
+</body>
+</html>

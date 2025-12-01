@@ -1,6 +1,8 @@
 package app.entities;
 
 import app.enums.OrderStatus;
+import app.services.svg.CarportSvgSide;
+import app.services.svg.CarportSvgTop;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -16,6 +18,8 @@ public class OrderDetail
     private Carport carport;
     private OrderTimeLine orderTimeLine;
     private List<MaterialLine> materialLines;
+    private CarportSvgTop carportSvgTop;
+    private CarportSvgSide carportSvgSide;
     private String customerComment;
     private PricingDetails pricingDetails;
     private OrderStatus orderStatus;
