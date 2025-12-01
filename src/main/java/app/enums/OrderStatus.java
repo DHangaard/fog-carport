@@ -2,7 +2,7 @@ package app.enums;
 
 public enum OrderStatus
 {
-    PENDING("Afventer"),
+    PENDING("Afventer godkendelse"),
     READY("Klar"),
     ACCEPTED("Accepteret"),
     REJECTED("Afvist"),
