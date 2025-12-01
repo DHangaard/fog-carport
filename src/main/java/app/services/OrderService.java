@@ -99,7 +99,8 @@ public class OrderService implements IOrderService
             catch (DatabaseException e)
             {
                 connection.rollback();
-                throw e;
+
+                throw new DatabaseException("Fejl ved oprettelse af ordre" + e.getMessage());
             }
         }
         catch (SQLException e)

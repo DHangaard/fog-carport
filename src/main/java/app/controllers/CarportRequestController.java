@@ -9,7 +9,6 @@ import app.exceptions.DatabaseException;
 import app.services.*;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -93,6 +92,7 @@ public class CarportRequestController
         catch (DatabaseException | IllegalArgumentException e)
         {
             ctx.attribute("errorMessage", e.getMessage());
+            System.out.println(e.getMessage());
             ctx.render("request-offer-contact");
         }
     }
@@ -134,7 +134,6 @@ public class CarportRequestController
             ctx.attribute("errorMessage", "Mål skal være et tal");
             showCarportFormular(ctx);
         }
-
         catch (IllegalArgumentException e)
         {
             ctx.attribute("errorMessage", e.getMessage());
