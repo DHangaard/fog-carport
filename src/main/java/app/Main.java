@@ -1,11 +1,12 @@
 package app;
 
 import app.config.ThymeleafConfig;
-import app.controllers.CarportController;
+import app.controllers.CarportRequestController;
 import app.controllers.UserController;
-import app.persistence.ConnectionPool;
-import app.persistence.UserMapper;
-import app.persistence.ZipCodeMapper;
+import app.entities.Carport;
+import app.entities.MaterialLine;
+import app.entities.MaterialVariant;
+import app.persistence.*;
 import app.services.*;
 import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinThymeleaf;
@@ -41,14 +42,22 @@ public class Main
 
         UserMapper userMapper = new UserMapper(connectionPool);
         ZipCodeMapper zipCodeMapper = new ZipCodeMapper(connectionPool);
+        ShedMapper shedMapper = new ShedMapper(connectionPool);
+        CarportMapper carportMapper = new CarportMapper(connectionPool);
+        MaterialVariantMapper materialVariantMapper = new MaterialVariantMapper(connectionPool);
+        MaterialLineMapper materialLineMapper = new MaterialLineMapper(connectionPool);
+        OrderMapper orderMapper = new OrderMapper(connectionPool);
+
+        IBomService bomService = new BomService(materialVariantMapper);
         IUserService userService = new UserService(userMapper, zipCodeMapper);
         ICarportService carportService = new CarportService();
+        IOrderService orderService = new OrderService(userMapper, materialLineMapper, shedMapper, carportMapper, orderMapper, bomService, connectionPool);
         IEmailService emailService = new SendGridEmailService();
 
         UserController userController = new UserController(userService);
-        CarportController carportController = new CarportController(carportService, userService, emailService);
+        CarportRequestController carportRequestController = new CarportRequestController(carportService, userService, emailService, orderService);
 
         userController.addRoutes(app);
-        carportController.addRoutes(app);
+        carportRequestController.addRoutes(app);
     }
 }

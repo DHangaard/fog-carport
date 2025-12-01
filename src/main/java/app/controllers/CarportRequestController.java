@@ -1,31 +1,31 @@
 package app.controllers;
 
+import app.dto.CreateOrderRequest;
 import app.dto.UserDTO;
-import app.entities.Carport;
-import app.entities.Shed;
+import app.entities.*;
 import app.enums.RoofType;
 import app.enums.ShedPlacement;
 import app.exceptions.DatabaseException;
-import app.services.ICarportService;
-import app.services.IEmailService;
-import app.services.IUserService;
+import app.services.*;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CarportController
+public class CarportRequestController
 {
     private ICarportService carportService;
     private IUserService userService;
     private IEmailService emailService;
+    private IOrderService orderService;
 
-    public CarportController(ICarportService carportService, IUserService userService, IEmailService emailService)
+    public CarportRequestController(ICarportService carportService, IUserService userService, IEmailService emailService, IOrderService orderService)
     {
         this.carportService = carportService;
         this.userService = userService;
         this.emailService = emailService;
+        this.orderService = orderService;
     }
 
     public void addRoutes(Javalin app)
@@ -43,6 +43,7 @@ public class CarportController
 
         UserDTO currentUser = ctx.sessionAttribute("currentUser");
         Carport carport = ctx.sessionAttribute("carport");
+        String customerNote = ctx.sessionAttribute("customerNote");
 
         if (currentUser == null || carport == null)
         {
@@ -72,12 +73,27 @@ public class CarportController
                 ctx.sessionAttribute("successMessage", "Dine kontakt oplysninger er opdateret!");
             }
 
+            CreateOrderRequest createOrderRequest = new CreateOrderRequest(
+                    currentUser.userId(),
+                    carport,
+                    customerNote
+            );
+
+            Order createdOrder = orderService.createPendingOrder(createOrderRequest);
+
+            //TODO maybe use the order instead of carport request? in next view
+            //ctx.sessionAttribute("carport", null);
+            //ctx.sessionAttribute("customerNote", null);
+            ctx.sessionAttribute("order", createdOrder);
+
             emailService.sendRequestConfirmation(userFromContactPage);
             ctx.render("request-confirmation");
         }
+        //TODO catch entitie Exception here!
         catch (DatabaseException | IllegalArgumentException e)
         {
             ctx.attribute("errorMessage", e.getMessage());
+            ctx.render("request-offer-contact");
         }
     }
 
