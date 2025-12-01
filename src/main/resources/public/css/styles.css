@@ -597,10 +597,20 @@ footer {
     align-items: center;
     justify-content: center;
     padding: 0.4rem 0.6rem;
-    border: none;
+    border: solid var(--color-outline-blue);
     border-radius: var(--radius-sm);
     cursor: pointer;
     transition: background-color 0.2s;
+}
+
+.action-btn img {
+    width: 20px;
+    height: 20px;
+    display: block;
+}
+
+.action-btn:active {
+    transform: translateY(1px);
 }
 
 .view-btn {

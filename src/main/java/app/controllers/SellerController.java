@@ -34,7 +34,7 @@ public class SellerController
 
     private void showCarportRequests(Context ctx)
     {
-        //if(!userIsAdmin(ctx)){return;}
+        if(!userIsAdmin(ctx)){return;}
 
         try
         {
@@ -60,7 +60,6 @@ public class SellerController
         if(userDTO == null)
         {
             ctx.sessionAttribute("errorMessage", "Du skal logge ind for at tilgå denne side");
-            ctx.sessionAttribute("loginRedirect", ctx.path());
             ctx.redirect("/login");
             return false;
         }

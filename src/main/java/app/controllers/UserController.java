@@ -47,7 +47,18 @@ public class UserController
         {
             UserDTO user = userService.login(email, password);
             ctx.sessionAttribute("currentUser", user);
-            ctx.redirect("/");
+
+            String redirectPath = ctx.sessionAttribute("loginRedirect");
+
+            if(redirectPath != null)
+            {
+                ctx.sessionAttribute("loginRedirect", null);
+                ctx.redirect(redirectPath);
+            }
+            else
+            {
+                ctx.redirect("/");
+            }
         }
         catch (DatabaseException e)
         {
@@ -100,6 +111,8 @@ public class UserController
     private void showLoginPage(Context ctx)
     {
         ctx.render("login");
+        ctx.sessionAttribute("errorMessage", null);
+        ctx.sessionAttribute("successMessage", null);
     }
 
     private static void populateFormFields(Context ctx) {
