@@ -595,6 +595,34 @@ footer {
     border-color: #2d6a2d;
 }
 
+/* Carport drawings */
+.carport-svg-topview {
+    width: 1200px !important;
+    height: auto !important;
+    margin: 0 auto;
+}
+
+.carport-svg-sideview {
+    width: 1200px !important;
+    height: auto !important;
+    margin: 0 auto;
+}
+
+.carport-display{
+    text-align: center;
+}
+
+.carport-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.carport-svg-topview, .carport-svg-sideview {
+    display: inline-block;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .header-nav {

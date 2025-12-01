@@ -1,4 +1,4 @@
-package app.services;
+package app.services.svg;
 
 public class Svg {
     private static final String SVG_TEMPLATE = "<svg version=\"1.1\"\n" +
@@ -12,7 +12,7 @@ public class Svg {
             "     height=\"%d\" \n" +
             "     viewBox=\"%s\" \n" +
             "     preserveAspectRatio=\"xMinYMin\">";
-    private static final String SVG_RECT_TEMPLATE = "<rect x=\"%.2f\" y=\"%.2f\" height=\"%f\" width=\"%f\" style=\"%s\" />";
+    private static final String SVG_RECT_TEMPLATE = "<rect x=\"%f\" y=\"%f\" height=\"%f\" width=\"%f\" style=\"%s\" />";
     private static final String SVG_ARROW_DEFS = "<defs>\n" +
             "        <marker\n" +
             "                id=\"beginArrow\"\n" +
@@ -33,12 +33,13 @@ public class Svg {
             "            <path d=\"M0,0 L12,6 L0,12 L0,0 \" style=\"fill: #000000;\" />\n" +
             "        </marker>\n" +
             "    </defs>";
-    private static final String SVG_LINE_TEMPLATE = "<line x1=\"%.2f\" y1=\"%.2f\" x2=\"%.2f\" y2=\"%.2f\" style=\"%s\"/>";
-    private static final String SVG_TEXT_TEMPLATE = "<text style=\"text-anchor: middle\" transform=\"translate(%.2f,%.2f) rotate(%.2f)\">%s cm</text>";
-    private static final String SVG_LINE_WITH_ARROWS_TEMPLATE = "<line x1=\"%.2f\"  y1=\"%.2f\" x2=\"%.2f\"   y2=\"%.2f\"\n" +
+    private static final String SVG_LINE_TEMPLATE = "<line x1=\"%f\" y1=\"%f\" x2=\"%f\" y2=\"%f\" style=\"%s\"/>";
+    private static final String SVG_TEXT_TEMPLATE = "<text style=\"text-anchor: middle\" transform=\"translate(%.2f,%.2f) rotate(%.2f)\">%s</text>";
+    private static final String SVG_LINE_WITH_ARROWS_TEMPLATE = "<line x1=\"%f\"  y1=\"%f\" x2=\"%f\"   y2=\"%f\"\n" +
             "          style=\"stroke:#000000;\n" +
             " marker-start: url(#beginArrow);\n" +
             "marker-end: url(#endArrow);\"/>";
+    private static final String SVG_POLYGON_TEMPLATE = "<polygon points=\"%s\" style=\"%s\" />";
 
     private StringBuilder svg = new StringBuilder();
 
@@ -81,6 +82,11 @@ public class Svg {
     public void addArrowDefs()
     {
         svg.append(SVG_ARROW_DEFS);
+    }
+
+    public void addPolygon(String points, String style)
+    {
+        svg.append(String.format(SVG_POLYGON_TEMPLATE, points, style));
     }
 
     @Override

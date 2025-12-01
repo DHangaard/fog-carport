@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Fog - Holder i længden</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="/public/css/styles.css" th:href="@{/css/styles.css}"/>
+</head>
+<body>
+
+<div th:replace="~{fragments :: headerFragment}"></div>
+
+<main>
+    <div class="carport-display">
+        <h1>Værebro</h1>
+        <h2>CARPORTE</h2>
+
+        <div class="carport-wrapper">
+
+        <div class="carport-svg-sideview">
+            <h3>Side view</h3>
+            <div th:utext="${carportSide}"></div>
+        </div>
+
+        <div class="carport-svg-topview">
+            <h3>Top view</h3>
+            <div th:utext="${carportTop}"></div>
+        </div>
+
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{fragments :: footerFragment}"></div>
+
+
+</body>
+</html>
