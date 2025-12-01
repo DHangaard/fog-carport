@@ -201,8 +201,8 @@ public class OrderMapper
         List<OrderOverviewDTO> orderOverviewDTOS = new ArrayList<>();
 
         String sql = """
-               SELECT o.order_id, u.first_name, u.last_name, u.email, o.customer_request_created_at, o.total_price, o.order_status
-               FROM order o
+               SELECT o.order_id, u.first_name, u.last_name, u.email, o.request_created_at, o.order_status
+               FROM orders o
                JOIN users u ON o.customer_id = u.user_id
                WHERE o.order_status = ?
                """;
@@ -219,8 +219,7 @@ public class OrderMapper
                         rs.getInt("order_id"),
                         rs.getString("first_name") + " " + rs.getString("last_name"),
                         rs.getString("email"),
-                        rs.getTimestamp("customer_request_created_at"),
-                        rs.getInt("total_price"),
+                        rs.getTimestamp("request_created_at"),
                         OrderStatus.valueOf(rs.getString("order_status"))
                 ));
             }

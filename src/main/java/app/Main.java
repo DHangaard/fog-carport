@@ -2,6 +2,7 @@ package app;
 
 import app.config.ThymeleafConfig;
 import app.controllers.CarportRequestController;
+import app.controllers.SellerController;
 import app.controllers.UserController;
 import app.persistence.*;
 import app.services.*;
@@ -53,8 +54,10 @@ public class Main
 
         UserController userController = new UserController(userService);
         CarportRequestController carportRequestController = new CarportRequestController(carportService, userService, emailService, orderService);
+        SellerController sellerController = new SellerController(orderService);
 
         userController.addRoutes(app);
         carportRequestController.addRoutes(app);
+        sellerController.addRoutes(app);
     }
 }

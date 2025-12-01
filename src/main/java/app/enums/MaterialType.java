@@ -21,4 +21,9 @@ public enum MaterialType
     public String getDisplayCategory() {
         return displayCategory;
     }
+
+    public String getDisplayName()
+    {
+        return displayCategory;
+    }
 }
