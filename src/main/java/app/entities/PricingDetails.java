@@ -16,7 +16,6 @@ public class PricingDetails
     {
         this.costPrice = costPrice;
         this.coveragePercentage = coveragePercentage;
-
         this.priceWithoutVat = costPrice / (1 - coveragePercentage / 100.0);
         this.vatAmount = priceWithoutVat * VAT_PERCENTAGE;
         this.totalPrice = priceWithoutVat + vatAmount;

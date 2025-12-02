@@ -576,7 +576,7 @@ footer {
 }
 
 .required-asterisk {
-    color: #c33;
+    color: var(--color-warning-red);
 }
 
 .horizontal-line {
@@ -630,6 +630,10 @@ footer {
     font-weight: 600;
 }
 
+.orders-table td{
+    color: var(--color-text-dark);
+}
+
 .orders-table tr:hover {
     background-color: #f0f4f8;
 }
@@ -676,7 +680,7 @@ footer {
 }
 
 .btn-delete {
-    background-color: #c33;
+    background-color: var(--color-warning-red);
     color: var(--color-text-primary);
 }
 
@@ -830,13 +834,77 @@ footer {
     font-size: 1.125rem;
 }
 
-
-
 .calculator-container{
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1.5rem;
     margin: 1.5rem 0;
+}
+
+.price-row {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 12px 0;
+    gap: var(--spacing-xs);
+}
+
+.price-row label {
+    font-weight: bold;
+    color: var(--color-text-header);
+    font-size: 1.25rem;
+}
+
+.price-display{
+    font-weight: bold;
+    font-size: 1.25rem;
+}
+
+.price-row span.unit {
+    margin-left: var(--spacing-xs);
+    font-size: 1.25rem;
+    color: var(--color-text-header);
+    font-weight: 500;
+}
+
+.coverage-value{
+    color: var(--color-warning-red);
+}
+
+.price-input-green{
+    border: 2px solid #5cb85c;
+    border-radius: var(--radius-sm);
+    padding: 4px 6px;
+    background-color: var(--color-cards);
+    font-weight: bold;
+}
+
+.price-diff-red {
+    color: var(--color-warning-red);
+    font-weight: bold;
+}
+
+.price-highlight-green {
+    color: #5cb85c !important;
+    font-weight: bold;
+}
+
+.price-highlight-red {
+    color: var(--color-warning-red) !important;
+    font-weight: bold;
+}
+
+.price-change-label {
+    color: #5cb85c !important;
+}
+
+.price-change-label-red{
+    color: var(--color-warning-red) !important;
+}
+
+.price-input-green:focus {
+    outline: none;
+    border-color: #4cae4c;
 }
 
 .box {
@@ -845,29 +913,22 @@ footer {
     border: 1px solid var(--color-outline-blue);
     border-radius: var(--radius-sm);
     background-color: var(--color-cards);
+    color: var(--color-text-header)
 }
 
 .box legend {
     font-weight: bold;
+    color: var(--color-text-header);
+    font-size: 2rem;
     padding: 0 10px;
 }
 
-.price-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 8px 0;
-}
-
-.price-display{
+.box label{
     font-weight: bold;
+    color: var(--color-text-header);
+    font-size: 1.25rem;
 }
 
-.coverage-input{
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin: 20px 0;
-}
 
 /* Button */
 .btn {
