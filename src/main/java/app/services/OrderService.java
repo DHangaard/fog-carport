@@ -151,23 +151,15 @@ public class OrderService implements IOrderService
         }
 
         Carport carport = carportMapper.getCarportById(order.getCarportId());
-
-        if(carport.getShed() != null && carport.getShed().getShedId() != 0)
-        {
-            Shed shed = shedMapper.getShedById(carport.getShed().getShedId());
-            carport.setShed(shed);
-        }
-
         List<MaterialLine> materialLines = materialLineMapper.getMaterialLinesByOrderId(orderId);
 
         return buildOrderDetail(order, customer, seller, carport, materialLines);
     }
 
     @Override
-    public OrderDetail getOrderById(int orderId) throws DatabaseException
+    public Order getOrderById(int orderId) throws DatabaseException
     {
-
-        return null;
+        return orderMapper.getOrderById(orderId);
     }
 
 

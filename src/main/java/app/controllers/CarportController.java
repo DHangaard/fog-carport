@@ -49,11 +49,12 @@ public class CarportController
 
         try
         {
-            OrderDetail orderDetail = orderService.getOrderDetailByOrderId(orderId);
-            CarportSvgTop carportSvgTop = carportService.getCarportTopSvgView(orderDetail.getCarport());
-            CarportSvgSide carportSvgSide = carportService.getCarportSideSvgView(orderDetail.getCarport());
+            Order order = orderService.getOrderById(orderId);
+            Carport carport = carportService.getCarportByCarportId(order.getCarportId());
+            CarportSvgTop carportSvgTop = carportService.getCarportTopSvgView(carport);
+            CarportSvgSide carportSvgSide = carportService.getCarportSideSvgView(carport);
 
-            ctx.attribute("orderDetail", orderDetail);
+            ctx.attribute("order", order);
             ctx.attribute("carportSvgTop", carportSvgTop);
             ctx.attribute("carportSvgSide", carportSvgSide);
 
