@@ -34,20 +34,24 @@
                 <div th:if="${session.currentUser != null}" class="user-actions">
 
                     <!-- Logged in as customer -->
-                    <div th:if="${session.currentUser.role.name() == 'CUSTOMER'}" class="user-info">
+                    <div th:if="${session.currentUser.role.name() == 'CUSTOMER'}" class="user-info user-actions">
                         <span class="username" th:text="${session.currentUser.email}">user@example.com</span>
+
+                        <a href="profile.html" th:href="@{/profile}" class="icon-link-vertical">
+                            <img src="/images/profile.svg" alt="Min side" th:src="@{/images/profile.svg}">
+                            <span>Min side</span>
+                        </a>
                     </div>
 
                     <!-- logged in as sales rep -->
                     <div th:if="${session.currentUser.role.name() == 'SALESREP'}" class="user-info">
-                        <span class="sellerid" th:text="'Sælger id: ' + ${session.currentUser.userId} + ': '">Sælger id: 0</span>
-                        <span class="username" th:text="${session.currentUser.firstName} + ' ' + ${session.currentUser.lastName}">Anders Andersen</span>
+                        <div>
+                            <span class="username" th:text="'Sælger id: '">Sælger id: </span>
+                            <span class="username sellerid" th:text="${session.currentUser.userId}">0</span>
+                        </div>
+                        <span class="username"
+                              th:text="${session.currentUser.firstName} + ' ' + ${session.currentUser.lastName}">Anders Andersen</span>
                     </div>
-
-                    <a href="profile.html" th:href="@{/profile}" class="icon-link-vertical">
-                        <img src="/images/profile.svg" alt="Min side" th:src="@{/images/profile.svg}">
-                        <span>Min side</span>
-                    </a>
 
                     <form th:action="@{/logout}" method="post">
                         <button type="submit" class="icon-link-vertical logout-btn">
