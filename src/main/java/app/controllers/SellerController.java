@@ -14,6 +14,7 @@ import io.javalin.Javalin;
 import io.javalin.http.Context;
 
 import java.util.List;
+import java.util.Locale;
 
 public class SellerController
 {
@@ -34,11 +35,14 @@ public class SellerController
 
     private void showRequestDetails(Context ctx)
     {
+        if(!userIsAdmin(ctx)){return;}
+
         int orderId = Integer.parseInt(ctx.pathParam("id"));
-        OrderDetail orderDetail = null;
+        Locale.setDefault(new Locale("US"));
+
         try
         {
-            orderDetail = orderService.getOrderDetailByOrderId(orderId);
+            OrderDetail orderDetail = orderService.getOrderDetailByOrderId(orderId);
             CarportSvgTop carportSvgTop = carportService.getCarportTopSvgView(orderDetail.getCarport());
             CarportSvgSide carportSvgSide = carportService.getCarportSideSvgView(orderDetail.getCarport());
             ctx.attribute("orderDetail", orderDetail);

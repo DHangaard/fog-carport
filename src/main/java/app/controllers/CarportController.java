@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class CarportController
 {
@@ -44,6 +45,7 @@ public class CarportController
     private void showCarportDrawing(Context ctx)
     {
         int orderId = Integer.parseInt(ctx.pathParam("id"));
+        Locale.setDefault(new Locale("US"));
 
         try
         {
