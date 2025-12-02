@@ -136,33 +136,33 @@
             </table>
         </section>
 
-        <form th:action="@{/requests/{id}/send-offer(id=${orderDetail.orderId})}">
-            <div class="coverage-input">
-                <label for="coverageNumber">
-                    <input type="text" id="coverageNumber" name="coveragePercentage" th:value="${orderDetail.pricingDetails.coveragePercentage}" min="0" max="100" step="1">
-                    <span>%</span>
-                </label>
-            </div>
+        <form th:action="@{/requests/{id}/send-offer(id=${orderDetail.orderId})}" method="post">
 
             <div class="calculator-container">
                 <fieldset class="box">
                     <legend>Dækningsgrad efter prisforslag</legend>
 
                     <div class="price-row">
-                    <label>I alt uden Pris uden moms:</label>
-                    <span class="price-display" id="priceWithOutVatDisplay"> kr.</span>
+                        <label>Pris uden moms:</label>
+                        <span class="price-display" id="priceWithOutVatDisplay"
+                              th:text="${orderDetail.pricingDetails.priceWithoutVat}">0</span>
+                        <span>kr.</span>
                     </div>
 
                     <div class="price-row">
-                    <label>Samlet costpris:</label>
-                    <span class="price-display" id="costPriceDisplay"> kr.</span><br>
+                        <label>Samlet costpris:</label>
+                        <span class="price-display" id="costPriceDisplay"
+                              th:text="${orderDetail.pricingDetails.costPrice}">0</span>
+                        <span>kr.</span>
                     </div>
 
                     <hr class="horizontal-line">
 
                     <div class="price-row">
-                    <label>Dækningsgrad:</label>
-                    <span class="price-display" id="coverageDisplay"> %</span>
+                        <label>Dækningsgrad:</label>
+                        <span class="price-display" id="coverageDisplay"
+                              th:text="${orderDetail.pricingDetails.coveragePercentage}">0</span>
+                        <span>%</span>
                     </div>
                 </fieldset>
 
@@ -170,27 +170,43 @@
                     <legend>Pris og prisforslag</legend>
 
                     <div class="price-row">
-                    <label>Pris uden moms:</label>
-                    <span class="price-display" id="priceWithoutVatDisplay2"> kr.</span>
+                        <label>Pris uden moms:</label>
+                        <span class="price-display" id="priceWithoutVatDisplay2"
+                              th:text="${orderDetail.pricingDetails.priceWithoutVat}">0</span>
+                        <span>kr.</span>
                     </div>
 
                     <div class="price-row">
-                    <hr class="horizontal-line">
-                    <label>Pris med moms:</label>
-                    <span class="price-display" id="priceWithVatDisplay"> kr.</span><br>
+                        <label>Pris med moms:</label>
+                        <span class="price-display" id="priceWithVatDisplay"
+                              th:text="${orderDetail.pricingDetails.totalPrice}">0</span>
+                        <span>kr.</span>
                     </div>
 
                     <div class="price-row">
-                    <label>Prisforslag ved salg:</label>
-                    <input class="price-totalsale-display" id="totalPriceInput" type="number" step="0.01" value="0"><br>
+                        <label>Prisforslag ved salg:</label>
+                        <input id="totalPriceInput"
+                               name="totalPrice"
+                               type="number"
+                               step="0.01"
+                               th:value="${orderDetail.pricingDetails.totalPrice}"
+                               th:attr="data-costprice=${orderDetail.pricingDetails.costPrice},
+                                data-original=${orderDetail.pricingDetails.totalPrice}">
+                        <span>kr.</span>
                     </div>
+
                     <div class="price-row">
-                    <label>Prisændring:</label>
-                    <span id="differenceDisplay"> kr.</span>
+                        <label>Prisændring:</label>
+                        <span id="differenceDisplay">0.00</span>
+                        <span>kr.</span>
                     </div>
                 </fieldset>
-
             </div>
+
+            <input type="hidden"
+                   id="coverageInput"
+                   name="coveragePercentage"
+                   th:value="${orderDetail.pricingDetails.coveragePercentage}">
 
             <div class="offer-validity">
                 <label for="offerValidDays"><strong>Tilbud gyldigt i (dage):</strong></label>
