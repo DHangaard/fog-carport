@@ -7,19 +7,23 @@ import app.enums.RoofType;
 import app.enums.ShedPlacement;
 import app.exceptions.DatabaseException;
 import app.services.*;
+import app.services.svg.CarportSvgSide;
+import app.services.svg.CarportSvgTop;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class CarportRequestController
+public class CarportController
 {
     private ICarportService carportService;
     private IUserService userService;
     private IEmailService emailService;
     private IOrderService orderService;
 
-    public CarportRequestController(ICarportService carportService, IUserService userService, IEmailService emailService, IOrderService orderService)
+    public CarportController(ICarportService carportService, IUserService userService, IEmailService emailService, IOrderService orderService)
     {
         this.carportService = carportService;
         this.userService = userService;
@@ -31,9 +35,33 @@ public class CarportRequestController
     {
         app.get("/carporte", ctx -> showBuildCarportPage(ctx));
         app.get("/carport-formular", ctx -> showCarportFormular(ctx));
+        app.get("/show-carport-drawing/{id}", ctx -> showCarportDrawing(ctx));
 
         app.post("/request-carport", ctx -> handleCarportRequest(ctx));
         app.post("/confirm-request", ctx -> confirmCarportRequest(ctx));
+    }
+
+    private void showCarportDrawing(Context ctx)
+    {
+        int orderId = Integer.parseInt(ctx.pathParam("id"));
+
+        try
+        {
+            OrderDetail orderDetail = orderService.getOrderDetailByOrderId(orderId);
+            CarportSvgTop carportSvgTop = carportService.getCarportTopSvgView(orderDetail.getCarport());
+            CarportSvgSide carportSvgSide = carportService.getCarportSideSvgView(orderDetail.getCarport());
+
+            ctx.attribute("orderDetail", orderDetail);
+            ctx.attribute("carportSvgTop", carportSvgTop);
+            ctx.attribute("carportSvgSide", carportSvgSide);
+
+            ctx.render("carport-drawing");
+        }
+        catch (DatabaseException e)
+        {
+            ctx.attribute("errorMessage", "Kunne ikke hente tegning");
+            ctx.redirect("/carport-requests");
+        }
     }
 
     private void confirmCarportRequest(Context ctx)

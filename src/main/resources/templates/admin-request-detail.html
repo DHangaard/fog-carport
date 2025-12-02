@@ -91,8 +91,7 @@
                 </div>
             </div>
 
-            <a th:href="@{/show-carport-drawing}" class="btn-primary">Se stor tegning her</a>
-        </section>
+            <a th:href="@{/show-carport-drawing/{id}(id=${orderDetail.orderId})}" class="btn-primary">Se stor tegning her</a>
 
         <section class="section">
             <h2>Stykliste & Prisberegning</h2>

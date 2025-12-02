@@ -16,15 +16,16 @@
         <h2>CARPORTE</h2>
 
         <div class="carport-wrapper">
+            <h3>Ordre # <span th:text="${orderDetail.orderId}"></span></h3>
 
         <div class="carport-svg-sideview">
             <h3>Side view</h3>
-            <div th:utext="${carportSide}"></div>
+            <div th:utext="${carportSvgSide}"></div>
         </div>
 
         <div class="carport-svg-topview">
             <h3>Top view</h3>
-            <div th:utext="${carportTop}"></div>
+            <div th:utext="${carportSvgTop}"></div>
         </div>
 
         </div>

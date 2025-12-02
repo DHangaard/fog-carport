@@ -1,7 +1,7 @@
 package app;
 
 import app.config.ThymeleafConfig;
-import app.controllers.CarportRequestController;
+import app.controllers.CarportController;
 import app.controllers.SellerController;
 import app.controllers.UserController;
 import app.persistence.*;
@@ -53,11 +53,11 @@ public class Main
         IEmailService emailService = new SendGridEmailService();
 
         UserController userController = new UserController(userService);
-        CarportRequestController carportRequestController = new CarportRequestController(carportService, userService, emailService, orderService);
+        CarportController carportController = new CarportController(carportService, userService, emailService, orderService);
         SellerController sellerController = new SellerController(orderService, carportService);
 
         userController.addRoutes(app);
-        carportRequestController.addRoutes(app);
+        carportController.addRoutes(app);
         sellerController.addRoutes(app);
     }
 }
