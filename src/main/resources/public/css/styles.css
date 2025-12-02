@@ -642,6 +642,44 @@ footer {
     background-color: #a00;
 }
 
+/* Seller request view */
+
+.calculator-container{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.box {
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid var(--color-outline-blue);
+    border-radius: var(--radius-sm);
+    background-color: var(--color-cards);
+}
+
+.box legend {
+    font-weight: bold;
+    padding: 0 10px;
+}
+
+.price-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+}
+
+.price-display{
+    font-weight: bold;
+}
+
+.coverage-input{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 20px 0;
+}
 
 /* Button */
 .btn {
