@@ -6,6 +6,7 @@ import app.dto.UserDTO;
 import app.entities.*;
 import app.enums.OrderStatus;
 import app.exceptions.DatabaseException;
+import app.exceptions.MaterialNotFoundException;
 import app.persistence.*;
 
 import java.sql.Connection;
@@ -101,6 +102,12 @@ public class OrderService implements IOrderService
                 return savedOrder;
             }
             catch (DatabaseException e)
+            {
+                connection.rollback();
+
+                throw new DatabaseException("Fejl ved oprettelse af ordre" + e.getMessage());
+            }
+            catch (MaterialNotFoundException e)
             {
                 connection.rollback();
 

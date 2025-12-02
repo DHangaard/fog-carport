@@ -13,7 +13,10 @@
                 <!-- Sales links (conditional) -->
                 <div th:if="${session.currentUser != null and session.currentUser.role.name() == 'SALESREP'}"
                      class="admin-links">
-                    <a href="requests.html" th:href="@{/carport-requests}" class="nav-link">Forespørgsler</a>
+                    <a href="requests.html" th:href="@{/carport-requests}" class="nav-link">
+                        Forespørgsler
+                        <span class="badge" th:if="${requestCount > 0}" th:text="${requestCount}">1</span>
+                    </a>
                     <a href="offers.html" th:href="@{/offers}" class="nav-link">Tilbud</a>
                     <a href="orders.html" th:href="@{/orders}" class="nav-link">Ordrer</a>
                 </div>
@@ -32,12 +35,26 @@
 
                 <!-- Logged in -->
                 <div th:if="${session.currentUser != null}" class="user-actions">
-                    <span class="username" th:text="${session.currentUser.email}">user@example.com</span>
 
-                    <a href="profile.html" th:href="@{/profile}" class="icon-link-vertical">
-                        <img src="/images/profile.svg" alt="Min side" th:src="@{/images/profile.svg}">
-                        <span>Min side</span>
-                    </a>
+                    <!-- Logged in as customer -->
+                    <div th:if="${session.currentUser.role.name() == 'CUSTOMER'}" class="user-info user-actions">
+                        <span class="username" th:text="${session.currentUser.email}">user@example.com</span>
+
+                        <a href="profile.html" th:href="@{/profile}" class="icon-link-vertical">
+                            <img src="/images/profile.svg" alt="Min side" th:src="@{/images/profile.svg}">
+                            <span>Min side</span>
+                        </a>
+                    </div>
+
+                    <!-- logged in as sales rep -->
+                    <div th:if="${session.currentUser.role.name() == 'SALESREP'}" class="user-info">
+                        <div>
+                            <span class="username" th:text="'Sælger id: '">Sælger id: </span>
+                            <span class="username sellerid" th:text="${session.currentUser.userId}">0</span>
+                        </div>
+                        <span class="username"
+                              th:text="${session.currentUser.firstName} + ' ' + ${session.currentUser.lastName}">Anders Andersen</span>
+                    </div>
 
                     <form th:action="@{/logout}" method="post">
                         <button type="submit" class="icon-link-vertical logout-btn">
