@@ -13,7 +13,7 @@ public class BomService implements IBomService
 {
     private MaterialVariantMapper variantMapper;
     private final int STANDARD_POST_SIZE = 300;
-    private final double COVERAGE_PERCENTAGE = 0.40;
+    private final double COVERAGE_PERCENTAGE = 40.0;
 
     public BomService(MaterialVariantMapper variantMapper)
     {
