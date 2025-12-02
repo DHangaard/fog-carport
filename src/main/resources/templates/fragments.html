@@ -32,7 +32,17 @@
 
                 <!-- Logged in -->
                 <div th:if="${session.currentUser != null}" class="user-actions">
-                    <span class="username" th:text="${session.currentUser.email}">user@example.com</span>
+
+                    <!-- Logged in as customer -->
+                    <div th:if="${session.currentUser.role.name() == 'CUSTOMER'}" class="user-info">
+                        <span class="username" th:text="${session.currentUser.email}">user@example.com</span>
+                    </div>
+
+                    <!-- logged in as sales rep -->
+                    <div th:if="${session.currentUser.role.name() == 'SALESREP'}" class="user-info">
+                        <span class="sellerid" th:text="'Sælger id: ' + ${session.currentUser.userId} + ': '">Sælger id: 0</span>
+                        <span class="username" th:text="${session.currentUser.firstName} + ' ' + ${session.currentUser.lastName}">Anders Andersen</span>
+                    </div>
 
                     <a href="profile.html" th:href="@{/profile}" class="icon-link-vertical">
                         <img src="/images/profile.svg" alt="Min side" th:src="@{/images/profile.svg}">
