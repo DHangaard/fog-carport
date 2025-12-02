@@ -54,7 +54,7 @@ public class Main
 
         UserController userController = new UserController(userService);
         CarportRequestController carportRequestController = new CarportRequestController(carportService, userService, emailService, orderService);
-        SellerController sellerController = new SellerController(orderService);
+        SellerController sellerController = new SellerController(orderService, carportService);
 
         userController.addRoutes(app);
         carportRequestController.addRoutes(app);

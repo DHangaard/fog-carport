@@ -2,6 +2,8 @@ package app.services;
 
 import app.entities.Carport;
 import app.entities.Shed;
+import app.services.svg.CarportSvgSide;
+import app.services.svg.CarportSvgTop;
 
 public class CarportService implements ICarportService
 {
@@ -40,5 +42,25 @@ public class CarportService implements ICarportService
                 throw new IllegalArgumentException("Skurets længde må ikke være større end carportens længde");
             }
         }
+    }
+
+    @Override
+    public CarportSvgTop getCarportTopSvgView(Carport carport)
+    {
+        if(carport == null)
+        {
+            throw new IllegalArgumentException("Carport mål skal være udfyldt");
+        }
+        return new CarportSvgTop(carport);
+    }
+
+    @Override
+    public CarportSvgSide getCarportSideSvgView(Carport carport)
+    {
+        if(carport == null)
+        {
+            throw new IllegalArgumentException("Carport mål skal være udfyldt");
+        }
+        return new CarportSvgSide(carport);
     }
 }

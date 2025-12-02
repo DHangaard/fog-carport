@@ -10,6 +10,8 @@ import app.persistence.*;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -130,15 +132,75 @@ public class OrderService implements IOrderService
     }
 
     @Override
+    public OrderDetail getOrderDetailByOrderId(int orderId) throws DatabaseException
+    {
+        Order order = orderMapper.getOrderById(orderId);
+        User customer = userMapper.getUserById(order.getCustomerId());
+
+        User seller = null;
+        if(order.getSellerId() != null)
+        {
+            seller = userMapper.getUserById(order.getSellerId());
+        }
+
+        Carport carport = carportMapper.getCarportById(order.getCarportId());
+
+        if(carport.getShed() != null && carport.getShed().getShedId() != 0)
+        {
+            Shed shed = shedMapper.getShedById(carport.getShed().getShedId());
+            carport.setShed(shed);
+        }
+
+        List<MaterialLine> materialLines = materialLineMapper.getMaterialLinesByOrderId(orderId);
+
+        return buildOrderDetail(order, customer, seller, carport, materialLines);
+    }
+
+    @Override
     public OrderDetail getOrderById(int orderId) throws DatabaseException
     {
+
         return null;
     }
+
 
     @Override
     public List<OrderOverviewDTO> getAllOrdersByStatus(OrderStatus orderStatus) throws DatabaseException
     {
         return orderMapper.getAllOrderOverviewsByStatus(orderStatus);
+    }
+
+    private OrderDetail buildOrderDetail(Order order, User customer, User seller, Carport carport, List<MaterialLine> materialLines)
+    {
+        OrderTimeLine orderTimeLine = new OrderTimeLine();
+
+        orderTimeLine.setCustomerRequestCreatedAt(order.getCustomerRequestCreatedAt());
+
+        Integer offerValidDays = order.getOfferValidDays();
+        Timestamp createdAt = order.getCreatedAt();
+
+        if (offerValidDays != null && createdAt != null)
+        {
+            orderTimeLine.setOfferValidDays(offerValidDays);
+            orderTimeLine.setCreatedAt(createdAt);
+        }
+        else
+        {
+            orderTimeLine.setOfferValidDays(null);
+            orderTimeLine.setCreatedAt(null);
+        }
+
+        return new OrderDetail(
+                order.getOrderId(),
+                seller,
+                customer,
+                carport,
+                orderTimeLine,
+                materialLines,
+                order.getCustomerComment(),
+                order.getPricingDetails(),
+                order.getOrderStatus()
+        );
     }
 
 }

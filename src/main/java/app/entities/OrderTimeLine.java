@@ -3,16 +3,18 @@ package app.entities;
 import app.util.TimeUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class OrderTimeLine
 {
     private Timestamp customerRequestCreatedAt;
     private Timestamp createdAt;
-    private int offerValidDays;
+    private Integer offerValidDays;
 
     public boolean isExpired()
     {

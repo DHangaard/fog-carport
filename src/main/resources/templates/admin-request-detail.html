@@ -14,7 +14,7 @@
 <main>
     <div class="request-details-page">
         <div class="hero-content">
-            <h1>Forespørgsel #<span th:text="${orderDetail.order.orderId}"></span></h1>
+            <h1>Forespørgsel #<span th:text="${orderDetail.orderId}"></span></h1>
             <p>Oprettet : <span th:text="orderDetail.orderTimeLine.relativeTime"></span></p>
             <p>Status : <span th:text="orderDetail.orderStatus.displayName"></span></p>
         </div>
@@ -83,11 +83,11 @@
             <div class="drawing-grid">
                 <div>
                     <h3>Oversigt fra toppen</h3>
-                    <div th:utext="${orderDetail.carportSvgTop.toString()}"></div>
+                    <div th:utext="${carportSvgTop.toString()}"></div>
                 </div>
                 <div>
                     <h3>Sidevisning</h3>
-                    <div th:utext="${orderDetail.carportSvgSide.toString()}"></div>
+                    <div th:utext="${carportSvgSide.toString()}"></div>
                 </div>
             </div>
 
@@ -230,6 +230,6 @@
 
 
 <div th:replace="~{fragments :: footerFragment}"></div>
-
+<script th:src="/js/request-calculator.js"></script>
 </body>
 </html>
