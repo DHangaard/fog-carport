@@ -51,16 +51,16 @@ public class SellerController
             Integer offerValidDays = Integer.parseInt(offerValidDaysString);
             double coveragePercentage = Double.parseDouble(coveragePercentageString);
             double costPrice = Double.parseDouble(costPriceString);
+            PricingDetails pricingDetails = new PricingDetails(costPrice, coveragePercentage);
 
             //TODO validate days, coverage, costPrice in service Or here
             Order order = orderService.getOrderById(orderId);
 
             order.setSellerId(seller.getUserId());
             order.setOfferValidDays(offerValidDays);
-            PricingDetails pricingDetails = new PricingDetails(costPrice, coveragePercentage);
             order.setPricingDetails(pricingDetails);
-
-
+            order.setOrderStatus(OrderStatus.READY);
+            
             boolean offerSend = orderService.confirmAndSendOffer(order);
             if(offerSend)
             {

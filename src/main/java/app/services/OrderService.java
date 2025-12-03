@@ -159,20 +159,12 @@ public class OrderService implements IOrderService
         boolean isOfferConfirmed = false;
 
         order.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
+
         if(updateOrder(order))
         {
             User user = userMapper.getUserById(order.getCustomerId());
-            UserDTO userDTO = new UserDTO(
-                    user.getUserId(),
-                    user.getFirstName(),
-                    user.getLastName(),
-                    user.getStreet(),
-                    user.getZipCode(),
-                    user.getCity(),
-                    user.getEmail(),
-                    user.getPhoneNumber(),
-                    user.getRole()
-            );
+            UserDTO userDTO = buildAndGetUserDTO(user);
+
             emailService.sendOfferReady(userDTO);
             isOfferConfirmed = true;
         }
@@ -252,6 +244,21 @@ public class OrderService implements IOrderService
                 order.getPricingDetails(),
                 order.getOrderStatus()
         );
+    }
+
+    UserDTO buildAndGetUserDTO(User user)
+    {
+       return new UserDTO(
+               user.getUserId(),
+               user.getFirstName(),
+               user.getLastName(),
+               user.getStreet(),
+               user.getZipCode(),
+               user.getCity(),
+               user.getEmail(),
+               user.getPhoneNumber(),
+               user.getRole()
+       );
     }
 
 }
