@@ -46,7 +46,7 @@
         </div>
 
         <div class="orders-view">
-            <h1>Tilbud Oversigt</h1>
+            <h1>Ordre</h1>
 
             <div th:if="${session.successMessage}" class="message message-success">
                 <p th:text="${session.successMessage}"></p>
@@ -57,33 +57,23 @@
             </div>
 
             <section class="order-section">
-                <h2>Afventer kunde accept<span class="badge" th:if="${acceptedOffers != null}" th:text="${acceptedOffers.size()}"></span></h2>
+                <h2>Betalte ordre<span class="badge" th:if="${paidOrders != null}" th:text="${paidOrders.size()}"></span></h2>
 
-                <div th:if="${acceptedOffers != null and ! acceptedOffers.isEmpty()}" class="orders-table">
-                    <table th:replace="~{fragments :: orderTable(${acceptedOffers})}"></table>
+                <div th:if="${paidOrders != null and ! paidOrders.isEmpty()}" class="orders-table">
+                    <table th:replace="~{fragments :: orderTable(${paidOrders})}"></table>
                 </div>
 
-                <p th:if="${acceptedOffers == null or acceptedOffers.isEmpty()}" class="no-results">Ingen tilbud afventer accept</p>
+                <p th:if="${paidOrders == null or paidOrders.isEmpty()}" class="no-results">Ingen betalte ordre</p>
             </section>
 
             <section class="order-section">
-                <h2>Afvist<span class="badge-secondary" th:if="${rejectedOffers != null}" th:text="${rejectedOffers.size()}"></span></h2>
+                <h2>Annullerede ordre<span class="badge-secondary" th:if="${cancelledOrders != null}" th:text="${cancelledOrders.size()}"></span></h2>
 
-                <div th:if="${rejectedOffers != null and !rejectedOffers.isEmpty()}" class="orders-table">
-                    <table th:replace="~{fragments :: orderTable(${rejectedOffers})}"></table>
+                <div th:if="${cancelledOrders != null and !cancelledOrders.isEmpty()}" class="orders-table">
+                    <table th:replace="~{fragments :: orderTable(${cancelledOrders})}"></table>
                 </div>
 
-                <p th:if="${rejectedOffers == null or rejectedOffers.isEmpty()}" class="no-results">Ingen afviste tilbud</p>
-            </section>
-
-            <section class="order-section">
-                <h2>Udløbet<span class="badge-secondary" th:if="${expiredOffers != null}" th:text="${expiredOffers.size()}"></span></h2>
-
-                <div th:if="${expiredOffers != null and !expiredOffers.isEmpty()}" class="orders-table">
-                    <table th:replace="~{fragments :: orderTable(${expiredOffers})}"></table>
-                </div>
-
-                <p th:if="${expiredOffers == null or expiredOffers.isEmpty()}" class="no-results">Ingen udløbne tilbud</p>
+                <p th:if="${cancelledOrders == null or cancelledOrders.isEmpty()}" class="no-results">Ingen annullerede ordre</p>
             </section>
 
         </div>

@@ -89,13 +89,13 @@
         <td><span th:text="${order.orderStatus.displayName}"></span></td>
         <td>
             <div class="table-actions">
-                <a th:href="@{/{path}/{id}(path=${detailsPath}, id=${order.orderId})}"
+                <a th:action="@{/carport/details/view/{id}(id=${order.orderId})}"
                    class="btn-table btn-view"
                    title="Se detajler">
                     <img th:src="@{/images/view.svg}" alt="Se detaljer"/>
                 </a>
 
-                <form method="post" th:action="@{/{path}/{id}/delete(path=${detailsPath}, id=${order.orderId})}"
+                <form method="post" th:action="@{/carport/order/delete/{id}(id=${order.orderId})}"
                       onsubmit="return confirm('Er du sikker på du vil slette denne? ')">
                     <button type="submit" class="btn-table btn-delete" title="Slet">
                         <img th:src="@{/images/delete.svg}" alt="Slet"/>
