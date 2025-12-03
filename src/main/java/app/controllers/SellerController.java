@@ -2,7 +2,9 @@ package app.controllers;
 
 import app.dto.OrderOverviewDTO;
 import app.dto.UserDTO;
+import app.entities.Order;
 import app.entities.OrderDetail;
+import app.entities.PricingDetails;
 import app.enums.OrderStatus;
 import app.enums.Role;
 import app.exceptions.DatabaseException;
@@ -12,6 +14,7 @@ import app.services.svg.CarportSvgSide;
 import app.services.svg.CarportSvgTop;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Locale;
@@ -31,6 +34,50 @@ public class SellerController
     {
         app.get("/carport-requests", ctx -> showCarportRequests(ctx));
         app.get("/carport-request/details/{id}", ctx -> showRequestDetails(ctx));
+
+        app.post("/requests/{id}/send-offer", ctx -> sendCarportOffer(ctx));
+    }
+
+    private void sendCarportOffer(Context ctx)
+    {
+        int orderId = Integer.parseInt(ctx.pathParam("id"));
+        String offerValidDaysString = ctx.formParam("offerValidDays");
+        String coveragePercentageString = ctx.formParam("coveragePercentage");
+        String costPriceString = ctx.formParam("costPrice");
+
+        try
+        {
+            int offerValidDays = Integer.parseInt(offerValidDaysString);
+            double coveragePercentage = Double.parseDouble(coveragePercentageString);
+            double costPrice = Double.parseDouble(costPriceString);
+
+            //TODO validate days, coverage, costPrice in service
+            Order order = orderService.getOrderById(orderId);
+            PricingDetails pricingDetails = new PricingDetails(costPrice, coveragePercentage);
+            order.setPricingDetails(pricingDetails);
+
+
+            boolean offerSend = orderService.confirmAndSendOffer(order, offerValidDays);
+            if(offerSend)
+            {
+                ctx.sessionAttribute("succesMessage", "Dit tilbud er afsendt");
+            }
+            else
+            {
+                ctx.sessionAttribute("errorMessage", "Dit tilbud blev ikke afsendt, prøv igen");
+            }
+
+        }
+        catch (DatabaseException e)
+        {
+            ctx.sessionAttribute("errorMessage", e.getMessage());
+            ctx.redirect("/carport-request/details/{id}");
+        }
+        catch (NumberFormatException e)
+        {
+            ctx.attribute("errorMessage", "Kunne ikke hente de korrekte værdier ud til prisen, kun tal er muligt");
+            ctx.redirect("/carport-request/details/{id}");
+        }
     }
 
     private void showRequestDetails(Context ctx)
@@ -67,9 +114,7 @@ public class SellerController
         try
         {
             List<OrderOverviewDTO> orderOverviews = orderService.getAllOrdersByStatus(OrderStatus.PENDING);
-            orderOverviews.get(0).customerRequestCreatedAt();
             ctx.attribute("orderOverviews", orderOverviews);
-
         }
         catch (DatabaseException e)
         {

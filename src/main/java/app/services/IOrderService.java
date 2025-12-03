@@ -6,6 +6,7 @@ import app.dto.UserDTO;
 import app.entities.Carport;
 import app.entities.Order;
 import app.entities.OrderDetail;
+import app.entities.PricingDetails;
 import app.enums.OrderStatus;
 import app.exceptions.DatabaseException;
 
@@ -17,7 +18,7 @@ public interface IOrderService
     public Order createPendingOrder(CreateOrderRequest createOrderRequest) throws DatabaseException;
     public Order getOrderById(int orderId) throws DatabaseException;
     public boolean updateOrderStatus(Order order, OrderStatus orderStatus) throws DatabaseException;
-    public boolean confirmOrder(int orderId);
+    public boolean confirmAndSendOffer(Order order, int offerValidDays) throws DatabaseException;
     public OrderDetail getOrderDetailByCustomerId(int customerId) throws DatabaseException;
     public OrderDetail getOrderDetailByOrderId(int orderId) throws DatabaseException;
     public List<OrderOverviewDTO>  getAllOrdersByStatus(OrderStatus orderStatus) throws DatabaseException;

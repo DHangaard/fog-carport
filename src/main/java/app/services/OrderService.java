@@ -127,10 +127,11 @@ public class OrderService implements IOrderService
     }
 
     @Override
-    public boolean confirmOrder(int orderId)
+    public boolean confirmAndSendOffer(Order order, int offerValidDays) throws DatabaseException
     {
         return false;
     }
+
 
     @Override
     public OrderDetail getOrderDetailByCustomerId(int customerId) throws DatabaseException
