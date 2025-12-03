@@ -4,8 +4,7 @@ import app.dto.OrderOverviewDTO;
 import app.dto.UserDTO;
 import app.enums.OrderStatus;
 import app.exceptions.DatabaseException;
-import app.persistence.OrderMapper;
-import app.services.OrderService;
+import app.services.IOrderService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 
@@ -14,9 +13,9 @@ import java.util.List;
 public class CustomerController
 {
 
-    OrderService orderService;
+    private IOrderService orderService;
 
-    public CustomerController(OrderService orderService)
+    public CustomerController(IOrderService orderService)
     {
         this.orderService = orderService;
     }
@@ -33,7 +32,9 @@ public class CustomerController
 
         try
         {
-            int userId = ctx.sessionAttribute("userId");
+            UserDTO customer = ctx.sessionAttribute("currentUser");
+            int userId = customer.userId();
+
             List<OrderOverviewDTO> pendingOrders = orderService.getAllOrdersByUserIdAndStatus(userId, OrderStatus.PENDING);
             List<OrderOverviewDTO> readyOrders = orderService.getAllOrdersByUserIdAndStatus(userId, OrderStatus.READY);
             List<OrderOverviewDTO> paidOrders = orderService.getAllOrdersByUserIdAndStatus(userId, OrderStatus.PAID);
