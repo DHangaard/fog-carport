@@ -585,6 +585,18 @@ footer {
 
 /* Seller overview orders */
 
+.order-section {
+    margin-bottom: var(--spacing-xxl);
+}
+
+.order-section h2 {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
+    color: var(--color-text-header);
+}
+
 .orders-view {
     width: 90%;
     max-width: 1200px;
@@ -677,6 +689,38 @@ footer {
 
 .btn-view:hover {
     background-color: var(--color-fog-blue);
+}
+
+.no-results {
+    text-align: center;
+    padding: var(--spacing-xl);
+    color: var(--color-text-dark);
+    background-color: var(--color-body);
+    border-radius: var(--radius-md);
+}
+
+.badge-success {
+    background-color: #28a745;
+    color: var(--color-text-primary);
+    border-radius: var(--radius-md);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--text-size-small);
+    font-weight: var(--text-weight-bold);
+    padding: 0 5px;
+}
+
+.badge-secondary {
+    background-color: var(--color-text-dark);
+    color: var(--color-text-primary);
+    border-radius: var(--radius-md);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--text-size-small);
+    font-weight: var(--text-weight-bold);
+    padding: 0 5px;
 }
 
 .btn-delete {

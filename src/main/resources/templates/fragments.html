@@ -68,6 +68,45 @@
     </header>
 </div>
 
+<!-- Order/Offer Table Fragment -->
+<table th:fragment="orderTable(orders)" class="orders-table">
+    <thead>
+    <tr>
+        <th>Ordre-nr.</th>
+        <th>Kunde</th>
+        <th>E-mail</th>
+        <th>Oprettet</th>
+        <th>Status</th>
+        <th>Handlinger</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="order : ${orders}">
+        <td th:text="${order.orderId}"></td>
+        <td th:text="${order.customerFullName}"></td>
+        <td th:text="${order.email}"></td>
+        <td th:text="${order.relativeTime}"></td>
+        <td><span th:text="${order.orderStatus.displayName}"></span></td>
+        <td>
+            <div class="table-actions">
+                <a th:href="@{/{path}/{id}(path=${detailsPath}, id=${order.orderId})}"
+                   class="btn-table btn-view"
+                   title="Se detajler">
+                    <img th:src="@{/images/view.svg}" alt="Se detaljer"/>
+                </a>
+
+                <form method="post" th:action="@{/{path}/{id}/delete(path=${detailsPath}, id=${order.orderId})}"
+                      onsubmit="return confirm('Er du sikker på du vil slette denne? ')">
+                    <button type="submit" class="btn-table btn-delete" title="Slet">
+                        <img th:src="@{/images/delete.svg}" alt="Slet"/>
+                    </button>
+                </form>
+            </div>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
 <!-- Footer Fragment -->
 <div th:fragment="footerFragment">
     <footer>
