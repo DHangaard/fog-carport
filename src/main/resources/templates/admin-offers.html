@@ -60,7 +60,7 @@
                 <h2>Afventer kunde accept<span class="badge" th:if="${acceptedOffers != null}" th:text="${acceptedOffers.size()}"></span></h2>
 
                 <div th:if="${acceptedOffers != null and ! acceptedOffers.isEmpty()}" class="orders-table">
-                    <table th:replace="~{fragments :: orderTable(${acceptedOffers})}"></table>
+                    <table th:replace="~{fragments :: orderTable(${acceptedOffers}, 'offers')}"></table>
                 </div>
 
                 <p th:if="${acceptedOffers == null or acceptedOffers.isEmpty()}" class="no-results">Ingen tilbud afventer accept</p>
@@ -70,7 +70,7 @@
                 <h2>Afvist<span class="badge-secondary" th:if="${rejectedOffers != null}" th:text="${rejectedOffers.size()}"></span></h2>
 
                 <div th:if="${rejectedOffers != null and !rejectedOffers.isEmpty()}" class="orders-table">
-                    <table th:replace="~{fragments :: orderTable(${rejectedOffers})}"></table>
+                    <table th:replace="~{fragments :: orderTable(${rejectedOffers}, 'offers')}"></table>
                 </div>
 
                 <p th:if="${rejectedOffers == null or rejectedOffers.isEmpty()}" class="no-results">Ingen afviste tilbud</p>
@@ -80,7 +80,7 @@
                 <h2>Udløbet<span class="badge-secondary" th:if="${expiredOffers != null}" th:text="${expiredOffers.size()}"></span></h2>
 
                 <div th:if="${expiredOffers != null and !expiredOffers.isEmpty()}" class="orders-table">
-                    <table th:replace="~{fragments :: orderTable(${expiredOffers})}"></table>
+                    <table th:replace="~{fragments :: orderTable(${expiredOffers}, 'offers')}"></table>
                 </div>
 
                 <p th:if="${expiredOffers == null or expiredOffers.isEmpty()}" class="no-results">Ingen udløbne tilbud</p>

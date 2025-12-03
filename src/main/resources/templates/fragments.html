@@ -69,7 +69,8 @@
 </div>
 
 <!-- Order/Offer Table Fragment -->
-<table th:fragment="orderTable(orders)" class="orders-table">
+<table th:fragment="orderTable(orders, pageType)" class="orders-table">
+    <input type="hidden" name="pageType" th:value="${pageType}"/>
     <thead>
     <tr>
         <th>Ordre-nr.</th>
