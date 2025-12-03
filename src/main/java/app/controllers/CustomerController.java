@@ -24,7 +24,7 @@ public class CustomerController
     public void addRoutes(Javalin app)
     {
         app.get("/my-page", ctx -> showCustomerPage(ctx));
-        app.get("/customer-offer-detail", ctx -> showCustomerOfferDetails(ctx));
+        app.get("/customer-offer/details/{id}", ctx -> showCustomerOfferDetails(ctx));
     }
 
 
@@ -56,20 +56,21 @@ public class CustomerController
     private void showCustomerOfferDetails(Context ctx)
     {
         if(!requireLogin(ctx)) {return;}
+        int orderId = Integer.parseInt(ctx.pathParam("id"));
 
         try
         {
-            int orderId = Integer.parseInt(ctx.pathParam("id"));
             CustomerOfferDTO offer = orderService.getCustomerOfferByOrderId(orderId);
 
             ctx.attribute("offer", offer);
+
+            ctx.render("customer-offer-detail.html");
         }
         catch (DatabaseException e)
         {
             ctx.attribute("errorMessage", "Kunne ikke hente ordrer");
             ctx.redirect("/my-page");
         }
-        ctx.render("customer-offer-detail.html");
     }
 
     private boolean requireLogin(Context ctx)
