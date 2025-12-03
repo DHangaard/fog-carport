@@ -25,10 +25,12 @@
 
     <div class="request-details-page">
         <div class="hero-content">
-            <h1>Forespørgsel #<span th:text="${orderDetail.orderId}"></span></h1>
+            <h1>Tilbud #<span th:text="${orderDetail.orderId}"></span></h1>
+            <!-- TODO Seller name -->
             <p>Oprettet : <span th:text="${orderDetail.orderTimeLine.relativeTime}"></span></p>
-            <!-- TODO Udløb -->
+            <!-- TODO Expiration date -->
             <p>Status : <span th:text="${orderDetail.orderStatus.displayName}"></span></p>
+            <!-- TODO Total price - Same styling as seller view -->
         </div>
 
         <section class="section">
@@ -54,9 +56,6 @@
                         <strong>Skur:</strong>
                         <span th:text="${orderDetail.carport.shed.length} + ' x ' + ${orderDetail.carport.shed.width} + ' cm'"></span>
                     </div>
-
-                    <!-- TODO Total pris -->
-
                 </div>
 
                 <div class="info-content">
@@ -110,7 +109,6 @@
         </section>
 
         <!-- TODO Buttons [Accept] [Deny] -->
-
     </div>
 </main>
 
