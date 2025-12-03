@@ -12,6 +12,7 @@ import app.persistence.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class OrderService implements IOrderService
@@ -22,9 +23,10 @@ public class OrderService implements IOrderService
     private CarportMapper carportMapper;
     private OrderMapper orderMapper;
     private IBomService bomService;
+    private IEmailService emailService;
     private ConnectionPool connectionPool;
 
-    public OrderService(UserMapper userMapper, MaterialLineMapper materialLineMapper, ShedMapper shedMapper, CarportMapper carportMapper, OrderMapper orderMapper, IBomService bomService, ConnectionPool connectionPool)
+    public OrderService(UserMapper userMapper, MaterialLineMapper materialLineMapper, ShedMapper shedMapper, CarportMapper carportMapper, OrderMapper orderMapper, IBomService bomService, IEmailService emailService, ConnectionPool connectionPool)
     {
         this.userMapper = userMapper;
         this.materialLineMapper = materialLineMapper;
@@ -32,6 +34,7 @@ public class OrderService implements IOrderService
         this.carportMapper = carportMapper;
         this.orderMapper = orderMapper;
         this.bomService = bomService;
+        this.emailService = emailService;
         this.connectionPool = connectionPool;
     }
 
@@ -119,15 +122,55 @@ public class OrderService implements IOrderService
     }
 
     @Override
-    public boolean updateOrderStatus(Order order, OrderStatus orderStatus) throws DatabaseException
+    public boolean updateOrder(Order order) throws DatabaseException
     {
-        return false;
+        try (Connection connection = connectionPool.getConnection())
+        {
+            connection.setAutoCommit(false);
+
+            try
+            {
+                orderMapper.updateOrder(connection, order);
+                connection.commit();
+                return true;
+            }
+            catch (DatabaseException e)
+            {
+                connection.rollback();
+                throw new DatabaseException("Fejl ved updatering af ordre: " + e.getMessage());
+            }
+            catch (SQLException e)
+            {
+                connection.rollback();
+                throw new DatabaseException("Fejl ved updatering af ordre: " + e.getMessage());
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl i forbindelse til databasen: " + e.getMessage());
+        }
     }
 
     @Override
-    public boolean confirmOrder(int orderId)
+    public boolean confirmAndSendOffer(Order order) throws DatabaseException
     {
-        return false;
+        boolean isOfferConfirmed = false;
+
+        order.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
+
+        if(updateOrder(order))
+        {
+            User user = userMapper.getUserById(order.getCustomerId());
+            UserDTO userDTO = buildAndGetUserDTO(user);
+
+            emailService.sendOfferReady(userDTO);
+            isOfferConfirmed = true;
+        }
+        else
+        {
+            isOfferConfirmed= false;
+        }
+        return isOfferConfirmed;
     }
 
     @Override
@@ -210,6 +253,21 @@ public class OrderService implements IOrderService
                 order.getPricingDetails(),
                 order.getOrderStatus()
         );
+    }
+
+    UserDTO buildAndGetUserDTO(User user)
+    {
+       return new UserDTO(
+               user.getUserId(),
+               user.getFirstName(),
+               user.getLastName(),
+               user.getStreet(),
+               user.getZipCode(),
+               user.getCity(),
+               user.getEmail(),
+               user.getPhoneNumber(),
+               user.getRole()
+       );
     }
 
 }
