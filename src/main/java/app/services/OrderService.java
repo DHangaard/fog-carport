@@ -169,6 +169,12 @@ public class OrderService implements IOrderService
         return orderMapper.getAllOrderOverviewsByStatus(orderStatus);
     }
 
+    @Override
+    public List<OrderOverviewDTO> getAllOrdersByUserId(int userId) throws DatabaseException
+    {
+        
+    }
+
     private OrderDetail buildOrderDetail(Order order, User customer, User seller, Carport carport, List<MaterialLine> materialLines)
     {
         OrderTimeLine orderTimeLine = new OrderTimeLine();

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Fog - Min side</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="/public/css/styles.css" th:href="@{/css/styles.css}"/>
+    <link rel="icon" th:href="@{/images/logo.svg}">
+</head>
+<body>
+
+<div th:replace="~{fragments :: headerFragment}"></div>
+
+<main>
+    <div class="orders-view">
+        <h1>Carport</h1>
+
+        <div th:if="${successMessage}" class="success-message">
+            <p th:text="${successMessage}"></p>
+        </div>
+        <div th:if="${errorMessage}" class="error-message">
+            <p th:text="${errorMessage}"></p>
+        </div>
+
+        <h2>Mine forespørgsler</h2>
+        <div th:if="${customerOrderOverviews != null and !customerOrderOverviews.isEmpty()}" class="orders-table">
+            <table>
+                <thead>
+                <tr>
+                    <th>Ordre-nr.</th>
+                    <th>Oprettet</th>
+                    <th>Status</th>
+                    <th>Handlinger</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="orderOverview : ${orderOverviews}">
+                    <td th:text="${orderOverview.orderId}"></td>
+                    <td th:text="${orderOverview.relativeTime}"></td>
+                    <td><span th:text="${orderOverview.orderStatus.displayName}"></span></td>
+                    <td>
+                        <div class="table-actions">
+                            <a th:href="@{/carport-request/details/{id}(id=${orderOverview.orderId})}"
+                               class="btn-table btn-view"
+                               title="Se detajler">
+                                <img th:src="@{/images/view.svg}" alt="Se detaljer"/>
+                            </a>
+
+                            <form method="post"
+                                  th:action="@{/carport-request/details/{id}(id=${orderOverview.orderId})}"
+                                  onsubmit="return confirm('Er du sikker på du vil slette forespørgsel?')">
+                                <button type="submit" class="btn-table btn-delete" title="Slet ordre">
+                                    <img th:src="@{/images/delete.svg}" alt="Slet"/>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <p th:if="${orderOverviews == null or orderOverviews.isEmpty()}">
+            Ingen forespørgsler
+        </p>
+    </div>
+</main>
+
+<div th:replace="~{fragments :: footerFragment}"></div>
+
+</body>
+</html>

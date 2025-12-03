@@ -13,8 +13,10 @@ public record OrderOverviewDTO(
         String email,
         Timestamp customerRequestCreatedAt,
         OrderStatus orderStatus
-) {
-    public String getRelativeTime() {
+)
+{
+    public String getRelativeTime()
+    {
         return TimeUtil.getRelativeTime(customerRequestCreatedAt);
     }
 }
