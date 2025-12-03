@@ -29,10 +29,10 @@
             <button type="submit" class="btn btn-primary">Log ind</button>
         </form>
 
-        <div th:if="${errorMessage != null}" class="message message-error">
+        <div th:if="${session.errorMessage != null}" class="message message-error">
             <p id="error-message" class="error"
-               th:if="${errorMessage != null}"
-               th:text="${errorMessage}">
+               th:if="${session.errorMessage != null}"
+               th:text="${session.errorMessage}">
             </p>
         </div>
 

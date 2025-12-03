@@ -13,7 +13,7 @@
                 <!-- Sales links (conditional) -->
                 <div th:if="${session.currentUser != null and session.currentUser.role.name() == 'SALESREP'}"
                      class="admin-links">
-                    <a href="requests.html" th:href="@{/requests}" class="nav-link">
+                    <a href="requests.html" th:href="@{/carport-requests}" class="nav-link">
                         Forespørgsler
                         <span class="badge" th:if="${requestCount > 0}" th:text="${requestCount}">1</span>
                     </a>

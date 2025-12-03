@@ -2,9 +2,20 @@ package app.services;
 
 import app.entities.Carport;
 import app.entities.Shed;
+import app.exceptions.DatabaseException;
+import app.persistence.CarportMapper;
+import app.services.svg.CarportSvgSide;
+import app.services.svg.CarportSvgTop;
 
 public class CarportService implements ICarportService
 {
+    private CarportMapper carportMapper;
+
+    public CarportService(CarportMapper carportMapper)
+    {
+        this.carportMapper = carportMapper;
+    }
+
     @Override
     public void validateCarport(Carport carport)
     {
@@ -40,5 +51,31 @@ public class CarportService implements ICarportService
                 throw new IllegalArgumentException("Skurets længde må ikke være større end carportens længde");
             }
         }
+    }
+
+    @Override
+    public Carport getCarportByCarportId(int carportId) throws DatabaseException
+    {
+        return carportMapper.getCarportById(carportId);
+    }
+
+    @Override
+    public CarportSvgTop getCarportTopSvgView(Carport carport)
+    {
+        if(carport == null)
+        {
+            throw new IllegalArgumentException("Carport mål skal være udfyldt");
+        }
+        return new CarportSvgTop(carport);
+    }
+
+    @Override
+    public CarportSvgSide getCarportSideSvgView(Carport carport)
+    {
+        if(carport == null)
+        {
+            throw new IllegalArgumentException("Carport mål skal være udfyldt");
+        }
+        return new CarportSvgSide(carport);
     }
 }

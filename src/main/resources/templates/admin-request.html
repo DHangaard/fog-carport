@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Fog - Carport forespørgsler</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="/public/css/styles.css" th:href="@{/css/styles.css}"/>
+    <link rel="icon" th:href="@{/images/logo.svg}">
+</head>
+<body>
+
+<div th:replace="~{fragments :: headerFragment}"></div>
+
+<main>
+    <div class="orders-view">
+        <h1>Carport forespørgsler</h1>
+        <!-- Sales links (conditional)
+    <div class="order-search">
+        <h2>Søg efter forespørgsel</h2>
+
+        <form method="get" th:action="@{/orders/search}">
+            <div class="search-form">
+                <select name="searchType" required>
+                    <option value="">Vælg søgetype</option>
+                    <option value="id" th:selected="${searchType == 'id'}">Ordre ID</option>
+                    <option value="name" th:selected="${searchType == 'name'}">Kundenavn</option>
+                    <option value="email" th:selected="${searchType == 'email'}">Kundeemail</option>
+                </select>
+
+                <input type="text"
+                       name="searchQuery"
+                       th:value="${searchQuery}"
+                       placeholder="Indtast søgeord..."
+                       required>
+
+                <button class="search-button" type="submit">Søg</button>
+                <a th:href="@{/orders}" class="reset-button">Nulstil</a>
+            </div>
+        </form>
+    </div>
+     -->
+        <div th:if="${successMessage}" class="success-message">
+            <p th:text="${successMessage}"></p>
+        </div>
+
+        <div th:if="${errorMessage}" class="error-message">
+            <p th:text="${errorMessage}"></p>
+        </div>
+
+        <h2>Carport forespørgsler der mangler gennemsyn</h2>
+        <div th:if="${orderOverviews != null and !orderOverviews.isEmpty()}" class="orders-table">
+            <table>
+                <thead>
+                <tr>
+                    <th>Ordre-nr.</th>
+                    <th>Kunde</th>
+                    <th>E-mail</th>
+                    <th>Oprettet</th>
+                    <th>Status</th>
+                    <th>Handlinger</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="orderOverview : ${orderOverviews}">
+                    <td th:text="${orderOverview.orderId}"></td>
+                    <td><span th:text="${orderOverview.customerFullName}"></span></td>
+                    <td><span th:text="${orderOverview.email}"></span></td>
+                    <td th:text="${orderOverview.relativeTime}"></td>
+                    <td><span th:text="${orderOverview.orderStatus.displayName}"></span></td>
+                    <td>
+                        <div class="table-actions">
+                        <a th:href="@{/carport-request/details/{id}(id=${orderOverview.orderId})}"
+                           class="btn-table btn-view"
+                           title="Se detajler">
+                            <img th:src="@{/images/view.svg}" alt="Se detaljer"/>
+                        </a>
+
+                        <form method="post"
+                              th:action="@{/carport-request/details/{id}(id=${orderOverview.orderId})}"
+                              onsubmit="return confirm('Er du sikker på du vil slette forespørgsel?')">
+                            <button type="submit" class="btn-table btn-delete" title="Slet ordre">
+                                <img th:src="@{/images/delete.svg}" alt="Slet"/>
+                            </button>
+                        </form>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <p th:if="${orderOverviews == null or orderOverviews.isEmpty()}">
+            Ingen nye forespørgsler
+        </p>
+
+    </div>
+</main>
+<div th:replace="~{fragments :: footerFragment}"></div>
+
+</body>
+</html>

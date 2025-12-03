@@ -9,16 +9,18 @@ import app.util.PartCalculator;
 
 import java.util.*;
 
-public class BomService
+public class BomService implements IBomService
 {
     private MaterialVariantMapper variantMapper;
     private final int STANDARD_POST_SIZE = 300;
+    private final double COVERAGE_PERCENTAGE = 40.0;
 
     public BomService(MaterialVariantMapper variantMapper)
     {
         this.variantMapper = variantMapper;
     }
 
+    @Override
     public List<MaterialLine> getBillOfMaterialByCarport(Carport carport) throws DatabaseException, MaterialNotFoundException
     {
         List<MaterialLine> billOfMaterial = new ArrayList<>();
@@ -57,6 +59,26 @@ public class BomService
                 .forEach(materialLine -> billOfMaterial.add(materialLine));
 
         return billOfMaterial;
+    }
+
+    @Override
+    public PricingDetails calculateCarportPrice(List<MaterialLine> billOfMaterial)
+    {
+        PricingDetails pricingDetails = null;
+
+        if(billOfMaterial != null)
+        {
+            double costPrice = calculateCostPrice(billOfMaterial);
+            pricingDetails = new PricingDetails(costPrice, COVERAGE_PERCENTAGE);
+        }
+        return pricingDetails;
+    }
+
+    private double calculateCostPrice(List<MaterialLine> materialLines)
+    {
+        return materialLines.stream()
+                .mapToDouble(mLines -> mLines.getQuantity() * mLines.getMaterialVariant().getUnitPrice())
+                .sum();
     }
 
     private MaterialLine calculateNumberOfPosts(Carport carport) throws DatabaseException, MaterialNotFoundException

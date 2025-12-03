@@ -2,10 +2,9 @@ package app;
 
 import app.config.ThymeleafConfig;
 import app.controllers.CarportController;
+import app.controllers.SellerController;
 import app.controllers.UserController;
-import app.persistence.ConnectionPool;
-import app.persistence.UserMapper;
-import app.persistence.ZipCodeMapper;
+import app.persistence.*;
 import app.services.*;
 import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinThymeleaf;
@@ -41,14 +40,24 @@ public class Main
 
         UserMapper userMapper = new UserMapper(connectionPool);
         ZipCodeMapper zipCodeMapper = new ZipCodeMapper(connectionPool);
+        ShedMapper shedMapper = new ShedMapper(connectionPool);
+        CarportMapper carportMapper = new CarportMapper(connectionPool);
+        MaterialVariantMapper materialVariantMapper = new MaterialVariantMapper(connectionPool);
+        MaterialLineMapper materialLineMapper = new MaterialLineMapper(connectionPool);
+        OrderMapper orderMapper = new OrderMapper(connectionPool);
+
+        IBomService bomService = new BomService(materialVariantMapper);
         IUserService userService = new UserService(userMapper, zipCodeMapper);
-        ICarportService carportService = new CarportService();
+        ICarportService carportService = new CarportService(carportMapper);
+        IOrderService orderService = new OrderService(userMapper, materialLineMapper, shedMapper, carportMapper, orderMapper, bomService, connectionPool);
         IEmailService emailService = new SendGridEmailService();
 
         UserController userController = new UserController(userService);
-        CarportController carportController = new CarportController(carportService, userService, emailService);
+        CarportController carportController = new CarportController(carportService, userService, emailService, orderService);
+        SellerController sellerController = new SellerController(orderService, carportService);
 
         userController.addRoutes(app);
         carportController.addRoutes(app);
+        sellerController.addRoutes(app);
     }
 }

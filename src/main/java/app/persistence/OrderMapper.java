@@ -1,5 +1,6 @@
 package app.persistence;
 
+import app.dto.OrderOverviewDTO;
 import app.entities.Order;
 import app.entities.PricingDetails;
 import app.enums.OrderStatus;
@@ -195,6 +196,42 @@ public class OrderMapper
         }
     }
 
+    public List<OrderOverviewDTO> getAllOrderOverviewsByStatus(OrderStatus status) throws DatabaseException
+    {
+        List<OrderOverviewDTO> orderOverviewDTOS = new ArrayList<>();
+
+        String sql = """
+               SELECT o.order_id, u.first_name, u.last_name, u.email, o.request_created_at, o.order_status
+               FROM orders o
+               JOIN users u ON o.customer_id = u.user_id
+               WHERE o.order_status = ?
+               """;
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql))
+        {
+            ps.setString(1, status.name());
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next())
+            {
+                orderOverviewDTOS.add(new OrderOverviewDTO(
+                        rs.getInt("order_id"),
+                        rs.getString("first_name") + " " + rs.getString("last_name"),
+                        rs.getString("email"),
+                        rs.getTimestamp("request_created_at"),
+                        OrderStatus.valueOf(rs.getString("order_status"))
+                ));
+            }
+
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl ved hentning af ordrer" + e.getMessage());
+        }
+
+        return orderOverviewDTOS;
+    }
 
     public boolean updateOrder(Connection connection, Order order) throws DatabaseException
     {
