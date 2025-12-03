@@ -8,8 +8,8 @@ import app.enums.OrderStatus;
 public record CustomerOfferDTO(
         int orderId,
         Carport carport,
-        User customer,
-        String sellerFullName,
+        UserDTO customer,
+        UserDTO seller,
         OrderTimeLine orderTimeLine,
         Double totalPrice,
         OrderStatus orderStatus,
