@@ -5,6 +5,7 @@ import app.dto.UserDTO;
 import app.entities.Order;
 import app.entities.OrderDetail;
 import app.entities.PricingDetails;
+import app.entities.User;
 import app.enums.OrderStatus;
 import app.enums.Role;
 import app.exceptions.DatabaseException;
@@ -14,7 +15,6 @@ import app.services.svg.CarportSvgSide;
 import app.services.svg.CarportSvgTop;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Locale;
@@ -41,23 +41,27 @@ public class SellerController
     private void sendCarportOffer(Context ctx)
     {
         int orderId = Integer.parseInt(ctx.pathParam("id"));
+        User seller = ctx.sessionAttribute("currentUser");
         String offerValidDaysString = ctx.formParam("offerValidDays");
         String coveragePercentageString = ctx.formParam("coveragePercentage");
         String costPriceString = ctx.formParam("costPrice");
 
         try
         {
-            int offerValidDays = Integer.parseInt(offerValidDaysString);
+            Integer offerValidDays = Integer.parseInt(offerValidDaysString);
             double coveragePercentage = Double.parseDouble(coveragePercentageString);
             double costPrice = Double.parseDouble(costPriceString);
 
-            //TODO validate days, coverage, costPrice in service
+            //TODO validate days, coverage, costPrice in service Or here
             Order order = orderService.getOrderById(orderId);
+
+            order.setSellerId(seller.getUserId());
+            order.setOfferValidDays(offerValidDays);
             PricingDetails pricingDetails = new PricingDetails(costPrice, coveragePercentage);
             order.setPricingDetails(pricingDetails);
 
 
-            boolean offerSend = orderService.confirmAndSendOffer(order, offerValidDays);
+            boolean offerSend = orderService.confirmAndSendOffer(order);
             if(offerSend)
             {
                 ctx.sessionAttribute("succesMessage", "Dit tilbud er afsendt");

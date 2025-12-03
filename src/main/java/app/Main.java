@@ -49,8 +49,8 @@ public class Main
         IBomService bomService = new BomService(materialVariantMapper);
         IUserService userService = new UserService(userMapper, zipCodeMapper);
         ICarportService carportService = new CarportService(carportMapper);
-        IOrderService orderService = new OrderService(userMapper, materialLineMapper, shedMapper, carportMapper, orderMapper, bomService, connectionPool);
         IEmailService emailService = new SendGridEmailService();
+        IOrderService orderService = new OrderService(userMapper, materialLineMapper, shedMapper, carportMapper, orderMapper, bomService, emailService, connectionPool);
 
         UserController userController = new UserController(userService);
         CarportController carportController = new CarportController(carportService, userService, emailService, orderService);
