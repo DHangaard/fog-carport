@@ -26,11 +26,11 @@
     <div class="request-details-page">
         <div class="hero-content">
             <h1>Tilbud #<span th:text="${orderDetail.orderId}"></span></h1>
-            <!-- TODO Seller name -->
-            <p>Oprettet : <span th:text="${orderDetail.orderTimeLine.relativeTime}"></span></p>
-            <!-- TODO Expiration date -->
-            <p>Status : <span th:text="${orderDetail.orderStatus.displayName}"></span></p>
-            <!-- TODO Total price - Same styling as seller view -->
+            <p>Sælger : <span th:text="${offer.seller.getFirstName} + ' ' + ${offer.seller.getLastName}"></span></p>
+            <p>Oprettet : <span th:text="${offer.orderTimeLine.relativeTime}"></span></p>
+            <p>Udløber : <span th:text="${offer.orderTimeLine.relativeTime}"></span></p>
+            <p>Status : <span th:text="${offer.orderStatus.displayName}"></span></p>
+            <p>Status : DKK<span th:text="${offer.getTotalPrice} + ',-'"></span></p>
         </div>
 
         <section class="section">
@@ -42,19 +42,19 @@
                     <h3>Carport Specifikationer</h3>
                     <div class="info-item">
                         <strong>Længde:</strong>
-                        <span th:text="${orderDetail.carport.length} + ' cm'"></span>
+                        <span th:text="${offer.carport.length} + ' cm'"></span>
                     </div>
                     <div class="info-item">
                         <strong>Bredde:</strong>
-                        <span th:text="${orderDetail.carport.width} + ' cm'"></span>
+                        <span th:text="${offer.carport.width} + ' cm'"></span>
                     </div>
                     <div class="info-item">
                         <strong>Tagtype:</strong>
-                        <span th:text="${orderDetail.carport.roofType.displayName}"></span>
+                        <span th:text="${offer.carport.roofType.displayName}"></span>
                     </div>
-                    <div class="info-item" th:if="${orderDetail.carport.shed != null}">
+                    <div class="info-item" th:if="${offer.carport.shed != null}">
                         <strong>Skur:</strong>
-                        <span th:text="${orderDetail.carport.shed.length} + ' x ' + ${orderDetail.carport.shed.width} + ' cm'"></span>
+                        <span th:text="${offer.carport.shed.length} + ' x ' + ${offer.carport.shed.width} + ' cm'"></span>
                     </div>
                 </div>
 
@@ -63,29 +63,28 @@
 
                     <div class="info-item">
                         <strong>Navn:</strong>
-                        <span th:text="${orderDetail.customer.firstName} + ' ' + ${orderDetail.customer.lastName}"></span>
+                        <span th:text="${offer.customer.firstName} + ' ' + ${offer.customer.lastName}"></span>
                     </div>
 
                     <div class="info-item">
                         <strong>E-mail:</strong>
-                        <a th:href="'mailto:' + ${orderDetail. customer.email}"
-                           th:text="${orderDetail.customer.email}"></a>
+                        <span th:text="${offer.customer.email}"></span>
                     </div>
 
                     <div class="info-item">
                         <strong>Telefon:</strong>
-                        <a th:href="'tel:+45' + ${orderDetail.customer.phoneNumber}"
-                           th:text="${orderDetail.customer.phoneNumber}"></a>
+                        <a th:href="'tel:+45' + ${offer.customer.phoneNumber}"
+                           th:text="${offer.customer.phoneNumber}"></a>
                     </div>
 
                     <div class="info-item">
                         <strong>Adresse:</strong>
-                        <span th:text="${orderDetail.customer.street} + ', ' + ${orderDetail.customer.zipCode} + ' ' + ${orderDetail.customer.city}"></span>
+                        <span th:text="${offer.customer.street} + ', ' + ${offer.customer.zipCode} + ' ' + ${offer.customer.city}"></span>
                     </div>
 
-                    <div th:if="${orderDetail.customerComment}" class="info-item">
+                    <div th:if="${offer.customerComment}" class="info-item">
                         <strong>Kommentar:</strong>
-                        <span th:text="${orderDetail.customerComment}"></span>
+                        <span th:text="${offer.customerComment}"></span>
                     </div>
                 </div>
 
@@ -105,7 +104,7 @@
                 </div>
             </div>
 
-            <a th:href="@{/show-carport-drawing/{id}(id=${orderDetail.orderId})}" class=" btn btn-primary">Se stor tegning her</a>
+            <a th:href="@{/show-carport-drawing/{id}(id=${offer.orderId})}" class=" btn btn-primary">Se stor tegning her</a>
         </section>
 
         <!-- TODO Buttons [Accept] [Deny] -->
