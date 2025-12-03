@@ -23,4 +23,5 @@ public interface IOrderService
     public OrderDetail getOrderDetailByOrderId(int orderId) throws DatabaseException;
     public List<OrderOverviewDTO> getAllOrdersByStatus(OrderStatus orderStatus) throws DatabaseException;
     public List<OrderOverviewDTO> getAllOrdersByUserId(int userId) throws DatabaseException;
+    public List<OrderOverviewDTO> getAllOrdersByUserIdAndStatus(int userId, OrderStatus orderStatus) throws DatabaseException;
 }

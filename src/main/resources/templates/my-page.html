@@ -13,7 +13,7 @@
 
 <main>
     <div class="orders-view">
-        <h1>Carport</h1>
+        <h1>Mine carport forespørgsler</h1>
 
         <div th:if="${successMessage}" class="success-message">
             <p th:text="${successMessage}"></p>
@@ -22,8 +22,31 @@
             <p th:text="${errorMessage}"></p>
         </div>
 
-        <h2>Mine forespørgsler</h2>
-        <div th:if="${customerOrderOverviews != null and !customerOrderOverviews.isEmpty()}" class="orders-table">
+        <h2>Afventer sælger</h2>
+        <div th:if="${pendingOrders != null and !pendingOrders.isEmpty()}" class="orders-table customer-pending-orders">
+            <table>
+                <thead>
+                <tr>
+                    <th>Ordre-nr.</th>
+                    <th>Oprettet</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="pendingOrder : ${pendingOrders}">
+                    <td th:text="${pendingOrder.orderId}"></td>
+                    <td th:text="${pendingOrder.relativeTime}"></td>
+                    <td><span th:text="${pendingOrder.orderStatus.displayName}"></span></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <p th:if="${pendingOrders == null or pendingOrders.isEmpty()}">
+            Ingen forespørgsler
+        </p>
+
+        <h2>Afventer godkendelse</h2>
+        <div th:if="${readyOrders != null and !readyOrders.isEmpty()}" class="orders-table">
             <table>
                 <thead>
                 <tr>
@@ -34,34 +57,60 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="orderOverview : ${orderOverviews}">
-                    <td th:text="${orderOverview.orderId}"></td>
-                    <td th:text="${orderOverview.relativeTime}"></td>
-                    <td><span th:text="${orderOverview.orderStatus.displayName}"></span></td>
+                <tr th:each="readyOrder : ${readyOrders}">
+                    <td th:text="${readyOrder.orderId}"></td>
+                    <td th:text="${readyOrder.relativeTime}"></td>
+                    <td><span th:text="${readyOrder.orderStatus.displayName}"></span></td>
                     <td>
                         <div class="table-actions">
                             <a th:href="@{/carport-request/details/{id}(id=${orderOverview.orderId})}"
                                class="btn-table btn-view"
                                title="Se detajler">
-                                <img th:src="@{/images/view.svg}" alt="Se detaljer"/>
+                                <img th:src="@{/images/view.svg}" alt="Se detaljer"/> <!-- Change hyperlink -->
                             </a>
-
-                            <form method="post"
-                                  th:action="@{/carport-request/details/{id}(id=${orderOverview.orderId})}"
-                                  onsubmit="return confirm('Er du sikker på du vil slette forespørgsel?')">
-                                <button type="submit" class="btn-table btn-delete" title="Slet ordre">
-                                    <img th:src="@{/images/delete.svg}" alt="Slet"/>
-                                </button>
-                            </form>
                         </div>
                     </td>
                 </tr>
                 </tbody>
             </table>
         </div>
-        <p th:if="${orderOverviews == null or orderOverviews.isEmpty()}">
-            Ingen forespørgsler
+        <p th:if="${readyOrders == null or readyOrders.isEmpty()}">
+            Ingen tilbud
         </p>
+
+        <h2>Ordrer</h2>
+        <div th:if="${paidOrders != null and !paidOrders.isEmpty()}" class="orders-table">
+            <table>
+                <thead>
+                <tr>
+                    <th>Ordre-nr.</th>
+                    <th>Oprettet</th>
+                    <th>Status</th>
+                    <th>Handlinger</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="paidOrder : ${paidOrders}">
+                    <td th:text="${paidOrder.orderId}"></td>
+                    <td th:text="${paidOrder.relativeTime}"></td>
+                    <td><span th:text="${paidOrder.orderStatus.displayName}"></span></td>
+                    <td>
+                        <div class="table-actions">
+                            <a th:href="@{/carport-request/details/{id}(id=${orderOverview.orderId})}"
+                               class="btn-table btn-view"
+                               title="Se detajler">
+                                <img th:src="@{/images/view.svg}" alt="Se detaljer"/> <!-- Change hyperlink -->
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <p th:if="${paidOrders == null or paidOrders.isEmpty()}">
+            Ingen ordrer
+        </p>
+
     </div>
 </main>
 

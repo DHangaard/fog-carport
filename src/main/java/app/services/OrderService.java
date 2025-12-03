@@ -11,9 +11,7 @@ import app.persistence.*;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Time;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 
 public class OrderService implements IOrderService
@@ -172,7 +170,13 @@ public class OrderService implements IOrderService
     @Override
     public List<OrderOverviewDTO> getAllOrdersByUserId(int userId) throws DatabaseException
     {
-        
+        return orderMapper.getAllOrderOverviewsByUserId(userId);
+    }
+
+    @Override
+    public List<OrderOverviewDTO> getAllOrdersByUserIdAndStatus(int userId, OrderStatus orderStatus) throws DatabaseException
+    {
+        return orderMapper.getAllOrderOverviewsByUserIdAndStatus(userId, orderStatus);
     }
 
     private OrderDetail buildOrderDetail(Order order, User customer, User seller, Carport carport, List<MaterialLine> materialLines)
