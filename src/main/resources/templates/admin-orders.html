@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Fog - Ordrer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="/public/css/styles.css" th:href="@{/css/styles.css}"/>
+    <link rel="icon" th:href="@{/images/logo.svg}">
+</head>
+<body>
+
+<div th:replace="~{fragments :: headerFragment}"></div>
+
+<main>
+    <!-- Sales links (conditional)
+<div class="order-search">
+    <h2>Søg efter forespørgsel</h2>
+
+    <form method="get" th:action="@{/orders/search}">
+        <div class="search-form">
+            <select name="searchType" required>
+                <option value="">Vælg søgetype</option>
+                <option value="id" th:selected="${searchType == 'id'}">Ordre ID</option>
+                <option value="name" th:selected="${searchType == 'name'}">Kundenavn</option>
+                <option value="email" th:selected="${searchType == 'email'}">Kundeemail</option>
+            </select>
+
+            <input type="text"
+                   name="searchQuery"
+                   th:value="${searchQuery}"
+                   placeholder="Indtast søgeord..."
+                   required>
+
+            <button class="search-button" type="submit">Søg</button>
+            <a th:href="@{/orders}" class="reset-button">Nulstil</a>
+        </div>
+    </form>
+</div>
+ -->
+    <div th:if="${session.successMessage}" class="success-message">
+        <p th:text="${session.successMessage}"></p>
+    </div>
+
+    <div th:if="${session.errorMessage}" class="error-message">
+        <p th:text="${session.errorMessage}"></p>
+    </div>
+
+    <div class="orders-view">
+        <h1>Ordre</h1>
+
+        <div th:if="${session.successMessage}" class="message message-success">
+            <p th:text="${session.successMessage}"></p>
+        </div>
+
+        <div th:if="${session.errorMessage}" class="message message-error">
+            <p th:text="${session.errorMessage}"></p>
+        </div>
+
+        <section class="order-section">
+            <h2>Betalte ordre<span class="badge" th:if="${paidOrders != null}" th:text="${paidOrders.size()}"></span></h2>
+
+            <div th:if="${paidOrders != null and ! paidOrders.isEmpty()}" class="orders-table">
+                <table th:replace="~{fragments :: orderTable(${paidOrders}, 'orders')}"></table>
+            </div>
+
+            <p th:if="${paidOrders == null or paidOrders.isEmpty()}" class="no-results">Ingen betalte ordre</p>
+        </section>
+
+        <section class="order-section">
+            <h2>Annullerede ordre<span class="badge-secondary" th:if="${cancelledOrders != null}" th:text="${cancelledOrders.size()}"></span></h2>
+
+            <div th:if="${cancelledOrders != null and !cancelledOrders.isEmpty()}" class="orders-table">
+                <table th:replace="~{fragments :: orderTable(${cancelledOrders}, 'orders')}"></table>
+            </div>
+
+            <p th:if="${cancelledOrders == null or cancelledOrders.isEmpty()}" class="no-results">Ingen annullerede ordre</p>
+        </section>
+    </div>
+</main>
+
+<div th:replace="~{fragments :: footerFragment}"></div>
+
+</body>
+</html>
