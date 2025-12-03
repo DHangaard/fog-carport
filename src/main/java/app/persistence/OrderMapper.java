@@ -131,7 +131,7 @@ public class OrderMapper
         }
     }
 
-    public List<Order> getAllOrdersByCustomerId(int customerId) throws DatabaseException
+    public List<Order> getAllOrdersByUserId(int userId) throws DatabaseException
     {
         String sql = """
                 SELECT order_id, customer_id, seller_id, carport_id, request_created_at, created_at, offer_valid_days, order_status, customer_comment, coverage_percentage, cost_price
@@ -145,7 +145,7 @@ public class OrderMapper
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql))
         {
-            ps.setInt(1, customerId);
+            ps.setInt(1, userId);
 
             ResultSet rs = ps.executeQuery();
 
@@ -229,7 +229,79 @@ public class OrderMapper
         {
             throw new DatabaseException("Fejl ved hentning af ordrer" + e.getMessage());
         }
+        return orderOverviewDTOS;
+    }
 
+    public List<OrderOverviewDTO> getAllOrderOverviewsByUserId(int userId) throws DatabaseException
+    {
+        List<OrderOverviewDTO> orderOverviewDTOS = new ArrayList<>();
+
+        String sql = """
+               SELECT o.order_id, u.first_name, u.last_name, u.email, o.request_created_at, o.order_status
+               FROM orders o
+               JOIN users u ON o.customer_id = u.user_id
+               WHERE u.user_id = ?
+               """;
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql))
+        {
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next())
+            {
+                orderOverviewDTOS.add(new OrderOverviewDTO(
+                        rs.getInt("order_id"),
+                        rs.getString("first_name") + " " + rs.getString("last_name"),
+                        rs.getString("email"),
+                        rs.getTimestamp("request_created_at"),
+                        OrderStatus.valueOf(rs.getString("order_status"))
+                ));
+            }
+
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl ved hentning af ordrer" + e.getMessage());
+        }
+        return orderOverviewDTOS;
+    }
+
+    public List<OrderOverviewDTO> getAllOrderOverviewsByUserIdAndStatus(int userId, OrderStatus orderStatus) throws DatabaseException
+    {
+        List<OrderOverviewDTO> orderOverviewDTOS = new ArrayList<>();
+
+        String sql = """
+               SELECT o.order_id, u.first_name, u.last_name, u.email, o.request_created_at, o.order_status
+               FROM orders o
+               JOIN users u ON o.customer_id = u.user_id
+               WHERE u.user_id = ? AND o.order_status = ?
+               """;
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql))
+        {
+            ps.setInt(1, userId);
+            ps.setString(2, orderStatus.name());
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next())
+            {
+                orderOverviewDTOS.add(new OrderOverviewDTO(
+                        rs.getInt("order_id"),
+                        rs.getString("first_name") + " " + rs.getString("last_name"),
+                        rs.getString("email"),
+                        rs.getTimestamp("request_created_at"),
+                        OrderStatus.valueOf(rs.getString("order_status"))
+                ));
+            }
+
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl ved hentning af ordrer" + e.getMessage());
+        }
         return orderOverviewDTOS;
     }
 
