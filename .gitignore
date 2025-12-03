@@ -2,6 +2,20 @@
 target/
 dependency-reduced-pom*.xml
 
+# Config files
+*.properties
+!*.properties.example
+
+# Environment files
+.env*
+!.env.example
+
+# Secrets / keys (local)
+*.key
+*.pem
+*.p12
+*.jks
+
 # IntelliJ IDEA settings (auto-generated from pom.xml)
 .idea/
 *.iml
@@ -28,6 +42,3 @@ Thumbs.db
 
 # Log files
 *.log
-
-# Configuration files
-*.properties
