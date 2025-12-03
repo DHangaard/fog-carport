@@ -1,10 +1,16 @@
 package app.controllers;
 
+import app.dto.OrderOverviewDTO;
 import app.dto.UserDTO;
+import app.enums.OrderStatus;
 import app.enums.Role;
+import app.exceptions.DatabaseException;
 import app.services.IOrderService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+
+import java.util.List;
+import java.util.Map;
 
 public class OrderController
 {
@@ -19,17 +25,89 @@ public class OrderController
         {
             app.get("/offers", ctx -> showOfferOverview(ctx));
             app.get("/orders", ctx -> showOrderOverview(ctx));
+            app.get("/carport/details/view/{id}", ctx -> showOrderDetail(ctx));
+
+            app.post("/carport/order/delete/{id}", ctx -> deleteOrder(ctx));
 
         }
 
-    private void showOrderOverview(Context ctx)
+    private void deleteOrder(Context ctx)
+    {
+        int orderId = Integer.parseInt(ctx.pathParam("id"));
+        String pageType = ctx.formParam("pageType");
+
+        try
+        {
+            boolean isDeleted = orderService.deleteOrder(orderId);
+
+            if(isDeleted)
+            {
+                ctx.sessionAttribute("successMessage", "Ordren blev slettet");
+            }
+            else
+            {
+                ctx.sessionAttribute("errorMessage", "Kunne ikke slette ordren");
+            }
+
+            redirectToCorrectPath(ctx, pageType);
+        }
+        catch (DatabaseException e)
+        {
+            ctx.sessionAttribute("errorMessage", e.getMessage());
+            redirectToCorrectPath(ctx, pageType);
+        }
+    }
+
+    private void showOrderDetail(Context ctx)
     {
         if(!userIsAdmin(ctx)){return;}
     }
 
-    private void showOfferOverview(Context ctx)
+    private void showOrderOverview(Context ctx)
     {
         if(!userIsAdmin(ctx)){return;}
+
+        try
+        {
+            List<OrderStatus> statuses = List.of(OrderStatus.PAID, OrderStatus.CANCELLED);
+
+            Map<OrderStatus, List<OrderOverviewDTO>> orderOverviews = orderService.getOrderOverViewsByStatus(statuses);
+
+            ctx.attribute("paidOrders", orderOverviews.get(OrderStatus.READY));
+            ctx.attribute("cancelledOrders", orderOverviews.get(OrderStatus.REJECTED));
+
+            ctx.render("admin-orders");
+
+        }
+        catch (DatabaseException e)
+        {
+            ctx.sessionAttribute("errorMessage", "Kunne ikke hente ordre: " + e.getMessage());
+            ctx.redirect("/");
+        }
+    }
+
+    private void showOfferOverview(Context ctx)
+    {
+        if(!userIsAdmin(ctx)) return;
+
+        try
+        {
+            List<OrderStatus> statuses = List.of(OrderStatus.READY, OrderStatus.REJECTED, OrderStatus.EXPIRED);
+
+            Map<OrderStatus, List<OrderOverviewDTO>> orderOverviews = orderService.getOrderOverViewsByStatus(statuses);
+
+            ctx.attribute("offersToAccept", orderOverviews.get(OrderStatus.READY));
+            ctx.attribute("rejectedOffers", orderOverviews.get(OrderStatus.REJECTED));
+            ctx.attribute("expiredOffers", orderOverviews.get(OrderStatus.EXPIRED));
+
+            ctx.render("admin-offers");
+
+        }
+        catch (DatabaseException e)
+        {
+            ctx.sessionAttribute("errorMessage", "Kunne ikke hente tilbud: " + e.getMessage());
+            ctx.redirect("/");
+        }
     }
 
     private boolean userIsAdmin(Context ctx)
@@ -44,5 +122,23 @@ public class OrderController
         }
 
         return userDTO.role().equals(Role.SALESREP);
+    }
+
+    private void redirectToCorrectPath(Context ctx, String pageType)
+    {
+        switch (pageType)
+        {
+            case "requests":
+                ctx.redirect("/carport-requests");
+                break;
+            case "offers":
+                ctx.redirect("/offers");
+                break;
+            case "orders":
+                ctx.redirect("/orders");
+                break;
+            default:
+                ctx.redirect("/");
+        }
     }
 }

@@ -13,7 +13,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class OrderService implements IOrderService
 {
@@ -152,6 +154,12 @@ public class OrderService implements IOrderService
     }
 
     @Override
+    public boolean deleteOrder(int orderId) throws DatabaseException
+    {
+        return orderMapper.deleteOrder(orderId);
+    }
+
+    @Override
     public boolean confirmAndSendOffer(Order order) throws DatabaseException
     {
         boolean isOfferConfirmed = false;
@@ -210,6 +218,7 @@ public class OrderService implements IOrderService
         return orderMapper.getAllOrderOverviewsByStatus(orderStatus);
     }
 
+
     @Override
     public List<OrderOverviewDTO> getAllOrdersByUserId(int userId) throws DatabaseException
     {
@@ -221,6 +230,19 @@ public class OrderService implements IOrderService
     {
         return orderMapper.getAllOrderOverviewsByUserIdAndStatus(userId, orderStatus);
     }
+
+    @Override
+    public Map<OrderStatus, List<OrderOverviewDTO>> getOrderOverViewsByStatus(List<OrderStatus> orderStatuses) throws DatabaseException
+    {
+        Map<OrderStatus, List<OrderOverviewDTO>> orderOverviews = new HashMap<>();
+
+        for(OrderStatus status: orderStatuses)
+        {
+            orderOverviews.put(status, orderMapper.getAllOrderOverviewsByStatus(status));
+        }
+        return orderOverviews;
+    }
+
 
     private OrderDetail buildOrderDetail(Order order, User customer, User seller, Carport carport, List<MaterialLine> materialLines)
     {
