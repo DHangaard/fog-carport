@@ -69,19 +69,19 @@
                     <td><span th:text="${orderOverview.orderStatus.displayName}"></span></td>
                     <td>
                         <div class="table-actions">
-                        <a th:href="@{/carport-request/details/{id}(id=${orderOverview.orderId})}"
-                           class="btn-table btn-view"
-                           title="Se detajler">
-                            <img th:src="@{/images/view.svg}" alt="Se detaljer"/>
-                        </a>
+                            <a th:href="@{/carport-request/details/{id}(id=${orderOverview.orderId})}"
+                               class="btn-table btn-view"
+                               title="Se detajler">
+                                <img th:src="@{/images/view.svg}" alt="Se detaljer"/>
+                            </a>
 
-                        <form method="post"
-                              th:action="@{/carport-request/details/{id}(id=${orderOverview.orderId})}"
-                              onsubmit="return confirm('Er du sikker på du vil slette forespørgsel?')">
-                            <button type="submit" class="btn-table btn-delete" title="Slet ordre">
-                                <img th:src="@{/images/delete.svg}" alt="Slet"/>
-                            </button>
-                        </form>
+                            <form method="post"
+                                  th:action="@{/carport-request/details/{id}(id=${orderOverview.orderId})}"
+                                  onsubmit="return confirm('Er du sikker på du vil slette forespørgsel?')">
+                                <button type="submit" class="btn-table btn-delete" title="Slet ordre">
+                                    <img th:src="@{/images/delete.svg}" alt="Slet"/>
+                                </button>
+                            </form>
                         </div>
                     </td>
                 </tr>
