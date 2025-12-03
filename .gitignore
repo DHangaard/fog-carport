@@ -7,8 +7,7 @@ dependency-reduced-pom*.xml
 !*.properties.example
 
 # Environment files
-.env
-.env.local
+.env*
 !.env.example
 
 # Secrets / keys (local)
