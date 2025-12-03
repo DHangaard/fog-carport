@@ -5,7 +5,10 @@ import app.dto.OrderOverviewDTO;
 import app.dto.UserDTO;
 import app.enums.OrderStatus;
 import app.exceptions.DatabaseException;
+import app.services.ICarportService;
 import app.services.IOrderService;
+import app.services.svg.CarportSvgSide;
+import app.services.svg.CarportSvgTop;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 
@@ -15,10 +18,12 @@ public class CustomerController
 {
 
     private IOrderService orderService;
+    private ICarportService carportService;
 
-    public CustomerController(IOrderService orderService)
+    public CustomerController(IOrderService orderService, ICarportService carportService)
     {
         this.orderService = orderService;
+        this.carportService = carportService;
     }
 
     public void addRoutes(Javalin app)
@@ -61,7 +66,10 @@ public class CustomerController
         try
         {
             CustomerOfferDTO offer = orderService.getCustomerOfferByOrderId(orderId);
-
+            CarportSvgTop carportSvgTop = carportService.getCarportTopSvgView(offer.carport());
+            CarportSvgSide carportSvgSide = carportService.getCarportSideSvgView(offer.carport());
+            ctx.attribute("carportSvgTop", carportSvgTop);
+            ctx.attribute("carportSvgSide", carportSvgSide);
             ctx.attribute("offer", offer);
 
             ctx.render("customer-offer-detail.html");
