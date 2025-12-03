@@ -2,7 +2,9 @@ package app.controllers;
 
 import app.dto.OrderOverviewDTO;
 import app.dto.UserDTO;
+import app.entities.Order;
 import app.entities.OrderDetail;
+import app.entities.PricingDetails;
 import app.enums.OrderStatus;
 import app.enums.Role;
 import app.exceptions.DatabaseException;
@@ -31,6 +33,64 @@ public class SellerController
     {
         app.get("/carport-requests", ctx -> showCarportRequests(ctx));
         app.get("/carport-request/details/{id}", ctx -> showRequestDetails(ctx));
+
+        app.post("/requests/{id}/send-offer", ctx -> sendCarportOffer(ctx));
+    }
+
+    private void sendCarportOffer(Context ctx)
+    {
+        if(!userIsAdmin(ctx)){return;}
+
+        int orderId = Integer.parseInt(ctx.pathParam("id"));
+        UserDTO seller = ctx.sessionAttribute("currentUser");
+
+        String offerValidDaysString = ctx.formParam("offerValidDays");
+        String coveragePercentageString = ctx.formParam("coveragePercentage");
+        String costPriceString = ctx.formParam("costPrice");
+
+        if (offerValidDaysString == null || coveragePercentageString == null || costPriceString == null)
+        {
+            ctx.sessionAttribute("errorMessage", "Formularen mangler værdier");
+            ctx.redirect("/carport-request/details/" + orderId);
+            return;
+        }
+
+        try
+        {
+            Integer offerValidDays = Integer.parseInt(offerValidDaysString);
+            double coveragePercentage = Double.parseDouble(coveragePercentageString);
+            double costPrice = Double.parseDouble(costPriceString);
+            PricingDetails pricingDetails = new PricingDetails(costPrice, coveragePercentage);
+
+            Order order = orderService.getOrderById(orderId);
+
+            order.setSellerId(seller.userId());
+            order.setOfferValidDays(offerValidDays);
+            order.setPricingDetails(pricingDetails);
+            order.setOrderStatus(OrderStatus.READY);
+
+            boolean offerSend = orderService.confirmAndSendOffer(order);
+            if(offerSend)
+            {
+                ctx.sessionAttribute("succesMessage", "Dit tilbud er afsendt");
+            }
+            else
+            {
+                ctx.sessionAttribute("errorMessage", "Dit tilbud blev ikke afsendt, prøv igen");
+            }
+
+            ctx.redirect("/carport-requests");
+        }
+        catch (DatabaseException e)
+        {
+            ctx.sessionAttribute("errorMessage", e.getMessage());
+            ctx.redirect("/carport-request/details/" + orderId);
+        }
+        catch (NumberFormatException e)
+        {
+            ctx.attribute("errorMessage", "Kunne ikke hente de korrekte værdier ud til prisen, kun tal er muligt");
+            ctx.redirect("/carport-request/details/" + orderId);
+        }
     }
 
     private void showRequestDetails(Context ctx)
@@ -67,9 +127,7 @@ public class SellerController
         try
         {
             List<OrderOverviewDTO> orderOverviews = orderService.getAllOrdersByStatus(OrderStatus.PENDING);
-            orderOverviews.get(0).customerRequestCreatedAt();
             ctx.attribute("orderOverviews", orderOverviews);
-
         }
         catch (DatabaseException e)
         {

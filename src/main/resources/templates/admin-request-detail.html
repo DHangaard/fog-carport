@@ -12,6 +12,17 @@
 <div th:replace="~{fragments :: headerFragment}"></div>
 
 <main>
+    <div th:if="${session.succesMessage}" class="message message-succes">
+        <p class="success" th:if="${session.succesMessage}" th:text="${session.succesMessage}"></p>
+    </div>
+
+    <div th:if="${session.errorMessage != null}" class="message message-error">
+        <p id="error-message" class="error"
+           th:if="${session.errorMessage != null}"
+           th:text="${session.errorMessage}">
+        </p>
+    </div>
+
     <div class="request-details-page">
         <div class="hero-content">
             <h1>Forespørgsel #<span th:text="${orderDetail.orderId}"></span></h1>
@@ -152,7 +163,7 @@
 
                     <div class="price-row">
                         <label>Samlet kostpris:</label>
-                        <span class="price-display" id="costPriceDisplay"
+                        <span class="price-display" id="costPriceDisplay" name="costPrice"
                               th:text="${orderDetail.pricingDetails.costPrice}"></span>
                         <span class="unit">kr.</span>
                     </div>
@@ -212,6 +223,11 @@
                    name="coveragePercentage"
                    th:value="${orderDetail.pricingDetails.coveragePercentage}">
 
+            <input type="hidden"
+                   id="costPriceInput"
+                   name="costPrice"
+                   th:value="${orderDetail.pricingDetails.costPrice}">
+
             <div class="offer-validity">
                 <label for="offerValidDays"><strong>Tilbud gyldigt i (dage):</strong></label>
                 <input type="number"
@@ -225,7 +241,7 @@
 
             <div class="form-actions">
                 <button type="submit" class="btn-primary btn-large">Send Tilbud til Kunde</button>
-                <a th:href="@{/requests}" class="btn btn-secondary">Tilbage til oversigt</a>
+                <a th:href="@{/carport-requests}" class="btn btn-secondary">Tilbage til oversigt</a>
             </div>
         </form>
 

@@ -18,22 +18,24 @@
         <div class="carport-wrapper">
             <h3>Ordre # <span th:text="${order.orderId}"></span></h3>
 
-        <div class="carport-svg-sideview">
-            <h3>Side view</h3>
-            <div th:utext="${carportSvgSide}"></div>
-        </div>
+            <div class="carport-svg-sideview">
+                <h3>Side view</h3>
+                <div th:utext="${carportSvgSide}"></div>
+            </div>
 
-        <div class="carport-svg-topview">
-            <h3>Top view</h3>
-            <div th:utext="${carportSvgTop}"></div>
-        </div>
+            <div class="carport-svg-topview">
+                <h3>Top view</h3>
+                <div th:utext="${carportSvgTop}"></div>
+            </div>
 
         </div>
+    </div>
+
+    <div class="btn">
+        <a class="btn btn-primary" th:href="@{/carport-request/details/{id}(id=${order.orderId})}">Tilbage til oversigt</a>
     </div>
 </main>
 
 <div th:replace="~{fragments :: footerFragment}"></div>
-
-
 </body>
 </html>
