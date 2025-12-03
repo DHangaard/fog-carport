@@ -54,7 +54,7 @@ public class Main
         CarportController carportController = new CarportController(carportService, userService, emailService, orderService);
         SellerController sellerController = new SellerController(orderService, carportService);
         CustomerController customerController = new CustomerController(orderService);
-        OrderController orderController = new OrderController(orderService);
+        OrderController orderController = new OrderController(orderService, carportService);
 
         userController.addRoutes(app);
         carportController.addRoutes(app);

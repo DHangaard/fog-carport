@@ -2,23 +2,30 @@ package app.controllers;
 
 import app.dto.OrderOverviewDTO;
 import app.dto.UserDTO;
+import app.entities.OrderDetail;
 import app.enums.OrderStatus;
 import app.enums.Role;
 import app.exceptions.DatabaseException;
+import app.services.ICarportService;
 import app.services.IOrderService;
+import app.services.svg.CarportSvgSide;
+import app.services.svg.CarportSvgTop;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class OrderController
 {
         private IOrderService orderService;
+        private ICarportService carportService;
 
-        public OrderController(IOrderService orderService)
+        public OrderController(IOrderService orderService, ICarportService carportService)
         {
             this.orderService = orderService;
+            this.carportService = carportService;
         }
 
         public void addRoutes(Javalin app)
@@ -60,7 +67,27 @@ public class OrderController
 
     private void showOrderDetail(Context ctx)
     {
-        if(!userIsAdmin(ctx)){return;}
+        int orderId = Integer.parseInt(ctx.pathParam("id"));
+        String pageType = ctx.formParam("pageType");
+        Locale.setDefault(new Locale("US"));
+
+        try
+        {
+            OrderDetail orderDetail = orderService.getOrderDetailByOrderId(orderId);
+            CarportSvgTop carportSvgTop = carportService.getCarportTopSvgView(orderDetail.getCarport());
+            CarportSvgSide carportSvgSide = carportService.getCarportSideSvgView(orderDetail.getCarport());
+            ctx.attribute("orderDetail", orderDetail);
+            ctx.attribute("carportSvgTop", carportSvgTop);
+            ctx.attribute("carportSvgSide", carportSvgSide);
+
+            ctx.render("order-detail");
+        }
+        catch (DatabaseException e)
+        {
+            ctx.sessionAttribute("errorMessage", e.getMessage());
+            redirectToCorrectPath(ctx, pageType);
+            System.out.println(e.getMessage());
+        }
     }
 
     private void showOrderOverview(Context ctx)
