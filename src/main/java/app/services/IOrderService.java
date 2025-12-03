@@ -1,6 +1,7 @@
 package app.services;
 
 import app.dto.CreateOrderRequest;
+import app.dto.CustomerOfferDTO;
 import app.dto.OrderOverviewDTO;
 import app.dto.UserDTO;
 import app.entities.Carport;
@@ -28,5 +29,6 @@ public interface IOrderService
     public List<OrderOverviewDTO> getAllOrdersByUserId(int userId) throws DatabaseException;
     public List<OrderOverviewDTO> getAllOrdersByUserIdAndStatus(int userId, OrderStatus orderStatus) throws DatabaseException;
     public Map<OrderStatus, List<OrderOverviewDTO>> getOrderOverViewsByStatus(List<OrderStatus> orderStatuses) throws DatabaseException;
+    public CustomerOfferDTO getCustomerOfferByOrderId(int orderId) throws DatabaseException;
 
 }
