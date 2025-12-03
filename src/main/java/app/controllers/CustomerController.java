@@ -1,5 +1,6 @@
 package app.controllers;
 
+import app.dto.CustomerOfferDTO;
 import app.dto.OrderOverviewDTO;
 import app.dto.UserDTO;
 import app.enums.OrderStatus;
@@ -23,6 +24,7 @@ public class CustomerController
     public void addRoutes(Javalin app)
     {
         app.get("/my-page", ctx -> showCustomerPage(ctx));
+        app.get("/customer-offer-detail", ctx -> showCustomerOfferDetails(ctx));
     }
 
 
@@ -49,6 +51,25 @@ public class CustomerController
             ctx.redirect("/");
         }
         ctx.render("my-page.html");
+    }
+
+    private void showCustomerOfferDetails(Context ctx)
+    {
+        if(!requireLogin(ctx)) {return;}
+
+        try
+        {
+            int orderId = Integer.parseInt(ctx.pathParam("id"));
+            CustomerOfferDTO offer = orderService.getCustomerOfferByOrderId(orderId);
+
+            ctx.attribute("offer", offer);
+        }
+        catch (DatabaseException e)
+        {
+            ctx.attribute("errorMessage", "Kunne ikke hente ordrer");
+            ctx.redirect("/my-page");
+        }
+        ctx.render("customer-offer-detail.html");
     }
 
     private boolean requireLogin(Context ctx)
