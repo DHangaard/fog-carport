@@ -1,5 +1,6 @@
 package app.persistence;
 
+import app.dto.OrderOverviewDTO;
 import app.entities.Order;
 import app.entities.PricingDetails;
 import app.enums.OrderStatus;
@@ -260,9 +261,9 @@ class OrderMapperTest
     }
 
     @Test
-    void testGetAllOrdersByCustomerId() throws DatabaseException
+    void testGetAllOrdersByUserId() throws DatabaseException
     {
-        List<Order> customerOrders = orderMapper.getAllOrdersByCustomerId(1);
+        List<Order> customerOrders = orderMapper.getAllOrdersByUserId(1);
 
         assertNotNull(customerOrders);
         assertEquals(2, customerOrders.size());

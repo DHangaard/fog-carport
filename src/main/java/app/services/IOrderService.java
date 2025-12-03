@@ -10,6 +10,7 @@ import app.entities.PricingDetails;
 import app.enums.OrderStatus;
 import app.exceptions.DatabaseException;
 
+import javax.xml.crypto.Data;
 import java.util.List;
 
 public interface IOrderService
@@ -21,5 +22,7 @@ public interface IOrderService
     public boolean confirmAndSendOffer(Order order) throws DatabaseException;
     public OrderDetail getOrderDetailByCustomerId(int customerId) throws DatabaseException;
     public OrderDetail getOrderDetailByOrderId(int orderId) throws DatabaseException;
-    public List<OrderOverviewDTO>  getAllOrdersByStatus(OrderStatus orderStatus) throws DatabaseException;
+    public List<OrderOverviewDTO> getAllOrdersByStatus(OrderStatus orderStatus) throws DatabaseException;
+    public List<OrderOverviewDTO> getAllOrdersByUserId(int userId) throws DatabaseException;
+    public List<OrderOverviewDTO> getAllOrdersByUserIdAndStatus(int userId, OrderStatus orderStatus) throws DatabaseException;
 }

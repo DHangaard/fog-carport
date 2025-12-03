@@ -40,7 +40,7 @@
                     <div th:if="${session.currentUser.role.name() == 'CUSTOMER'}" class="user-info user-actions">
                         <span class="username" th:text="${session.currentUser.email}">user@example.com</span>
 
-                        <a href="profile.html" th:href="@{/profile}" class="icon-link-vertical">
+                        <a href="my-page.html" th:href="@{/my-page}" class="icon-link-vertical">
                             <img src="/images/profile.svg" alt="Min side" th:src="@{/images/profile.svg}">
                             <span>Min side</span>
                         </a>

@@ -11,7 +11,6 @@ import app.services.svg.CarportSvgSide;
 import app.services.svg.CarportSvgTop;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;

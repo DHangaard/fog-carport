@@ -1,17 +1,15 @@
 package app.dto;
 
-
 import app.enums.OrderStatus;
 import app.util.TimeUtil;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
-public record OrderOverviewDTO(
+public record CustomerOrderOverviewDTO(
         int orderId,
-        String customerFullName,
-        String email,
         Timestamp customerRequestCreatedAt,
+        Timestamp offerValidDays,
+        Timestamp orderFinalazedDate,
         OrderStatus orderStatus
 )
 {

@@ -151,7 +151,6 @@ public class OrderService implements IOrderService
         }
     }
 
-
     @Override
     public boolean confirmAndSendOffer(Order order) throws DatabaseException
     {
@@ -173,7 +172,6 @@ public class OrderService implements IOrderService
         }
         return isOfferConfirmed;
     }
-
 
     @Override
     public OrderDetail getOrderDetailByCustomerId(int customerId) throws DatabaseException
@@ -210,6 +208,18 @@ public class OrderService implements IOrderService
     public List<OrderOverviewDTO> getAllOrdersByStatus(OrderStatus orderStatus) throws DatabaseException
     {
         return orderMapper.getAllOrderOverviewsByStatus(orderStatus);
+    }
+
+    @Override
+    public List<OrderOverviewDTO> getAllOrdersByUserId(int userId) throws DatabaseException
+    {
+        return orderMapper.getAllOrderOverviewsByUserId(userId);
+    }
+
+    @Override
+    public List<OrderOverviewDTO> getAllOrdersByUserIdAndStatus(int userId, OrderStatus orderStatus) throws DatabaseException
+    {
+        return orderMapper.getAllOrderOverviewsByUserIdAndStatus(userId, orderStatus);
     }
 
     private OrderDetail buildOrderDetail(Order order, User customer, User seller, Carport carport, List<MaterialLine> materialLines)
