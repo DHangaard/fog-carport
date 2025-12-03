@@ -66,7 +66,7 @@ public class AppProperties
         {
             throw new PropertyException("Variablen " + key + " i app.properties er ikke et gyldigt tal: " + property, e.getCause());
         }
-        
+
     }
 
     private static String getTrimmedProperty(String key)

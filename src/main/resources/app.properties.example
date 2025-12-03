@@ -7,7 +7,7 @@ server.port=8080
 # Database configuration
 db.user=DB_USER
 db.password=DB_PASSWORD
-db.url=jdbc:postgresql://localhost:5432/%s?currentSchema=public
+db.url=jdbc:postgresql://localhost:5432/carport?currentSchema=public
 db.dbname=carport
 
 # Test
