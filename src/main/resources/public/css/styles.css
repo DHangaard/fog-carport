@@ -131,22 +131,6 @@ header {
     background-color: var(--color-body);
 }
 
-.badge {
-    background-color: var(--color-warning-red);
-    color: var(--color-text-primary);
-    border-radius: 50%;
-    min-width: 24px;
-    height: 24px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: var(--text-size-small);
-    font-weight: var(--text-weight-bold);
-    margin-left: var(--spacing-xs);
-    vertical-align: middle;
-    padding: 0 5px;
-}
-
 .header-right {
     display: flex;
     align-items: center;
@@ -585,6 +569,18 @@ footer {
 
 /* Seller overview orders */
 
+.order-section {
+    margin-bottom: var(--spacing-xxl);
+}
+
+.order-section h2 {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
+    color: var(--color-text-header);
+}
+
 .orders-view {
     width: 90%;
     max-width: 1200px;
@@ -609,7 +605,7 @@ footer {
 
 .orders-table {
     overflow-x: auto;
-    margin-top: 2rem;
+    margin-top: 1rem;
 }
 
 .orders-table table {
@@ -677,6 +673,60 @@ footer {
 
 .btn-view:hover {
     background-color: var(--color-fog-blue);
+}
+
+.no-results {
+    text-align: center;
+    padding: var(--spacing-xl);
+    color: var(--color-text-dark);
+    background-color: var(--color-body);
+    border-radius: var(--radius-md);
+}
+
+.badge {
+    background-color: var(--color-warning-red);
+    color: var(--color-text-primary);
+    border-radius: 50%;
+    min-width: 24px;
+    height: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--text-size-small);
+    font-weight: var(--text-weight-bold);
+    margin-left: var(--spacing-xs);
+    vertical-align: middle;
+    padding: 0 5px;
+}
+
+.badge-success {
+    background-color: #28a745;
+    color: var(--color-text-primary);
+    border-radius: var(--radius-md);
+    min-width: 24px;
+    height: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--text-size-small);
+    font-weight: var(--text-weight-bold);
+    vertical-align: middle;
+    padding: 0 5px;
+}
+
+.badge-secondary {
+    background-color: var(--color-text-dark);
+    color: var(--color-text-primary);
+    border-radius: var(--radius-md);
+    min-width: 24px;
+    height: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--text-size-small);
+    font-weight: var(--text-weight-bold);
+    vertical-align: middle;
+    padding: 0 5px;
 }
 
 .btn-delete {

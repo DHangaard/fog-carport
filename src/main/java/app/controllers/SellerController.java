@@ -116,8 +116,6 @@ public class SellerController
             ctx.attribute("errorMessage", e.getMessage());
             ctx.redirect("admin-request");
         }
-
-
     }
 
     private void showCarportRequests(Context ctx)
