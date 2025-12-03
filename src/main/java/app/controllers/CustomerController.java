@@ -46,7 +46,6 @@ public class CustomerController
         catch (DatabaseException e)
         {
             ctx.attribute("errorMessage", "Kunne ikke hente ordrer");
-            System.out.println(e.getMessage());
             ctx.redirect("/");
         }
         ctx.render("my-page.html");
