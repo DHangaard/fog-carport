@@ -36,6 +36,7 @@ public class OrderService implements IOrderService
         this.carportMapper = carportMapper;
         this.orderMapper = orderMapper;
         this.bomService = bomService;
+        this.emailService = emailService;
         this.connectionPool = connectionPool;
     }
 

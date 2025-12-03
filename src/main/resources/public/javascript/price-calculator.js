@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const totalInput = document.getElementById("totalPriceInput");
     const coverageInput = document.getElementById("coverageInput");
+    const costPriceInput = document.getElementById("costPriceInput");
 
     const costPrice = parseFloat(totalInput.dataset.costprice);
     const originalTotal = parseFloat(totalInput.dataset.original);
@@ -23,6 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("differenceDisplay").textContent = diff.toFixed(2);
 
         coverageInput.value = coverage.toFixed(1);
+        costPriceInput.value = costPrice.toFixed(2);
     }
 
     totalInput.addEventListener("input", update);

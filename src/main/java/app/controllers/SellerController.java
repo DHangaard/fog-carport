@@ -5,7 +5,6 @@ import app.dto.UserDTO;
 import app.entities.Order;
 import app.entities.OrderDetail;
 import app.entities.PricingDetails;
-import app.entities.User;
 import app.enums.OrderStatus;
 import app.enums.Role;
 import app.exceptions.DatabaseException;
@@ -40,11 +39,21 @@ public class SellerController
 
     private void sendCarportOffer(Context ctx)
     {
+        if(!userIsAdmin(ctx)){return;}
+
         int orderId = Integer.parseInt(ctx.pathParam("id"));
-        User seller = ctx.sessionAttribute("currentUser");
+        UserDTO seller = ctx.sessionAttribute("currentUser");
+
         String offerValidDaysString = ctx.formParam("offerValidDays");
         String coveragePercentageString = ctx.formParam("coveragePercentage");
         String costPriceString = ctx.formParam("costPrice");
+
+        if (offerValidDaysString == null || coveragePercentageString == null || costPriceString == null)
+        {
+            ctx.sessionAttribute("errorMessage", "Formularen mangler værdier");
+            ctx.redirect("/carport-request/details/" + orderId);
+            return;
+        }
 
         try
         {
@@ -53,14 +62,13 @@ public class SellerController
             double costPrice = Double.parseDouble(costPriceString);
             PricingDetails pricingDetails = new PricingDetails(costPrice, coveragePercentage);
 
-            //TODO validate days, coverage, costPrice in service Or here
             Order order = orderService.getOrderById(orderId);
 
-            order.setSellerId(seller.getUserId());
+            order.setSellerId(seller.userId());
             order.setOfferValidDays(offerValidDays);
             order.setPricingDetails(pricingDetails);
             order.setOrderStatus(OrderStatus.READY);
-            
+
             boolean offerSend = orderService.confirmAndSendOffer(order);
             if(offerSend)
             {
@@ -71,16 +79,17 @@ public class SellerController
                 ctx.sessionAttribute("errorMessage", "Dit tilbud blev ikke afsendt, prøv igen");
             }
 
+            ctx.redirect("/carport-requests");
         }
         catch (DatabaseException e)
         {
             ctx.sessionAttribute("errorMessage", e.getMessage());
-            ctx.redirect("/carport-request/details/{id}");
+            ctx.redirect("/carport-request/details/" + orderId);
         }
         catch (NumberFormatException e)
         {
             ctx.attribute("errorMessage", "Kunne ikke hente de korrekte værdier ud til prisen, kun tal er muligt");
-            ctx.redirect("/carport-request/details/{id}");
+            ctx.redirect("/carport-request/details/" + orderId);
         }
     }
 
