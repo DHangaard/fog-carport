@@ -112,11 +112,12 @@ public class SellerController
                 return;
             }
 
-
+            double lineTotalDifference = materialService.calculateLinePriceDifference(materialLineId, quantity);
             boolean updated = materialService.updateBillOfMaterialLineQuantity(materialLineId, quantity);
 
             if (updated)
             {
+                orderService.updateOrderCostPrice(orderId, lineTotalDifference);
                 ctx.sessionAttribute("successMessage", "Antal opdateret");
             }
             else

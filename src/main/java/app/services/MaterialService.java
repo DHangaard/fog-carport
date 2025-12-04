@@ -33,11 +33,13 @@ public class MaterialService implements IMaterialService
     }
 
     @Override
-    public double getUpdatedLinePrice(int materialLineId, int quantity) throws DatabaseException
+    public double calculateLinePriceDifference(int materialLineId, int quantity) throws DatabaseException
     {
         MaterialLine materialLine = materialLineMapper.getMaterialLineById(materialLineId);
         double oldMaterialLineTotal = calculateLineTotal(materialLine);
         double newMaterialLineTotal = materialLine.getMaterialVariant().getUnitPrice() * quantity;
+
+        return newMaterialLineTotal - oldMaterialLineTotal;
     }
 
     private double calculateLineTotal(MaterialLine materialLine)
