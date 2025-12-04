@@ -28,12 +28,19 @@
             <h1>Tilbud #<span th:text="${offer.orderId}"></span></h1>
             <p>Sælger : <span th:text="${offer.seller.firstName} + ' ' + ${offer.seller.lastName}"></span></p>
             <p>Oprettet : <span th:text="${offer.orderTimeLine.relativeTime}"></span></p>
-            <p>Udløber : <span th:text="${offer.orderTimeLine.relativeTime}"></span></p>
+            <p>Udløber : <span th:text="${offer.orderTimeLine.expirationDateFormatted}"></span></p>
             <p>Status : <span th:text="${offer.orderStatus.displayName}"></span></p>
-            <p>Status : DKK<span th:text="${offer.totalPrice} + ',-'"></span></p>
+            <p>Pris : <span class="price-display" th:text="${offer.totalPrice} + ',-'"></span></p>
         </div>
 
-        <!-- TODO Buttons [Accept] [Deny] -->
+        <div> <!-- Add class and flexbox in CSS -->
+            <form th:action="@{/customer-offer/{id}/accept(id=${offer.orderId})}" method="post">
+                <button type="submit" class="btn-primary btn-large">Accepter tilbud</button>
+            </form>
+            <form th:action="@{/customer-offer/{id}/deny(id=${offer.orderId})}" method="post">
+                <button type="submit" class="btn-primary btn-large">Afslå tilbud</button>
+            </form>
+        </div>
 
         <section class="section">
             <h2>Carport & Kunde information</h2>
