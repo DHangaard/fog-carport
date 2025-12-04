@@ -124,8 +124,8 @@ public class SellerController
 
         try
         {
-            List<OrderOverviewDTO> orderOverviews = orderService.getAllOrdersByStatus(OrderStatus.PENDING);
-            ctx.attribute("orderOverviews", orderOverviews);
+            List<OrderOverviewDTO> orderRequests = orderService.getAllOrdersByStatus(OrderStatus.PENDING);
+            ctx.attribute("orderRequests", orderRequests);
         }
         catch (DatabaseException e)
         {

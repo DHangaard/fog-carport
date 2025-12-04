@@ -42,61 +42,15 @@
     <div class="orders-view">
         <h1>Carport forespørgsler</h1>
 
-        <div th:if="${successMessage}" class="message message-succes">
-            <p th:text="${successMessage}"></p>
-        </div>
-
-        <div th:if="${errorMessage}" class="message message-error">
-            <p th:text="${errorMessage}"></p>
-        </div>
         <section class="order-section">
-            <h2>Carport forespørgsler der mangler gennemsyn</h2>
+            <h2>Carport forespørgsler der mangler gennemsyn<span class="badge" th:if="${orderRequests != null}" th:text="${orderRequests.size()}"></span></h2>
 
-            <div th:if="${orderOverviews != null and !orderOverviews.isEmpty()}" class="orders-table">
-                <table>
-                    <thead>
-                    <tr>
-                        <th>Ordre-nr.</th>
-                        <th>Kunde</th>
-                        <th>E-mail</th>
-                        <th>Oprettet</th>
-                        <th>Status</th>
-                        <th>Handlinger</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="orderOverview : ${orderOverviews}">
-                        <td th:text="${orderOverview.orderId}"></td>
-                        <td><span th:text="${orderOverview.customerFullName}"></span></td>
-                        <td><span th:text="${orderOverview.email}"></span></td>
-                        <td th:text="${orderOverview.relativeTime}"></td>
-                        <td><span th:text="${orderOverview.orderStatus.displayName}"></span></td>
-                        <td>
-                            <div class="table-actions">
-                                <a th:href="@{/carport-request/details/{id}(id=${orderOverview.orderId})}"
-                                   class="btn-table btn-view"
-                                   title="Se detajler">
-                                    <img th:src="@{/images/view.svg}" alt="Se detaljer"/>
-                                </a>
-
-                                <form method="post"
-                                      th:action="@{/carport-request/details/{id}(id=${orderOverview.orderId})}"
-                                      onsubmit="return confirm('Er du sikker på du vil slette forespørgsel?')">
-                                    <button type="submit" class="btn-table btn-delete" title="Slet ordre">
-                                        <img th:src="@{/images/delete.svg}" alt="Slet"/>
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+            <div th:if="${orderRequests != null and ! orderRequests.isEmpty()}" class="orders-table">
+                <table th:replace="~{fragments :: orderTable(${orderRequests}, '/carport-requests')}"></table>
             </div>
-            <p th:if="${orderOverviews == null or orderOverviews.isEmpty()}">
-                Ingen nye forespørgsler
-            </p>
+
+            <p th:if="${orderRequests == null or orderRequests.isEmpty()}" class="no-results">Ingen nye forespørgsler</p>
         </section>
-    </div>
 
 </main>
 <div th:replace="~{fragments :: footerFragment}"></div>
