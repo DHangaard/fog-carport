@@ -70,7 +70,7 @@ public class UserController
         }
         catch (DatabaseException e)
         {
-            ctx.attribute("errorMessage", "Forkert email eller password");
+            ctx.sessionAttribute("errorMessage", "Forkert email eller password");
             ctx.render("login");
         }
     }

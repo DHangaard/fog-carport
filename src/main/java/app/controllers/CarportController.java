@@ -61,7 +61,7 @@ public class CarportController
         }
         catch (DatabaseException e)
         {
-            ctx.attribute("errorMessage", "Kunne ikke hente tegning");
+            ctx.sessionAttribute("errorMessage", "Kunne ikke hente tegning");
             ctx.redirect("/carport-requests");
         }
     }
@@ -109,20 +109,15 @@ public class CarportController
             );
 
             Order createdOrder = orderService.createPendingOrder(createOrderRequest);
-
-            //TODO maybe use the order instead of carport request? in next view
-            //ctx.sessionAttribute("carport", null);
-            //ctx.sessionAttribute("customerNote", null);
-            ctx.sessionAttribute("order", createdOrder);
-
             emailService.sendRequestConfirmation(userFromContactPage);
+
+            ctx.sessionAttribute("order", createdOrder);
             ctx.render("request-confirmation");
         }
-        //TODO catch entitie Exception here!
+
         catch (DatabaseException | IllegalArgumentException e)
         {
-            ctx.attribute("errorMessage", e.getMessage());
-            System.out.println(e.getMessage());
+            ctx.sessionAttribute("errorMessage", e.getMessage());
             ctx.render("request-offer-contact");
         }
     }
@@ -161,12 +156,12 @@ public class CarportController
         }
         catch (NumberFormatException e)
         {
-            ctx.attribute("errorMessage", "Mål skal være et tal");
+            ctx.sessionAttribute("errorMessage", "Mål skal være et tal");
             showCarportFormular(ctx);
         }
         catch (IllegalArgumentException e)
         {
-            ctx.attribute("errorMessage", e.getMessage());
+            ctx.sessionAttribute("errorMessage", e.getMessage());
             showCarportFormular(ctx);
         }
     }
