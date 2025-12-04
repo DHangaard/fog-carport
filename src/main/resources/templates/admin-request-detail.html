@@ -210,10 +210,10 @@
                                class="price-display price-input-green"
                                name="totalPrice"
                                type="number"
-                               step="0.01"
-                               th:value="${orderDetail.pricingDetails.totalPrice}"
-                               th:attr="data-costprice=${orderDetail.pricingDetails.costPrice},
-                                data-original=${orderDetail.pricingDetails.totalPrice}">
+                               step="any"
+                               th:value="${#numbers.formatDecimal(orderDetail.pricingDetails.totalPrice, 1, 2, 'POINT')}"
+                               th:data-costprice="${#numbers.formatDecimal(orderDetail.pricingDetails.costPrice, 1, 2, 'POINT')}"
+                               th:data-original="${#numbers.formatDecimal(orderDetail.pricingDetails.totalPrice, 1, 2, 'POINT')}">
                         <span class="unit">kr.</span>
                     </div>
 
