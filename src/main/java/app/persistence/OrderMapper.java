@@ -277,6 +277,7 @@ public class OrderMapper
                FROM orders o
                JOIN users u ON o.customer_id = u.user_id
                WHERE u.user_id = ? AND o.order_status = ?
+               ORDER BY o.request_created_at DESC
                """;
 
         try (Connection connection = connectionPool.getConnection();

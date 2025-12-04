@@ -1,6 +1,7 @@
 package app.services;
 
 import app.dto.CreateOrderRequest;
+import app.dto.CustomerOfferDTO;
 import app.dto.OrderOverviewDTO;
 import app.dto.UserDTO;
 import app.entities.*;
@@ -243,6 +244,18 @@ public class OrderService implements IOrderService
         return orderOverviews;
     }
 
+    @Override
+    public CustomerOfferDTO getCustomerOfferByOrderId(int orderId) throws DatabaseException
+    {
+        Order order = orderMapper.getOrderById(orderId);
+        Carport carport = carportMapper.getCarportById(order.getCarportId());
+        User customer = userMapper.getUserById(order.getCustomerId());
+        User seller = userMapper.getUserById(order.getSellerId());
+
+        CustomerOfferDTO customerOfferDTO = buildAndGetCustomerOfferDTO(order, carport, customer, seller);
+
+        return customerOfferDTO;
+    }
 
     private OrderDetail buildOrderDetail(Order order, User customer, User seller, Carport carport, List<MaterialLine> materialLines)
     {
@@ -290,6 +303,23 @@ public class OrderService implements IOrderService
                user.getPhoneNumber(),
                user.getRole()
        );
+    }
+
+    private CustomerOfferDTO buildAndGetCustomerOfferDTO(Order order, Carport carport, User customer, User seller)
+    {
+        return new CustomerOfferDTO(
+                order.getOrderId(),
+                carport,
+                buildAndGetUserDTO(customer),
+                buildAndGetUserDTO(seller),
+                new OrderTimeLine(order.getCustomerRequestCreatedAt(),
+                        order.getCreatedAt(),
+                        order.getOfferValidDays()),
+                order.getPricingDetails()
+                        .getTotalPrice(),
+                order.getOrderStatus(),
+                order.getCustomerComment()
+        );
     }
 
 }

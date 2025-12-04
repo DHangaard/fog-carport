@@ -15,10 +15,10 @@
     <div class="orders-view">
         <h1>Mine carport forespørgsler</h1>
 
-        <div th:if="${successMessage}" class="success-message">
+        <div th:if="${successMessage}" class="message message-success">
             <p th:text="${successMessage}"></p>
         </div>
-        <div th:if="${errorMessage}" class="error-message">
+        <div th:if="${errorMessage}" class="mesage message-error">
             <p th:text="${errorMessage}"></p>
         </div>
 
@@ -63,7 +63,7 @@
                     <td><span th:text="${readyOrder.orderStatus.displayName}"></span></td>
                     <td>
                         <div class="table-actions">
-                            <a th:href="@{/carport-request/details/{id}(id=${readyOrder.orderId})}"
+                            <a th:href="@{/customer-offer/details/{id}(id=${readyOrder.orderId})}"
                                class="btn-table btn-view"
                                title="Se detajler">
                                 <img th:src="@{/images/view.svg}" alt="Se detaljer"/> <!-- Change hyperlink -->
