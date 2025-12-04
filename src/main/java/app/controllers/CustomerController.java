@@ -30,6 +30,9 @@ public class CustomerController
     {
         app.get("/my-page", ctx -> showCustomerPage(ctx));
         app.get("/customer-offer/details/{id}", ctx -> showCustomerOfferDetails(ctx));
+
+        app.post("/customer-offer/{id}/accept", ctx -> acceptCarportOffer(ctx));
+        app.post("customer-offer/{id}/decline", ctx -> declineCarportOffer(ctx));
     }
 
 
@@ -79,6 +82,16 @@ public class CustomerController
             ctx.attribute("errorMessage", "Kunne ikke hente ordrer");
             ctx.redirect("/my-page");
         }
+    }
+
+    private void acceptCarportOffer(Context ctx)
+    {
+
+    }
+
+    private void declineCarportOffer(Context ctx)
+    {
+
     }
 
     private boolean requireLogin(Context ctx)
