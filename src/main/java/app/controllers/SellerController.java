@@ -51,12 +51,25 @@ public class SellerController
 
         try
         {
-            double lineTotal = materialService.
+            double lineTotal = materialService.calculateLineTotal(materialLineId);
+
+            if(lineTotal < 0)
+            {
+                ctx.sessionAttribute("errorMessage", "Fejl i hentning af linjetotalen");
+                ctx.redirect("/carport-request/details/" + orderId);
+                return;
+            }
+
             boolean deleted = materialService.deleteBillOfMaterialLine(materialLineId);
 
             if (deleted)
             {
-                orders
+                Order order = orderService.getOrderById(orderId);
+                double orderCostTotal = order.getPricingDetails().getCostPrice();
+                double newOrderCostTotal = orderCostTotal - lineTotal;
+
+                boolean result = orderService.updateOrderCostPrice(orderId, newOrderCostTotal);
+                System.out.println(result);
                 ctx.sessionAttribute("successMessage", "Ordre linje blev slettet");
             }
             else
