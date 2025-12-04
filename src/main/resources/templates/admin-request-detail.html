@@ -12,8 +12,8 @@
 <div th:replace="~{fragments :: headerFragment}"></div>
 
 <main>
-    <div th:if="${session.succesMessage}" class="message message-succes">
-        <p class="success" th:if="${session.succesMessage}" th:text="${session.succesMessage}"></p>
+    <div th:if="${session.successMessage}" class="message message-succes">
+        <p class="success" th:if="${session.successMessage}" th:text="${session.successMessage}"></p>
     </div>
 
     <div th:if="${session.errorMessage != null}" class="message message-error">
@@ -22,7 +22,7 @@
            th:text="${session.errorMessage}">
         </p>
     </div>
-
+    
     <div class="request-details-page">
         <div class="hero-content">
             <h1>Forespørgsel #<span th:text="${orderDetail.orderId}"></span></h1>
