@@ -124,13 +124,12 @@ public class SellerController
 
         try
         {
-            List<OrderOverviewDTO> orderOverviews = orderService.getAllOrdersByStatus(OrderStatus.PENDING);
-            ctx.attribute("orderOverviews", orderOverviews);
+            List<OrderOverviewDTO> orderRequests = orderService.getAllOrdersByStatus(OrderStatus.PENDING);
+            ctx.attribute("orderRequests", orderRequests);
         }
         catch (DatabaseException e)
         {
             ctx.attribute("errorMessage", "Kunne ikke hente forespørgsler");
-            System.out.println(e.getMessage());
             ctx.redirect("/");
         }
         ctx.render("admin-request.html");
@@ -146,7 +145,6 @@ public class SellerController
             ctx.redirect("/login");
             return false;
         }
-
         return userDTO.role().equals(Role.SALESREP);
     }
 }
