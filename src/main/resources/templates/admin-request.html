@@ -42,11 +42,11 @@
     <div class="orders-view">
         <h1>Carport forespørgsler</h1>
 
-        <div th:if="${successMessage}" class="success-message">
+        <div th:if="${successMessage}" class="message message-succes">
             <p th:text="${successMessage}"></p>
         </div>
 
-        <div th:if="${errorMessage}" class="error-message">
+        <div th:if="${errorMessage}" class="message message-error">
             <p th:text="${errorMessage}"></p>
         </div>
         <section class="order-section">
