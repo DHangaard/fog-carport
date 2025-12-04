@@ -9,12 +9,12 @@ import app.enums.OrderStatus;
 import app.enums.Role;
 import app.exceptions.DatabaseException;
 import app.services.ICarportService;
+import app.services.IMaterialService;
 import app.services.IOrderService;
 import app.services.svg.CarportSvgSide;
 import app.services.svg.CarportSvgTop;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Locale;
@@ -23,11 +23,13 @@ public class SellerController
 {
     private IOrderService orderService;
     private ICarportService carportService;
+    private IMaterialService materialService;
 
-    public SellerController(IOrderService orderService, ICarportService carportService)
+    public SellerController(IOrderService orderService, ICarportService carportService, IMaterialService materialService)
     {
         this.orderService = orderService;
         this.carportService = carportService;
+        this.materialService = materialService;
     }
 
     public void addRoutes(Javalin app)
@@ -36,11 +38,59 @@ public class SellerController
         app.get("/carport-request/details/{id}", ctx -> showRequestDetails(ctx));
 
         app.post("/requests/{id}/send-offer", ctx -> sendCarportOffer(ctx));
-        app.post("/requests/{id}/update-bom", ctx -> updateBillOfMaterial(ctx));
+        app.post("/requests/{id}/update-bom", ctx -> updateBillOfMaterialQuantity(ctx));
     }
 
-    private void updateBillOfMaterial(Context ctx)
+    private void updateBillOfMaterialQuantity(Context ctx)
     {
+        if(!userIsAdmin(ctx)){return;}
+
+        int orderId = Integer.parseInt(ctx.pathParam("id"));
+        String materialLineIdString = ctx.formParam("materialLineId");
+        String quantityString = ctx.formParam("quantity");
+
+        if (materialLineIdString == null || quantityString == null)
+        {
+            ctx.sessionAttribute("errorMessage", "Manglende værdier");
+            ctx.redirect("/carport-request/details/" + orderId);
+            return;
+        }
+
+        try
+        {
+            int materialLineId = Integer.parseInt(materialLineIdString);
+            int quantity = Integer.parseInt(quantityString);
+
+            if (quantity < 0)
+            {
+                ctx.sessionAttribute("errorMessage", "Antal kan ikke være negativt");
+                ctx.redirect("/carport-request/details/" + orderId);
+                return;
+            }
+
+            boolean updated = materialService.updateBillOfMaterialLineQuantity(materialLineId, quantity);
+
+            if (updated)
+            {
+                ctx.sessionAttribute("successMessage", "Antal opdateret");
+            }
+            else
+            {
+                ctx.sessionAttribute("errorMessage", "Kunne ikke opdatere antal");
+            }
+
+            ctx.redirect("/carport-request/details/" + orderId);
+        }
+        catch (NumberFormatException e)
+        {
+            ctx.sessionAttribute("errorMessage", "Ugyldigt tal format");
+            ctx.redirect("/carport-request/details/" + orderId);
+        }
+        catch (DatabaseException e)
+        {
+            ctx.sessionAttribute("errorMessage", e.getMessage());
+            ctx.redirect("/carport-request/details/" + orderId);
+        }
     }
 
     private void sendCarportOffer(Context ctx)
