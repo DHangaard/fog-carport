@@ -26,11 +26,10 @@
     <div class="request-details-page">
         <div class="hero-content">
             <h1>Tilbud #<span th:text="${offer.orderId}"></span></h1>
-            <p>Sælger : <span th:text="${offer.seller.firstName} + ' ' + ${offer.seller.lastName}"></span></p>
             <p>Oprettet : <span th:text="${offer.orderTimeLine.createdAtFormatted}"></span></p>
             <p>Udløber : <span th:text="${offer.orderTimeLine.expirationDateFormatted}"></span></p>
             <p>Status : <span th:text="${offer.orderStatus.displayName}"></span></p>
-            <p>Pris : <span class="price-display" th:text="${offer.totalPrice} + ',-'"></span></p>
+            <p>Totalpris : <span class="price-display" th:text="${offer.totalPrice} + ',-'"></span></p>
         </div>
 
         <section class="section">
@@ -87,7 +86,20 @@
                         <span th:text="${offer.customerComment}"></span>
                     </div>
                 </div>
-
+            </div>
+            <div class="info">
+                <div class="info-section">
+                    <h2>Sælgerinformation</h2>
+                    <div class="info-item">
+                        <strong>Navn:</strong> <span th:text="${offer.seller.firstName} + ' ' + ${offer.seller.lastName}"></span>
+                    </div>
+                    <div class="info-item">
+                        <strong>E-mail:</strong> <a th:href="'mailto:' + ${offer.seller.email}" th:text="${offer.seller.email}"></a>
+                    </div>
+                    <div class="info-item" th:if="${offer.seller.phoneNumber != null}">
+                        <strong>Telefon:</strong> +45 <a th:href="'tel:+45' + ${offer.seller.phoneNumber}" th:text="${offer.seller.phoneNumber}"></a>
+                    </div>
+                </div>
             </div>
         </section>
 

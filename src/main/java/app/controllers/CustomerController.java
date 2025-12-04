@@ -134,7 +134,7 @@ public class CustomerController
     private void acceptCarportOffer(Context ctx)
     {
         String accepted = "accepteret";
-        handleOffer(ctx, OrderStatus.ACCEPTED, accepted);
+        handleOffer(ctx, OrderStatus.PAID, accepted);
     }
 
     private void rejectCarportOffer(Context ctx)
