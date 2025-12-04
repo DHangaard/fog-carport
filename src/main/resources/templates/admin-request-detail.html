@@ -128,7 +128,9 @@
                         <form th:action="@{/requests/{id}/update-bom(id=${orderDetail.orderId})}" method="post">
                             <input type="hidden" name="materialLineId" th:value="${line.materialLineId}">
                             <input type="number" name="quantity" th:value="${line.quantity}" min="0">
-                            <button type="submit" class="btn btn-secondary">Opdater</button>
+                            <button type="submit" class="btn-table btn-view"
+                                    title="Se detajler">
+                                <img th:src="@{/images/update.svg}" alt="Opdater antal"/>></button>
                         </form>
                     </td>
                     <td th:text="${line.materialVariant.materialVariantId}"></td>
@@ -141,7 +143,9 @@
                     <td>
                         <form th:action="@{/requests/{id}/delete-bom-line(id=${orderDetail.orderId})}" method="post">
                             <input type="hidden" name="materialLineId" th:value="${line.materialLineId}">
-                            <button type="submit" class="btn-delete">Slet</button>
+                            <button type="submit" class="btn-table btn-delete" title="Slet">
+                                <img th:src="@{/images/delete.svg}" alt="Slet"/>
+                            </button>
                         </form>
                     </td>
                 </tr>

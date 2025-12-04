@@ -52,7 +52,7 @@
             <h2>Betalte ordre<span class="badge" th:if="${paidOrders != null}" th:text="${paidOrders.size()}"></span></h2>
 
             <div th:if="${paidOrders != null and ! paidOrders.isEmpty()}" class="orders-table">
-                <table th:replace="~{fragments :: orderTable(${paidOrders}, 'orders')}"></table>
+                <table th:replace="~{fragments :: orderTable(${paidOrders}, '/carport/details/view/{id}', 'orders')}"></table>
             </div>
 
             <p th:if="${paidOrders == null or paidOrders.isEmpty()}" class="no-results">Ingen betalte ordre</p>
@@ -62,7 +62,7 @@
             <h2>Annullerede ordre<span class="badge-secondary" th:if="${cancelledOrders != null}" th:text="${cancelledOrders.size()}"></span></h2>
 
             <div th:if="${cancelledOrders != null and !cancelledOrders.isEmpty()}" class="orders-table">
-                <table th:replace="~{fragments :: orderTable(${cancelledOrders}, 'orders')}"></table>
+                <table th:replace="~{fragments :: orderTable(${cancelledOrders}, '/carport/details/view/{id}', 'orders')}"></table>
             </div>
 
             <p th:if="${cancelledOrders == null or cancelledOrders.isEmpty()}" class="no-results">Ingen annullerede ordre</p>
