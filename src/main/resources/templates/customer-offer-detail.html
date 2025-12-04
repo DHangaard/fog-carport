@@ -37,7 +37,7 @@
             <form th:action="@{/customer-offer/{id}/accept(id=${offer.orderId})}" method="post">
                 <button type="submit" class="btn-primary btn-large">Accepter tilbud</button>
             </form>
-            <form th:action="@{/customer-offer/{id}/deny(id=${offer.orderId})}" method="post">
+            <form th:action="@{/customer-offer/{id}/decline(id=${offer.orderId})}" method="post">
                 <button type="submit" class="btn-primary btn-large">Afslå tilbud</button>
             </form>
         </div>
