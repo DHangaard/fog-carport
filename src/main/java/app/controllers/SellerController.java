@@ -69,7 +69,6 @@ public class SellerController
                 double newOrderCostTotal = orderCostTotal - lineTotal;
 
                 boolean result = orderService.updateOrderCostPrice(orderId, newOrderCostTotal);
-                System.out.println(result);
                 ctx.sessionAttribute("successMessage", "Ordre linje blev slettet");
             }
             else
