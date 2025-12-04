@@ -634,6 +634,27 @@ footer {
     background-color: #f0f4f8;
 }
 
+.quantity-form{
+    display: flex;
+    flex-direction: row;
+    gap: var(--spacing-xs);
+    align-items: center;
+}
+
+.quantity-form input[type="number"] {
+    width: 70px;
+    padding: var(--spacing-xs);
+    border: solid #ddd;
+    border-radius: var(--radius-sm);
+    font-size: var(--text-size-small);
+    text-align: center;
+}
+
+.quantity-form input[type="number"]:focus {
+    outline: none;
+    border-color: var(--color-fog-blue);
+}
+
 .table-actions {
     display: flex;
     gap: 0.5rem;

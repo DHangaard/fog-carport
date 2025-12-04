@@ -125,12 +125,12 @@
                 <tbody>
                 <tr th:each="line : ${orderDetail.materialLines}">
                     <td>
-                        <form th:action="@{/requests/{id}/update-bom(id=${orderDetail.orderId})}" method="post">
+                        <form th:action="@{/requests/{id}/update-bom(id=${orderDetail.orderId})}" method="post" class="quantity-form">
                             <input type="hidden" name="materialLineId" th:value="${line.materialLineId}">
                             <input type="number" name="quantity" th:value="${line.quantity}" min="0">
                             <button type="submit" class="btn-table btn-view"
                                     title="Se detajler">
-                                <img th:src="@{/images/update.svg}" alt="Opdater antal"/>></button>
+                                <img th:src="@{/images/update.svg}" alt="Opdater antal"></button>
                         </form>
                     </td>
                     <td th:text="${line.materialVariant.materialVariantId}"></td>
