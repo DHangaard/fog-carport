@@ -46,11 +46,12 @@
             <h2>Carport forespørgsler der mangler gennemsyn<span class="badge" th:if="${orderRequests != null}" th:text="${orderRequests.size()}"></span></h2>
 
             <div th:if="${orderRequests != null and ! orderRequests.isEmpty()}" class="orders-table">
-                <table th:replace="~{fragments :: orderTable(${orderRequests}, '/carport-requests')}"></table>
+                <table th:replace="~{fragments :: orderTable(${orderRequests}, '/carport-request/details/{id}' , '/carport-requests')}"></table>
             </div>
 
             <p th:if="${orderRequests == null or orderRequests.isEmpty()}" class="no-results">Ingen nye forespørgsler</p>
         </section>
+    </div>
 
 </main>
 <div th:replace="~{fragments :: footerFragment}"></div>

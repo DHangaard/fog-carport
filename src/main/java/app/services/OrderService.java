@@ -155,6 +155,12 @@ public class OrderService implements IOrderService
     }
 
     @Override
+    public boolean updateOrderCostPrice(int orderId, double newCostPrice) throws DatabaseException
+    {
+        return orderMapper.updateOrder(orderId, newCostPrice);
+    }
+
+    @Override
     public boolean deleteOrder(int orderId) throws DatabaseException
     {
         return orderMapper.deleteOrder(orderId);

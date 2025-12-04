@@ -164,7 +164,7 @@
                         <div class="price-row">
                             <label>Pris uden moms:</label>
                             <span class="price-display"
-                                  th:text="${orderDetail.pricingDetails.priceWithoutVat}"></span>
+                                  th:text="${orderDetail.pricingDetails.formattedPriceWithoutVat}"></span>
                             <span class="unit">kr.</span>
                         </div>
 
@@ -174,7 +174,7 @@
                         <div class="price-row price-total">
                             <label><strong>Total pris:</strong></label>
                             <span class="price-display price-highlight-green"
-                                  th:text="${orderDetail.pricingDetails.totalPrice}"></span>
+                                  th:text="${orderDetail.pricingDetails.formattedTotalPrice}"></span>
                             <span class="unit"><strong>kr.</strong></span>
                         </div>
 
@@ -186,21 +186,21 @@
                         <div class="price-row">
                             <label>Kostpris:</label>
                             <span class="price-display"
-                                  th:text="${orderDetail.pricingDetails.costPrice}"></span>
+                                  th:text="${orderDetail.pricingDetails.formattedCostPrice}"></span>
                             <span class="unit">kr.</span>
                         </div>
 
                         <div class="price-row">
                             <label>Dækningsgrad:</label>
                             <span class="price-display"
-                                  th:text="${orderDetail.pricingDetails.coveragePercentage}"></span>
+                                  th:text="${orderDetail.pricingDetails.formattedCoveragePercentage}"></span>
                             <span class="unit">%</span>
                         </div>
 
                         <div class="price-row">
                             <label>Fortjeneste uden moms:</label>
                             <span class="price-display"
-                                  th:text="${orderDetail.pricingDetails.priceWithoutVat - orderDetail.pricingDetails.costPrice}"></span>
+                                  th:text="${orderDetail.pricingDetails.formattedProfit}"></span>
                             <span class="unit">kr. </span>
                         </div>
                     </div>

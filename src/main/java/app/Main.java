@@ -48,11 +48,12 @@ public class Main
         IUserService userService = new UserService(userMapper, zipCodeMapper);
         ICarportService carportService = new CarportService(carportMapper);
         IEmailService emailService = new SendGridEmailService();
+        IMaterialService materialService = new MaterialService(materialLineMapper);
         IOrderService orderService = new OrderService(userMapper, materialLineMapper, shedMapper, carportMapper, orderMapper, bomService, emailService, connectionPool);
 
         UserController userController = new UserController(userService);
         CarportController carportController = new CarportController(carportService, userService, emailService, orderService);
-        SellerController sellerController = new SellerController(orderService, carportService);
+        SellerController sellerController = new SellerController(orderService, carportService, materialService);
         CustomerController customerController = new CustomerController(orderService, carportService);
         OrderController orderController = new OrderController(orderService, carportService);
 

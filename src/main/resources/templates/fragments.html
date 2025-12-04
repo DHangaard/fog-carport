@@ -69,7 +69,7 @@
 </div>
 
 <!-- Order/Offer Table Fragment -->
-<table th:fragment="orderTable(orders, pageType)" class="orders-table">
+<table th:fragment="orderTable(orders, viewRoute, pageType)" class="orders-table">
     <input type="hidden" name="pageType" th:value="${pageType}"/>
     <thead>
     <tr>
@@ -90,7 +90,7 @@
         <td><span th:text="${order.orderStatus.displayName}"></span></td>
         <td>
             <div class="table-actions">
-                <a th:href="@{/carport/details/view/{id}(id=${order.orderId})}"
+                <a th:href="@{${viewRoute}(id=${order.orderId})}"
                    class="btn-table btn-view"
                    title="Se detajler">
                     <img th:src="@{/images/view.svg}" alt="Se detaljer"/>

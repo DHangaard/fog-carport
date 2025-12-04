@@ -177,6 +177,29 @@ public class MaterialLineMapper
         }
     }
 
+    public boolean updateMaterialLineQuantity(int materialLineId, int quantity) throws DatabaseException
+    {
+        String sql = """
+                UPDATE material_line
+                SET quantity = ?
+                WHERE material_line_id = ?
+                """;
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql))
+        {
+            ps.setInt(1, quantity);
+            ps.setInt(2, materialLineId);
+
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected == 1;
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl ved opdatering af materialelinje: " + e.getMessage());
+        }
+    }
+
     public boolean deleteMaterialLine(int materialLineId) throws DatabaseException
     {
         String sql = """

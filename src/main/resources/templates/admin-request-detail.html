@@ -12,8 +12,8 @@
 <div th:replace="~{fragments :: headerFragment}"></div>
 
 <main>
-    <div th:if="${session.succesMessage}" class="message message-succes">
-        <p class="success" th:if="${session.succesMessage}" th:text="${session.succesMessage}"></p>
+    <div th:if="${session.successMessage}" class="message message-succes">
+        <p class="success" th:if="${session.successMessage}" th:text="${session.successMessage}"></p>
     </div>
 
     <div th:if="${session.errorMessage != null}" class="message message-error">
@@ -22,7 +22,7 @@
            th:text="${session.errorMessage}">
         </p>
     </div>
-
+    
     <div class="request-details-page">
         <div class="hero-content">
             <h1>Forespørgsel #<span th:text="${orderDetail.orderId}"></span></h1>
@@ -106,7 +106,7 @@
         </section>
 
         <section class="section">
-            <h2>Stykliste & Prisberegning</h2>
+            <h2>Stykliste</h2>
 
             <table class="orders-table">
                 <thead>
@@ -125,9 +125,12 @@
                 <tbody>
                 <tr th:each="line : ${orderDetail.materialLines}">
                     <td>
-                        <form th:action="@{/requests/{id}/update-bom(id=${orderDetail.orderId})}" method="post">
+                        <form th:action="@{/requests/{id}/update-bom(id=${orderDetail.orderId})}" method="post" class="quantity-form">
                             <input type="hidden" name="materialLineId" th:value="${line.materialLineId}">
-                            <input type="number" name="quantity" th:value="${line.quantity}" min="0" onchange="this.form.submit()">
+                            <input type="number" name="quantity" th:value="${line.quantity}" min="0">
+                            <button type="submit" class="btn-table btn-view"
+                                    title="Se detajler">
+                                <img th:src="@{/images/update.svg}" alt="Opdater antal"></button>
                         </form>
                     </td>
                     <td th:text="${line.materialVariant.materialVariantId}"></td>
@@ -140,7 +143,9 @@
                     <td>
                         <form th:action="@{/requests/{id}/delete-bom-line(id=${orderDetail.orderId})}" method="post">
                             <input type="hidden" name="materialLineId" th:value="${line.materialLineId}">
-                            <button type="submit" class="btn-delete">Slet</button>
+                            <button type="submit" class="btn-table btn-delete" title="Slet">
+                                <img th:src="@{/images/delete.svg}" alt="Slet"/>
+                            </button>
                         </form>
                     </td>
                 </tr>
@@ -148,6 +153,8 @@
             </table>
         </section>
 
+        <section class="section">
+            <h1>Prisberegning & tilbuds periode</h1>
         <form th:action="@{/requests/{id}/send-offer(id=${orderDetail.orderId})}" method="post">
 
             <div class="calculator-container">
@@ -203,10 +210,10 @@
                                class="price-display price-input-green"
                                name="totalPrice"
                                type="number"
-                               step="0.01"
-                               th:value="${orderDetail.pricingDetails.totalPrice}"
-                               th:attr="data-costprice=${orderDetail.pricingDetails.costPrice},
-                                data-original=${orderDetail.pricingDetails.totalPrice}">
+                               step="any"
+                               th:value="${#numbers.formatDecimal(orderDetail.pricingDetails.totalPrice, 1, 2, 'POINT')}"
+                               th:data-costprice="${#numbers.formatDecimal(orderDetail.pricingDetails.costPrice, 1, 2, 'POINT')}"
+                               th:data-original="${#numbers.formatDecimal(orderDetail.pricingDetails.totalPrice, 1, 2, 'POINT')}">
                         <span class="unit">kr.</span>
                     </div>
 
@@ -240,11 +247,11 @@
             </div>
 
             <div class="form-actions">
-                <button type="submit" class="btn-primary btn-large">Send Tilbud til Kunde</button>
-                <a th:href="@{/carport-requests}" class="btn btn-secondary">Tilbage til oversigt</a>
+                <button type="submit" class="btn btn-secondary btn-large">Send Tilbud til Kunde</button>
+                <a th:href="@{/carport-requests}" class="btn btn-secondary btn-large">Tilbage til oversigt</a>
             </div>
         </form>
-
+        </section>
     </div>
 </main>
 

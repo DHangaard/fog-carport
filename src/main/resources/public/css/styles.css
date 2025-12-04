@@ -19,7 +19,7 @@
     /* Text colors */
     --color-text-primary: #FCFCFC;
     --color-text-header: #000000;
-    --color-text-dark: #888A8F;
+    --color-text-dark: #454545;
 
     /* Other colors */
     --color-warning-red: #DC3545;
@@ -634,6 +634,27 @@ footer {
     background-color: #f0f4f8;
 }
 
+.quantity-form{
+    display: flex;
+    flex-direction: row;
+    gap: var(--spacing-xs);
+    align-items: center;
+}
+
+.quantity-form input[type="number"] {
+    width: 70px;
+    padding: var(--spacing-xs);
+    border: solid #ddd;
+    border-radius: var(--radius-sm);
+    font-size: var(--text-size-small);
+    text-align: center;
+}
+
+.quantity-form input[type="number"]:focus {
+    outline: none;
+    border-color: var(--color-fog-blue);
+}
+
 .table-actions {
     display: flex;
     gap: 0.5rem;
@@ -850,7 +871,8 @@ footer {
 
 .offer-validity label {
     color: var(--color-text-header);
-    font-size: 1rem;
+    font-size: var(--text-size-default);
+    font-weight: 600;
 }
 
 .offer-validity input {
@@ -859,6 +881,7 @@ footer {
     border: 1px solid #ddd;
     border-radius: var(--radius-sm);
     font-size: 1rem;
+    color: var(--color-text-header);
 }
 
 .offer-validity input:focus {
@@ -869,14 +892,16 @@ footer {
 .form-actions {
     display: flex;
     gap: var(--spacing-md);
-    justify-content: center;
+    justify-content: space-between;
+    align-items: center;
     margin-top: var(--spacing-xl);
 }
 
-.form-actions . btn-primary,
-.form-actions .btn-secondary {
+.form-actions .btn-primary,
+.form-actions .btn-secondary,
+.form-actions .btn {
     width: auto;
-    min-width: 200px;
+    min-width: 250px;
 }
 
 .btn-large {

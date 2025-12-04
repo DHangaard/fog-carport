@@ -21,6 +21,7 @@ public interface IOrderService
     public Order createPendingOrder(CreateOrderRequest createOrderRequest) throws DatabaseException;
     public Order getOrderById(int orderId) throws DatabaseException;
     public boolean updateOrder(Order order) throws DatabaseException;
+    public boolean updateOrderCostPrice(int orderId, double newCostPrice) throws DatabaseException;
     public boolean deleteOrder(int orderId) throws DatabaseException;
     public boolean confirmAndSendOffer(Order order) throws DatabaseException;
     public OrderDetail getOrderDetailByCustomerId(int customerId) throws DatabaseException;
