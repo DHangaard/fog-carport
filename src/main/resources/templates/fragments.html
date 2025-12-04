@@ -98,6 +98,7 @@
 
                 <form method="post" th:action="@{/carport/order/delete/{id}(id=${order.orderId})}"
                       onsubmit="return confirm('Er du sikker på du vil slette denne? ')">
+                    <input type="hidden" name="pageType" th:value="${pageType}"/>
                     <button type="submit" class="btn-table btn-delete" title="Slet">
                         <img th:src="@{/images/delete.svg}" alt="Slet"/>
                     </button>
