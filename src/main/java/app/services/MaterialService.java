@@ -1,5 +1,6 @@
 package app.services;
 
+import app.entities.MaterialLine;
 import app.exceptions.DatabaseException;
 import app.persistence.MaterialLineMapper;
 
@@ -22,5 +23,12 @@ public class MaterialService implements IMaterialService
     public boolean deleteBillOfMaterialLine(int materialLineId) throws DatabaseException
     {
         return materialLineMapper.deleteMaterialLine(materialLineId);
+    }
+
+    @Override
+    public double calculateLineTotal(int materialLineId) throws DatabaseException
+    {
+        MaterialLine materialLine = materialLineMapper.getMaterialLineById(materialLineId);
+        return materialLine.getQuantity() * materialLine.getMaterialVariant().getUnitPrice();
     }
 }

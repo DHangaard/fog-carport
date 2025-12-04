@@ -51,10 +51,12 @@ public class SellerController
 
         try
         {
+            double lineTotal = materialService.
             boolean deleted = materialService.deleteBillOfMaterialLine(materialLineId);
 
             if (deleted)
             {
+                orders
                 ctx.sessionAttribute("successMessage", "Ordre linje blev slettet");
             }
             else

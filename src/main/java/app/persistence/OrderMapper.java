@@ -359,6 +359,29 @@ public class OrderMapper
         }
     }
 
+    public boolean updateOrder(int orderId, double newCostPrice) throws DatabaseException
+    {
+        String sql = """
+               UPDATE orders
+               SET cost_price = ?
+               WHERE order_id = ?
+               """;
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql))
+        {
+            ps.setDouble(1, newCostPrice);
+            ps.setInt(2, orderId);
+
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected == 1;
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl ved opdatering af kostprisen: " + e.getMessage());
+        }
+    }
+
     public boolean deleteOrder(int orderId) throws DatabaseException
     {
         String sql = """
