@@ -106,7 +106,7 @@
         </section>
 
         <section class="section">
-            <h2>Stykliste & Prisberegning</h2>
+            <h2>Stykliste</h2>
 
             <table class="orders-table">
                 <thead>
@@ -153,6 +153,8 @@
             </table>
         </section>
 
+        <section class="section">
+            <h1>Prisberegning & tilbuds periode</h1>
         <form th:action="@{/requests/{id}/send-offer(id=${orderDetail.orderId})}" method="post">
 
             <div class="calculator-container">
@@ -245,11 +247,11 @@
             </div>
 
             <div class="form-actions">
-                <button type="submit" class="btn-primary btn-large">Send Tilbud til Kunde</button>
-                <a th:href="@{/carport-requests}" class="btn btn-secondary">Tilbage til oversigt</a>
+                <button type="submit" class="btn btn-secondary btn-large">Send Tilbud til Kunde</button>
+                <a th:href="@{/carport-requests}" class="btn btn-secondary btn-large">Tilbage til oversigt</a>
             </div>
         </form>
-
+        </section>
     </div>
 </main>
 

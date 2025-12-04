@@ -871,7 +871,8 @@ footer {
 
 .offer-validity label {
     color: var(--color-text-header);
-    font-size: 1rem;
+    font-size: var(--text-size-default);
+    font-weight: 600;
 }
 
 .offer-validity input {
@@ -880,6 +881,7 @@ footer {
     border: 1px solid #ddd;
     border-radius: var(--radius-sm);
     font-size: 1rem;
+    color: var(--color-text-header);
 }
 
 .offer-validity input:focus {
@@ -890,14 +892,16 @@ footer {
 .form-actions {
     display: flex;
     gap: var(--spacing-md);
-    justify-content: center;
+    justify-content: space-between;
+    align-items: center;
     margin-top: var(--spacing-xl);
 }
 
-.form-actions . btn-primary,
-.form-actions .btn-secondary {
+.form-actions .btn-primary,
+.form-actions .btn-secondary,
+.form-actions .btn {
     width: auto;
-    min-width: 200px;
+    min-width: 250px;
 }
 
 .btn-large {
