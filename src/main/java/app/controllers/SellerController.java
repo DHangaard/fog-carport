@@ -14,6 +14,7 @@ import app.services.svg.CarportSvgSide;
 import app.services.svg.CarportSvgTop;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Locale;
@@ -35,6 +36,11 @@ public class SellerController
         app.get("/carport-request/details/{id}", ctx -> showRequestDetails(ctx));
 
         app.post("/requests/{id}/send-offer", ctx -> sendCarportOffer(ctx));
+        app.post("/requests/{id}/update-bom", ctx -> updateBillOfMaterial(ctx));
+    }
+
+    private void updateBillOfMaterial(Context ctx)
+    {
     }
 
     private void sendCarportOffer(Context ctx)

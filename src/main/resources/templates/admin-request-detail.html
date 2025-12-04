@@ -127,7 +127,8 @@
                     <td>
                         <form th:action="@{/requests/{id}/update-bom(id=${orderDetail.orderId})}" method="post">
                             <input type="hidden" name="materialLineId" th:value="${line.materialLineId}">
-                            <input type="number" name="quantity" th:value="${line.quantity}" min="0" onchange="this.form.submit()">
+                            <input type="number" name="quantity" th:value="${line.quantity}" min="0">
+                            <button type="submit" class="btn btn-secondary">Opdater</button>
                         </form>
                     </td>
                     <td th:text="${line.materialVariant.materialVariantId}"></td>
