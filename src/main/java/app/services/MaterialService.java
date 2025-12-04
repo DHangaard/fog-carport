@@ -36,7 +36,8 @@ public class MaterialService implements IMaterialService
     public double getUpdatedLinePrice(int materialLineId, int quantity) throws DatabaseException
     {
         MaterialLine materialLine = materialLineMapper.getMaterialLineById(materialLineId);
-
+        double oldMaterialLineTotal = calculateLineTotal(materialLine);
+        double newMaterialLineTotal = materialLine.getMaterialVariant().getUnitPrice() * quantity;
     }
 
     private double calculateLineTotal(MaterialLine materialLine)
