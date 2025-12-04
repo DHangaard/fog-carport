@@ -25,23 +25,40 @@ public class OrderTimeLine
         return false;
     }
 
-    public String getExpirationDateFormatted() {
+    public String getCreatedAtFormatted()
+    {
+        LocalDate createdAtFormatted = createdAt.toLocalDateTime().toLocalDate();
+        return formatDate(createdAtFormatted);
+    }
+
+    public String getExpirationDateFormatted()
+    {
         LocalDate expiration = calculateExpirationDate();
-        if (expiration != null) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d. MMMM yyyy", new Locale("da", "DK"));
-            return expiration.format(formatter);
+        if (expiration != null)
+        {
+            return formatDate(expiration);
         }
         return null;
     }
 
-    private LocalDate calculateExpirationDate() {
-        if (createdAt != null || offerValidDays != null) {
+    private LocalDate calculateExpirationDate()
+    {
+        if (createdAt != null || offerValidDays != null)
+        {
             return createdAt.toLocalDateTime().toLocalDate().plusDays(offerValidDays);
         }
         return null;
     }
 
-    public String getRelativeTime() {
+    public String getRelativeTime()
+    {
         return TimeUtil.getRelativeTime(customerRequestCreatedAt);
+
+    }
+
+    private String formatDate(LocalDate localDate)
+    {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d. MMMM yyyy", new Locale("da", "DK"));
+        return localDate.format(formatter);
     }
 }
