@@ -117,7 +117,11 @@ public class SellerController
 
             if (updated)
             {
-                orderService.updateOrderCostPrice(orderId, lineTotalDifference);
+                Order order = orderService.getOrderById(orderId);
+                double orderCostTotal = order.getPricingDetails().getCostPrice();
+                double newOrderCostTotal = orderCostTotal + lineTotalDifference;
+
+                orderService.updateOrderCostPrice(orderId, newOrderCostTotal);
                 ctx.sessionAttribute("successMessage", "Antal opdateret");
             }
             else
