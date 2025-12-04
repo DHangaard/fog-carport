@@ -19,27 +19,28 @@ import java.util.Map;
 
 public class OrderController
 {
-        private IOrderService orderService;
-        private ICarportService carportService;
+    private IOrderService orderService;
+    private ICarportService carportService;
 
-        public OrderController(IOrderService orderService, ICarportService carportService)
-        {
-            this.orderService = orderService;
-            this.carportService = carportService;
-        }
+    public OrderController(IOrderService orderService, ICarportService carportService)
+    {
+        this.orderService = orderService;
+        this.carportService = carportService;
+    }
 
-        public void addRoutes(Javalin app)
-        {
-            app.get("/offers", ctx -> showOfferOverview(ctx));
-            app.get("/orders", ctx -> showOrderOverview(ctx));
-            app.get("/carport/details/view/{id}", ctx -> showOrderDetail(ctx));
+    public void addRoutes(Javalin app)
+    {
+        app.get("/offers", ctx -> showOfferOverview(ctx));
+        app.get("/orders", ctx -> showOrderOverview(ctx));
+        app.get("/carport/details/view/{id}", ctx -> showOrderDetail(ctx));
 
-            app.post("/carport/order/delete/{id}", ctx -> deleteOrder(ctx));
-
-        }
+        app.post("/carport/order/delete/{id}", ctx -> deleteOrder(ctx));
+    }
 
     private void deleteOrder(Context ctx)
     {
+        if(!userIsAdmin(ctx)){return;}
+
         int orderId = Integer.parseInt(ctx.pathParam("id"));
         String pageType = ctx.formParam("pageType");
 
@@ -64,6 +65,7 @@ public class OrderController
             redirectToCorrectPath(ctx, pageType);
         }
     }
+
 
     private void showOrderDetail(Context ctx)
     {
