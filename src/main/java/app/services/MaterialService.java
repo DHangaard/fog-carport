@@ -21,6 +21,6 @@ public class MaterialService implements IMaterialService
     @Override
     public boolean deleteBillOfMaterialLine(int materialLineId) throws DatabaseException
     {
-        return false;
+        return materialLineMapper.deleteMaterialLine(materialLineId);
     }
 }

@@ -39,6 +39,36 @@ public class SellerController
 
         app.post("/requests/{id}/send-offer", ctx -> sendCarportOffer(ctx));
         app.post("/requests/{id}/update-bom", ctx -> updateBillOfMaterialQuantity(ctx));
+        app.post("/requests/{id}/delete-bom-line", ctx -> deleteBillOfMaterialLine(ctx));
+    }
+
+    private void deleteBillOfMaterialLine(Context ctx)
+    {
+        if(!userIsAdmin(ctx)){return;}
+
+        int orderId = Integer.parseInt(ctx.pathParam("id"));
+        int materialLineId = Integer.parseInt(ctx.formParam("materialLineId"));
+
+        try
+        {
+            boolean deleted = materialService.deleteBillOfMaterialLine(materialLineId);
+
+            if (deleted)
+            {
+                ctx.sessionAttribute("successMessage", "Ordre linje blev slettet");
+            }
+            else
+            {
+                ctx.sessionAttribute("errorMessage", "Ordre linje blev ikke slettet");
+            }
+
+            ctx.redirect("/carport-request/details/" + orderId);
+        }
+        catch (DatabaseException e)
+        {
+            ctx.sessionAttribute("errorMessage", e.getMessage());
+            ctx.redirect("/carport-request/details/" + orderId);
+        }
     }
 
     private void updateBillOfMaterialQuantity(Context ctx)
