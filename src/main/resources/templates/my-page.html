@@ -96,10 +96,10 @@
                     <td><span th:text="${paidOrder.orderStatus.displayName}"></span></td>
                     <td>
                         <div class="table-actions">
-                            <a th:href="@{/carport-request/details/{id}(id=${paidOrder.orderId})}"
+                            <a th:href="@{/carport/details/view/{id}(id=${paidOrder.orderId})}"
                                class="btn-table btn-view"
                                title="Se detajler">
-                                <img th:src="@{/images/view.svg}" alt="Se detaljer"/> <!-- Change hyperlink -->
+                                <img th:src="@{/images/view.svg}" alt="Se detaljer"/>
                             </a>
                         </div>
                     </td>
