@@ -103,7 +103,7 @@ public class OrderController
             Map<OrderStatus, List<OrderOverviewDTO>> orderOverviews = orderService.getOrderOverViewsByStatus(statuses);
 
             ctx.attribute("paidOrders", orderOverviews.get(OrderStatus.PAID));
-            ctx.attribute("cancelledOrders", orderOverviews.get(OrderStatus.REJECTED));
+            ctx.attribute("cancelledOrders", orderOverviews.get(OrderStatus.CANCELLED));
 
             ctx.render("admin-orders");
 

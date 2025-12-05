@@ -1092,6 +1092,26 @@ footer {
     display: inline-block;
 }
 
+/* Order detail view */
+.hero-p-and-order-info {
+    display: flex;
+    gap: var(--spacing-xl);
+    margin-top: var(--spacing-lg);
+    align-items: center;
+    justify-content: right;
+}
+
+.bold-text {
+    font-weight: var(--text-weight-bold);
+}
+
+.order-info-box {
+    padding-left: var(--spacing-lg);
+    flex-shrink: 0;
+    min-width: 250px;
+    border-left: 2px solid var(--color-outline-blue);
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .header-nav {
