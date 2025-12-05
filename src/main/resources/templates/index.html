@@ -12,6 +12,13 @@
 <div th:replace="~{fragments :: headerFragment}"></div>
 
 <main>
+    <div th:if="${successMessage}" class="message message-success">
+        <p th:text="${successMessage}"></p>
+    </div>
+
+    <div th:if="${errorMessage}" class="message message-error">
+        <p th:text="${errorMessage}"></p>
+    </div>
     <div class="page-content">
 
         <div class="hero-grid">

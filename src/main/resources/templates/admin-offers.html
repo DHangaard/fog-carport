@@ -12,6 +12,13 @@
 <div th:replace="~{fragments :: headerFragment}"></div>
 
 <main>
+    <div th:if="${successMessage}" class="message message-success">
+        <p th:text="${successMessage}"></p>
+    </div>
+
+    <div th:if="${errorMessage}" class="message message-error">
+        <p th:text="${errorMessage}"></p>
+    </div>
     <!-- Sales links (conditional)
 <div class="order-search">
     <h2>Søg efter forespørgsel</h2>

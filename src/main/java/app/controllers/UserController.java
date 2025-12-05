@@ -29,6 +29,7 @@ public class UserController
 
     private void showHomepage(Context ctx)
     {
+        displayMessages(ctx);
         ctx.render("index");
     }
 
@@ -60,10 +61,15 @@ public class UserController
                 ctx.redirect("/");
             }
         }
-        catch (DatabaseException e)
+        catch (DatabaseException  e)
         {
             ctx.sessionAttribute("errorMessage", "Forkert email eller password");
-            ctx.render("login");
+            ctx.redirect("/login");
+        }
+        catch (IllegalArgumentException e)
+        {
+            ctx.sessionAttribute("errorMessage", e.getMessage());
+            ctx.redirect("/login");
         }
     }
 
@@ -105,14 +111,14 @@ public class UserController
 
     private void showCreateUserPage(Context ctx)
     {
+        displayMessages(ctx);
         ctx.render("create-user");
     }
 
     private void showLoginPage(Context ctx)
     {
+        displayMessages(ctx);
         ctx.render("login");
-        ctx.sessionAttribute("errorMessage", null);
-        ctx.sessionAttribute("successMessage", null);
     }
 
     private static void populateFormFields(Context ctx) {
@@ -122,5 +128,17 @@ public class UserController
         ctx.attribute("phoneNumber", ctx.formParam("phoneNumber"));
         ctx.attribute("street", ctx.formParam("street"));
         ctx.attribute("zipCode", ctx.formParam("zipCode"));
+    }
+
+    private void displayMessages(Context ctx)
+    {
+        String errorMessage = ctx.sessionAttribute("errorMessage");
+        String successMessage = ctx.sessionAttribute("successMessage");
+
+        ctx.attribute("errorMessage", errorMessage);
+        ctx.attribute("successMessage", successMessage);
+
+        ctx.sessionAttribute("errorMessage", null);
+        ctx.sessionAttribute("successMessage", null);
     }
 }

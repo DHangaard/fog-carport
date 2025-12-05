@@ -29,15 +29,12 @@
             <button type="submit" class="btn btn-primary">Log ind</button>
         </form>
 
-        <div th:if="${session.errorMessage != null}" class="message message-error">
-            <p id="error-message" class="error"
-               th:if="${session.errorMessage != null}"
-               th:text="${session.errorMessage}">
-            </p>
+        <div th:if="${successMessage}" class="message message-success">
+            <p th:text="${successMessage}"></p>
         </div>
 
-        <div th:if="${session.succesMessage}" class="message message-succes">
-            <p class="success" th:if="${session.succesMessage}" th:text="${session.succesMessage}"></p>
+        <div th:if="${errorMessage}" class="message message-error">
+            <p th:text="${errorMessage}"></p>
         </div>
 
         <div class="link">

@@ -12,15 +12,12 @@
 <div th:replace="~{fragments :: headerFragment}"></div>
 
 <main>
-    <div th:if="${session.successMessage}" class="message message-succes">
-        <p class="success" th:if="${session.successMessage}" th:text="${session.successMessage}"></p>
+    <div th:if="${successMessage}" class="message message-success">
+        <p th:text="${successMessage}"></p>
     </div>
 
-    <div th:if="${session.errorMessage != null}" class="message message-error">
-        <p id="error-message" class="error"
-           th:if="${session.errorMessage != null}"
-           th:text="${session.errorMessage}">
-        </p>
+    <div th:if="${errorMessage}" class="message message-error">
+        <p th:text="${errorMessage}"></p>
     </div>
     
     <div class="request-details-page">
