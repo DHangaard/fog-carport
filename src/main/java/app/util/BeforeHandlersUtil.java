@@ -12,7 +12,7 @@ public class BeforeHandlersUtil
     {
         UserDTO currentUser = ctx.sessionAttribute("currentUser");
 
-        if (currentUser != null && currentUser.role().name(). equals("SALESREP"))
+        if (currentUser != null && currentUser.role().name().equals("SALESREP"))
         {
             Boolean badgeNeedsUpdate = ctx.sessionAttribute("badgeNeedsUpdate");
             Integer cachedBadgeCount = ctx.sessionAttribute("requestCount");
@@ -23,7 +23,7 @@ public class BeforeHandlersUtil
                 {
                     int requestCount = orderService.getTotalNumberOfOrdersByStatus(OrderStatus.PENDING);
                     ctx.sessionAttribute("requestCount", requestCount);
-                    ctx.sessionAttribute("bagdeNeedsUpdate", false);
+                    ctx.sessionAttribute("badgeNeedsUpdate", false);
                     ctx.attribute("requestCount", requestCount);
                 }
                 catch (DatabaseException e)

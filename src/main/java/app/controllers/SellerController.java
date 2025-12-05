@@ -176,10 +176,11 @@ public class SellerController
             order.setOrderStatus(OrderStatus.READY);
 
             boolean offerSend = orderService.confirmAndSendOffer(order);
+
             if(offerSend)
             {
-                ctx.sessionAttribute("succesMessage", "Dit tilbud er afsendt");
-                ctx.sessionAttribute("bagdeNeedsUpdate", true);
+                ctx.sessionAttribute("successMessage", "Dit tilbud er afsendt");
+                ctx.sessionAttribute("badgeNeedsUpdate", true);
             }
             else
             {

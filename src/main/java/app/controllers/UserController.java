@@ -91,7 +91,7 @@ public class UserController
             );
 
             userService.registerUser(createUserRequestDTO);
-            ctx.sessionAttribute("succesMessage", "Du har oprettet en bruger! Log på med email og password");
+            ctx.sessionAttribute("successMessage", "Du har oprettet en bruger! Log på med email og password");
             ctx.redirect("login");
         }
         catch (NumberFormatException e)

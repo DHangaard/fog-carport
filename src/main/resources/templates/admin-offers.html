@@ -12,13 +12,6 @@
 <div th:replace="~{fragments :: headerFragment}"></div>
 
 <main>
-    <div th:if="${successMessage}" class="message message-success">
-        <p th:text="${successMessage}"></p>
-    </div>
-
-    <div th:if="${errorMessage}" class="message message-error">
-        <p th:text="${errorMessage}"></p>
-    </div>
     <!-- Sales links (conditional)
 <div class="order-search">
     <h2>Søg efter forespørgsel</h2>
@@ -44,24 +37,18 @@
     </form>
 </div>
  -->
-    <div th:if="${session.successMessage}" class="success-message">
-        <p th:text="${session.successMessage}"></p>
-    </div>
-
-    <div th:if="${session.errorMessage}" class="error-message">
-        <p th:text="${session.errorMessage}"></p>
-    </div>
 
     <div class="orders-view">
+        <div th:if="${successMessage}" class="message message-success">
+            <p th:text="${successMessage}"></p>
+        </div>
+
+        <div th:if="${errorMessage}" class="message message-error">
+            <p th:text="${errorMessage}"></p>
+        </div>
+
         <h1>Tilbud Oversigt</h1>
 
-        <div th:if="${session.successMessage}" class="message message-success">
-            <p th:text="${session.successMessage}"></p>
-        </div>
-
-        <div th:if="${session.errorMessage}" class="message message-error">
-            <p th:text="${session.errorMessage}"></p>
-        </div>
 
         <section class="order-section">
             <h2>Afventer kunde accept<span class="badge" th:if="${offersToAccept != null}" th:text="${offersToAccept.size()}"></span></h2>

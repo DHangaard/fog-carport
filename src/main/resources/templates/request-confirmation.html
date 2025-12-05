@@ -13,6 +13,13 @@
 
 <main>
     <div class="content-contact">
+        <div th:if="${successMessage}" class="message message-success">
+            <p th:text="${successMessage}"></p>
+        </div>
+
+        <div th:if="${errorMessage}" class="message message-error">
+            <p th:text="${errorMessage}"></p>
+        </div>
         <h1>Tak for din forespørgsel</h1>
     </div>
 

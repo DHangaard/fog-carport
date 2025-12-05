@@ -12,15 +12,15 @@
 <div th:replace="~{fragments :: headerFragment}"></div>
 
 <main>
-    <div th:if="${successMessage}" class="message message-success">
-        <p th:text="${successMessage}"></p>
-    </div>
-
-    <div th:if="${errorMessage}" class="message message-error">
-        <p th:text="${errorMessage}"></p>
-    </div>
 
     <div class="orders-view">
+        <div th:if="${successMessage}" class="message message-success">
+            <p th:text="${successMessage}"></p>
+        </div>
+
+        <div th:if="${errorMessage}" class="message message-error">
+            <p th:text="${errorMessage}"></p>
+        </div>
         <h2>Afventer sælger</h2>
         <div th:if="${pendingOrders != null and !pendingOrders.isEmpty()}" class="orders-table customer-pending-orders">
             <table>

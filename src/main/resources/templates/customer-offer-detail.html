@@ -12,15 +12,15 @@
 <div th:replace="~{fragments :: headerFragment}"></div>
 
 <main>
-    <div th:if="${successMessage}" class="message message-success">
-        <p th:text="${successMessage}"></p>
-    </div>
-
-    <div th:if="${errorMessage}" class="message message-error">
-        <p th:text="${errorMessage}"></p>
-    </div>
 
     <div class="request-details-page">
+        <div th:if="${successMessage}" class="message message-success">
+            <p th:text="${successMessage}"></p>
+        </div>
+
+        <div th:if="${errorMessage}" class="message message-error">
+            <p th:text="${errorMessage}"></p>
+        </div>
         <div class="hero-content">
             <h1>Tilbud #<span th:text="${offer.orderId}"></span></h1>
             <p>Oprettet : <span th:text="${offer.orderTimeLine.createdAtFormatted}"></span></p>
