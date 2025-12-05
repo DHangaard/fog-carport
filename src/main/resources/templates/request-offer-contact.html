@@ -20,6 +20,14 @@
         <div class="form-container">
             <h2>Kontaktoplysninger</h2>
 
+            <div th:if="${successMessage}" class="message message-success">
+                <p th:text="${successMessage}"></p>
+            </div>
+
+            <div th:if="${errorMessage}" class="message message-error">
+                <p th:text="${errorMessage}"></p>
+            </div>
+
             <p>
                 Bekræft venligst at vi har de rigtige informationer til din forespørgsel.
             </p>
@@ -27,58 +35,49 @@
             <form th:action="@{/confirm-request}" method="post" class="form">
 
                 <div class="form-field">
-                    <label>Fornavn</label>
-                    <input class="form-input" type="text" name="firstName"
-                           th:value="${session.currentUser != null} ? ${session.currentUser.firstName} : ''" required>
+                    <label for="firstName">Fornavn</label>
+                    <input class="form-input" type="text" name="firstName" id="firstName"
+                           th:value="${user != null} ? ${user.firstName} : ''" required>
                 </div>
 
                 <div class="form-field">
-                    <label>Efternavn</label>
-                    <input class="form-input" type="text" name="lastName"
-                           th:value="${session.currentUser != null} ? ${session.currentUser.lastName} : ''" required>
+                    <label for="lastName">Efternavn</label>
+                    <input class="form-input" type="text" name="lastName" id="lastName"
+                           th:value="${user != null} ? ${user.lastName} : ''" required>
                 </div>
 
                 <div class="form-field">
                     <label for="phoneNumber">Telefonnummer</label>
                     <input class="form-input" type="text" id="phoneNumber" name="phoneNumber"
-                           th:value="${session.currentUser != null} ? ${session.currentUser.phoneNumber} : ''" required>
+                           th:value="${user != null} ? ${user.phoneNumber} : ''" required>
                 </div>
 
                 <div class="form-field">
-                    <label>Email</label>
-                    <input class="form-input" type="email" name="email"
-                           th:value="${session.currentUser != null} ? ${session.currentUser.email} : ''" required>
+                    <label for="email">Email</label>
+                    <input class="form-input" type="email" name="email" id="email"
+                           th:value="${user != null} ? ${user.email} : ''" required>
                 </div>
 
                 <div class="form-field">
-                    <label>Adresse</label>
-                        <input class="form-input" type="text" name="street"
-                               th:value="${session.currentUser != null} ? ${session.currentUser.street} : ''" required>
+                    <label for="street">Adresse</label>
+                        <input class="form-input" type="text" name="street" id="street"
+                               th:value="${user != null} ? ${user.street} : ''" required>
                 </div>
 
                 <div class="form-field">
-                    <label>By</label>
-                    <input class="form-input" type="text" name="city"
-                           th:value="${session.currentUser != null} ? ${session.currentUser.city} : ''" required>
+                    <label for="city">By</label>
+                    <input class="form-input" type="text" name="city" id="city"
+                           th:value="${user != null} ? ${user.city} : ''" required>
                 </div>
 
                 <div class="form-field">
-                    <label>Postnummer</label>
-                    <input class="form-input" type="text" name="zipCode"
-                           th:value="${session.currentUser != null} ? ${session.currentUser.zipCode} : ''" required>
+                    <label for="zipCode">Postnummer</label>
+                    <input class="form-input" type="text" name="zipCode" id="zipCode"
+                           th:value="${user != null} ? ${user.zipCode} : ''" required>
                 </div>
 
                 <button type="submit" class="btn btn-primary">Bestil tilbud</button>
             </form>
-
-            <div th:if="${errorMessage != null}" class="message message-error">
-                <p th:text="${errorMessage}"></p>
-            </div>
-
-            <div th:if="${session.successMessage}" class="message message-success">
-                <p th:text="${session.successMessage}"></p>
-            </div>
-
         </div>
     </main>
 

@@ -45,7 +45,7 @@ public class CustomerController
             return;
         }
 
-        displaySuccessOrErrorMessage(ctx);
+        displayMessages(ctx);
 
         try
         {
@@ -75,7 +75,7 @@ public class CustomerController
             return;
         }
 
-        displaySuccessOrErrorMessage(ctx);
+        displayMessages(ctx);
 
         int orderId = Integer.parseInt(ctx.pathParam("id"));
         Locale.setDefault(new Locale("US"));
@@ -143,7 +143,7 @@ public class CustomerController
         handleOffer(ctx, OrderStatus.REJECTED, rejected);
     }
 
-    private void displaySuccessOrErrorMessage(Context ctx)
+    private void displayMessages(Context ctx)
     {
         String errorMessage = ctx.sessionAttribute("errorMessage");
         String successMessage = ctx.sessionAttribute("successMessage");

@@ -78,10 +78,12 @@ public class OrderController
             OrderDetail orderDetail = orderService.getOrderDetailByOrderId(orderId);
             CarportSvgTop carportSvgTop = carportService.getCarportTopSvgView(orderDetail.getCarport());
             CarportSvgSide carportSvgSide = carportService.getCarportSideSvgView(orderDetail.getCarport());
+
             ctx.attribute("orderDetail", orderDetail);
             ctx.attribute("carportSvgTop", carportSvgTop);
             ctx.attribute("carportSvgSide", carportSvgSide);
 
+            displayMessages(ctx);
             ctx.render("order-detail");
         }
         catch (DatabaseException e)
@@ -104,6 +106,8 @@ public class OrderController
 
             ctx.attribute("paidOrders", orderOverviews.get(OrderStatus.PAID));
             ctx.attribute("cancelledOrders", orderOverviews.get(OrderStatus.CANCELLED));
+
+            displayMessages(ctx);
 
             ctx.render("admin-orders");
 
@@ -128,6 +132,8 @@ public class OrderController
             ctx.attribute("offersToAccept", orderOverviews.get(OrderStatus.READY));
             ctx.attribute("rejectedOffers", orderOverviews.get(OrderStatus.REJECTED));
             ctx.attribute("expiredOffers", orderOverviews.get(OrderStatus.EXPIRED));
+
+            displayMessages(ctx);
 
             ctx.render("admin-offers");
 
@@ -169,5 +175,17 @@ public class OrderController
             default:
                 ctx.redirect("/");
         }
+    }
+
+    private void displayMessages(Context ctx)
+    {
+        String errorMessage = ctx.sessionAttribute("errorMessage");
+        String successMessage = ctx.sessionAttribute("successMessage");
+
+        ctx. attribute("errorMessage", errorMessage);
+        ctx.attribute("successMessage", successMessage);
+
+        ctx.sessionAttribute("errorMessage", null);
+        ctx.sessionAttribute("successMessage", null);
     }
 }

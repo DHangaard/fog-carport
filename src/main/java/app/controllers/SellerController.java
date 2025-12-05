@@ -176,10 +176,11 @@ public class SellerController
             order.setOrderStatus(OrderStatus.READY);
 
             boolean offerSend = orderService.confirmAndSendOffer(order);
+
             if(offerSend)
             {
-                ctx.sessionAttribute("succesMessage", "Dit tilbud er afsendt");
-                ctx.sessionAttribute("bagdeNeedsUpdate", true);
+                ctx.sessionAttribute("successMessage", "Dit tilbud er afsendt");
+                ctx.sessionAttribute("badgeNeedsUpdate", true);
             }
             else
             {
@@ -212,9 +213,12 @@ public class SellerController
             OrderDetail orderDetail = orderService.getOrderDetailByOrderId(orderId);
             CarportSvgTop carportSvgTop = carportService.getCarportTopSvgView(orderDetail.getCarport());
             CarportSvgSide carportSvgSide = carportService.getCarportSideSvgView(orderDetail.getCarport());
+
             ctx.attribute("orderDetail", orderDetail);
             ctx.attribute("carportSvgTop", carportSvgTop);
             ctx.attribute("carportSvgSide", carportSvgSide);
+
+            displayMessages(ctx);
 
             ctx.render("admin-request-detail");
         }
@@ -233,13 +237,16 @@ public class SellerController
         {
             List<OrderOverviewDTO> orderRequests = orderService.getAllOrdersByStatus(OrderStatus.PENDING);
             ctx.attribute("orderRequests", orderRequests);
+            displayMessages(ctx);
+
+            ctx.render("admin-request.html");
         }
         catch (DatabaseException e)
         {
             ctx.attribute("errorMessage", "Kunne ikke hente forespørgsler");
             ctx.redirect("/");
         }
-        ctx.render("admin-request.html");
+
     }
 
     private boolean userIsAdmin(Context ctx)
@@ -253,5 +260,17 @@ public class SellerController
             return false;
         }
         return userDTO.role().equals(Role.SALESREP);
+    }
+
+    private void displayMessages(Context ctx)
+    {
+        String errorMessage = ctx.sessionAttribute("errorMessage");
+        String successMessage = ctx.sessionAttribute("successMessage");
+
+        ctx.attribute("errorMessage", errorMessage);
+        ctx.attribute("successMessage", successMessage);
+
+        ctx.sessionAttribute("errorMessage", null);
+        ctx.sessionAttribute("successMessage", null);
     }
 }

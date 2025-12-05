@@ -11,6 +11,7 @@ import app.services.svg.CarportSvgSide;
 import app.services.svg.CarportSvgTop;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,10 +36,31 @@ public class CarportController
     {
         app.get("/carporte", ctx -> showBuildCarportPage(ctx));
         app.get("/carport-formular", ctx -> showCarportFormular(ctx));
+        app.get("/request-offer-contact", ctx -> showRequestOfferContact(ctx));
         app.get("/show-carport-drawing/{id}", ctx -> showCarportDrawing(ctx));
 
         app.post("/request-carport", ctx -> handleCarportRequest(ctx));
         app.post("/confirm-request", ctx -> confirmCarportRequest(ctx));
+    }
+
+    private void showRequestOfferContact(Context ctx)
+    {
+        if (!requireLogin(ctx)) return;
+
+        displayMessages(ctx);
+
+        UserDTO currentUser = ctx.sessionAttribute("currentUser");
+        Carport carport = ctx.sessionAttribute("carport");
+
+        if (carport == null)
+        {
+            ctx.sessionAttribute("errorMessage", "Session udløbet. Gå tilbage og udfyld formularen igen.");
+            ctx.redirect("/carport-formular");
+            return;
+        }
+
+        ctx.attribute("user", currentUser);
+        ctx.render("request-offer-contact");
     }
 
     private void showCarportDrawing(Context ctx)
@@ -53,6 +75,7 @@ public class CarportController
             CarportSvgTop carportSvgTop = carportService.getCarportTopSvgView(carport);
             CarportSvgSide carportSvgSide = carportService.getCarportSideSvgView(carport);
 
+            displayMessages(ctx);
             ctx.attribute("order", order);
             ctx.attribute("carportSvgTop", carportSvgTop);
             ctx.attribute("carportSvgSide", carportSvgSide);
@@ -81,24 +104,46 @@ public class CarportController
             return;
         }
 
-        UserDTO userFromContactPage = new UserDTO(
-                currentUser.userId(),
-                ctx.formParam("firstName"),
-                ctx.formParam("lastName"),
-                ctx.formParam("street"),
-                Integer.parseInt(ctx.formParam("zipCode")),
-                ctx.formParam("city"),
-                ctx.formParam("email"),
-                ctx.formParam("phoneNumber"),
-                currentUser.role()
-        );
-
         try
         {
+            String firstName = ctx.formParam("firstName");
+            String lastName = ctx.formParam("lastName");
+            String street = ctx.formParam("street");
+            String zipCodeString = ctx.formParam("zipCode");
+            String city = ctx.formParam("city");
+            String email = ctx.formParam("email");
+            String phoneNumber = ctx.formParam("phoneNumber");
+
+            int zipCode;
+
+            try
+            {
+                zipCode = Integer.parseInt(zipCodeString);
+            }
+            catch (NumberFormatException e)
+            {
+                ctx.sessionAttribute("errorMessage", "Postnummer skal være et tal");
+                ctx.redirect("/request-offer-contact");
+                return;
+            }
+
+            UserDTO userFromContactPage = new UserDTO(
+                    currentUser. userId(),
+                    firstName,
+                    lastName,
+                    street,
+                    zipCode,
+                    city,
+                    email,
+                    phoneNumber,
+                    currentUser.role()
+            );
+
             boolean userChangedContactInformation = userService.updateUser(userFromContactPage);
 
             if(userChangedContactInformation)
             {
+                ctx.sessionAttribute("currentUser", userFromContactPage);
                 ctx.sessionAttribute("successMessage", "Dine kontakt oplysninger er opdateret!");
             }
 
@@ -118,7 +163,7 @@ public class CarportController
         catch (DatabaseException | IllegalArgumentException e)
         {
             ctx.sessionAttribute("errorMessage", e.getMessage());
-            ctx.render("request-offer-contact");
+            ctx.redirect("/request-offer-contact");
         }
     }
 
@@ -150,25 +195,29 @@ public class CarportController
             Carport carport = new Carport(0, carportLength, carportWidth, RoofType.valueOf(roofType), shed);
 
             carportService.validateCarport(carport);
+
             ctx.sessionAttribute("carport",carport);
             ctx.sessionAttribute("customerNote", customerNote);
-            ctx.render("request-offer-contact");
+
+            ctx.redirect("/request-offer-contact");
         }
         catch (NumberFormatException e)
         {
             ctx.sessionAttribute("errorMessage", "Mål skal være et tal");
-            showCarportFormular(ctx);
+            ctx.redirect("/carport-formular");
         }
         catch (IllegalArgumentException e)
         {
             ctx.sessionAttribute("errorMessage", e.getMessage());
-            showCarportFormular(ctx);
+            ctx.redirect("/carport-formular");
         }
     }
 
     private void showCarportFormular(Context ctx)
     {
         if(!requireLogin(ctx)) {return;}
+
+        displayMessages(ctx);
 
         List<Integer> carportWidthDimensions = getDimensionFromTo(240, 600, 30);
         ctx.attribute("carportWidths", carportWidthDimensions);
@@ -187,6 +236,7 @@ public class CarportController
 
     private void showBuildCarportPage(Context ctx)
     {
+        displayMessages(ctx);
         ctx.render("build-carport");
     }
 
@@ -213,5 +263,17 @@ public class CarportController
             return false;
         }
         return true;
+    }
+
+    private void displayMessages(Context ctx)
+    {
+        String errorMessage = ctx.sessionAttribute("errorMessage");
+        String successMessage = ctx.sessionAttribute("successMessage");
+
+        ctx.attribute("errorMessage", errorMessage);
+        ctx.attribute("successMessage", successMessage);
+
+        ctx.sessionAttribute("errorMessage", null);
+        ctx.sessionAttribute("successMessage", null);
     }
 }

@@ -37,15 +37,16 @@
     </form>
 </div>
  -->
-    <div th:if="${session.successMessage}" class="message message-success">
-        <p th:text="${session.successMessage}"></p>
-    </div>
-
-    <div th:if="${session.errorMessage}" class="message message-success">
-        <p th:text="${session.errorMessage}"></p>
-    </div>
 
     <div class="orders-view">
+        <div th:if="${successMessage}" class="message message-success">
+            <p th:text="${successMessage}"></p>
+        </div>
+
+        <div th:if="${errorMessage}" class="message message-error">
+            <p th:text="${errorMessage}"></p>
+        </div>
+
         <h1>Ordre</h1>
 
         <section class="order-section">
