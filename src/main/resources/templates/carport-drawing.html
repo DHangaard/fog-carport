@@ -10,22 +10,24 @@
 
 <main>
     <div class="carport-display">
-        <h1 class="svg-drawing-title">Værebro</h1>
-        <h2 class="svg-drawing-title"><span class="svg-drawing-letter">C</span>ARPOR<span class="svg-drawing-letter">T</span></h2>
+        <div class="drawing-header">
+            <img class="carport-logo"
+                 src="/images/logo-carport.svg"
+                 alt="Fog logo"
+                 th:src="@{/images/logo-carport.svg}">
+            <div class="order-number">Ordre # <span th:text="${order.orderId}"></span></div>
+        </div>
 
         <div class="carport-wrapper">
-            <h3>Ordre # <span th:text="${order.orderId}"></span></h3>
-
             <div class="carport-svg-sideview">
-                <h3>Side view</h3>
+                <h3>Sidevisning</h3>
                 <div th:utext="${carportSvgSide}"></div>
             </div>
 
             <div class="carport-svg-topview">
-                <h3>Top view</h3>
+                <h3>Oversigt fra toppen</h3>
                 <div th:utext="${carportSvgTop}"></div>
             </div>
-
         </div>
     </div>
 </main>
