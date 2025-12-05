@@ -189,6 +189,7 @@ public class CarportController
             {
                 int shedWidth = Integer.parseInt(shedWidthString);
                 int shedLength = Integer.parseInt(shedLengthString);
+
                 shed = new Shed(0, shedLength, shedWidth, ShedPlacement.FULL_WIDTH);
             }
 

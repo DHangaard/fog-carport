@@ -87,6 +87,7 @@ public class BomService implements IBomService
 
         if (carport.getShed() != null)
         {
+            System.out.println("  Shed placement: " + carport.getShed().getShedPlacement());
             numberOfPosts = PartCalculator.calculateNumberOfPostsWithShed(carport.getLength(), carport.getShed().getShedPlacement());
         }
         else
