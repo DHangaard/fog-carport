@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("priceWithVatDisplay").textContent = priceWithVat.toFixed(2);
         document.getElementById("differenceDisplay").textContent = diff.toFixed(2);
 
-        coverageInput.value = coverage.toFixed(1);
+        coverageInput.value = coverage.toFixed(10);
         costPriceInput.value = costPrice.toFixed(2);
     }
 

@@ -179,7 +179,7 @@ public class UserMapper
                 email = ?,
                 phone_number = ?,
                 zip_code = ?,
-                street = ?,
+                street = ?
                 WHERE user_id = ?
                 """;
 
@@ -219,5 +219,4 @@ public class UserMapper
                 Role.valueOf(rs.getString("role"))
         );
     }
-
 }

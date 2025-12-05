@@ -359,6 +359,29 @@ public class OrderMapper
         }
     }
 
+    public boolean updateOrder(int orderId, double newCostPrice) throws DatabaseException
+    {
+        String sql = """
+               UPDATE orders
+               SET cost_price = ?
+               WHERE order_id = ?
+               """;
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql))
+        {
+            ps.setDouble(1, newCostPrice);
+            ps.setInt(2, orderId);
+
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected == 1;
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl ved opdatering af kostprisen: " + e.getMessage());
+        }
+    }
+
     public boolean deleteOrder(int orderId) throws DatabaseException
     {
         String sql = """
@@ -377,6 +400,33 @@ public class OrderMapper
         catch (SQLException e)
         {
             throw new DatabaseException("Fejl ved sletning af tilbuddet: " + e.getMessage());
+        }
+    }
+
+    public int getNumberOfOrdersByStatus(OrderStatus orderStatus) throws DatabaseException
+    {
+        String sql = """
+                SELECT COUNT(*)
+                FROM orders o
+                WHERE o.order_status = ?
+                """;
+        try(Connection connection = connectionPool.getConnection();
+            PreparedStatement ps = connection.prepareStatement(sql))
+        {
+            ps.setString(1,orderStatus.name());
+            ResultSet rs = ps.executeQuery();
+            if(rs.next())
+            {
+                return rs.getInt("count");
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl ved hentning af total af ordre ved status" + e.getMessage());
         }
     }
 
