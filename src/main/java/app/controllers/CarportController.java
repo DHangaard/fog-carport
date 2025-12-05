@@ -190,7 +190,7 @@ public class CarportController
                 int shedWidth = Integer.parseInt(shedWidthString);
                 int shedLength = Integer.parseInt(shedLengthString);
 
-                shed = new Shed(0, shedLength, shedWidth, ShedPlacement.FULL_WIDTH);
+                shed = carportService.createShedWithPlacement(carportWidth, shedWidth, shedLength);
             }
 
             Carport carport = new Carport(0, carportLength, carportWidth, RoofType.valueOf(roofType), shed);

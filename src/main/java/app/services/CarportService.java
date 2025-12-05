@@ -2,6 +2,7 @@ package app.services;
 
 import app.entities.Carport;
 import app.entities.Shed;
+import app.enums.ShedPlacement;
 import app.exceptions.DatabaseException;
 import app.persistence.CarportMapper;
 import app.services.svg.CarportSvgSide;
@@ -10,6 +11,7 @@ import app.services.svg.CarportSvgTop;
 public class CarportService implements ICarportService
 {
     private CarportMapper carportMapper;
+    private static final int SHED_SIDE_MARGIN = 35;
 
     public CarportService(CarportMapper carportMapper)
     {
@@ -60,6 +62,13 @@ public class CarportService implements ICarportService
     }
 
     @Override
+    public Shed createShedWithPlacement(int carportWidth, int shedWidth, int shedLenght)
+    {
+        ShedPlacement shedPlacement = getShedPlacement(carportWidth, shedWidth);
+        return new Shed(0,shedLenght, shedWidth, shedPlacement);
+    }
+
+    @Override
     public CarportSvgTop getCarportTopSvgView(Carport carport)
     {
         if(carport == null)
@@ -77,5 +86,17 @@ public class CarportService implements ICarportService
             throw new IllegalArgumentException("Carport mål skal være udfyldt");
         }
         return new CarportSvgSide(carport);
+    }
+
+    public ShedPlacement getShedPlacement(int carportWidth, int shedWidth)
+    {
+        int maxFullWidthShedWidth = carportWidth - (2 * SHED_SIDE_MARGIN);
+
+        if (shedWidth >= maxFullWidthShedWidth)
+        {
+            return ShedPlacement.FULL_WIDTH;
+        }
+
+        return ShedPlacement.LEFT;
     }
 }
