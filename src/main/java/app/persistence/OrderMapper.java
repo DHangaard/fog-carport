@@ -426,7 +426,7 @@ public class OrderMapper
         }
         catch (SQLException e)
         {
-            throw new DatabaseException("Fejl ved hentning af total af ordre ved status" + e.getMessage())
+            throw new DatabaseException("Fejl ved hentning af total af ordre ved status" + e.getMessage());
         }
     }
 

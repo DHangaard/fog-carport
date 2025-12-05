@@ -4,6 +4,7 @@ import app.config.ThymeleafConfig;
 import app.controllers.*;
 import app.persistence.*;
 import app.services.*;
+import app.util.BeforeHandlersUtil;
 import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinThymeleaf;
 
@@ -57,6 +58,7 @@ public class Main
         CustomerController customerController = new CustomerController(orderService, carportService);
         OrderController orderController = new OrderController(orderService, carportService);
 
+        app.before(ctx -> BeforeHandlersUtil.addBagdeCount(ctx, orderService));
         userController.addRoutes(app);
         carportController.addRoutes(app);
         sellerController.addRoutes(app);

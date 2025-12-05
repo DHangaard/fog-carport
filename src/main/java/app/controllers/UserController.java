@@ -6,6 +6,7 @@ import app.exceptions.DatabaseException;
 import app.services.IUserService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+import org.jetbrains.annotations.NotNull;
 
 public class UserController
 {
@@ -29,14 +30,6 @@ public class UserController
 
     private void showHomepage(Context ctx)
     {
-        UserDTO currentUser = ctx.sessionAttribute("currentUser");
-
-        if (currentUser != null && currentUser.role().name().equals("SALESREP"))
-        {
-            // TODO: Replace these hardcoded values with actual database queries
-            ctx.attribute("requestCount", 3);
-        }
-
         ctx.render("index");
     }
 
