@@ -280,6 +280,7 @@ footer {
 .link-card img {
     width: 120px;
     margin-bottom: 1rem;
+    transition: 0.3s ease;
 }
 
 .link-card h5 {
@@ -296,6 +297,10 @@ footer {
 .link-card .arrow {
     width: 30px;
     margin-top: 1rem;
+}
+
+.link-card .disable {
+    cursor: none;
 }
 
 /* Index content  */
