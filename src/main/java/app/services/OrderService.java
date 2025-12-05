@@ -189,6 +189,12 @@ public class OrderService implements IOrderService
     }
 
     @Override
+    public int getTotalNumberOfOrdersByStatus(OrderStatus orderStatus) throws DatabaseException
+    {
+        return orderMapper.getNumberOfOrdersByStatus(orderStatus);
+    }
+
+    @Override
     public OrderDetail getOrderDetailByCustomerId(int customerId) throws DatabaseException
     {
         return null;

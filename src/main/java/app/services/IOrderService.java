@@ -24,6 +24,7 @@ public interface IOrderService
     public boolean updateOrderCostPrice(int orderId, double newCostPrice) throws DatabaseException;
     public boolean deleteOrder(int orderId) throws DatabaseException;
     public boolean confirmAndSendOffer(Order order) throws DatabaseException;
+    public int getTotalNumberOfOrdersByStatus(OrderStatus orderStatus) throws DatabaseException;
     public OrderDetail getOrderDetailByCustomerId(int customerId) throws DatabaseException;
     public OrderDetail getOrderDetailByOrderId(int orderId) throws DatabaseException;
     public List<OrderOverviewDTO> getAllOrdersByStatus(OrderStatus orderStatus) throws DatabaseException;

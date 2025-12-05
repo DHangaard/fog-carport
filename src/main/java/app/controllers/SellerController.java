@@ -179,6 +179,7 @@ public class SellerController
             if(offerSend)
             {
                 ctx.sessionAttribute("succesMessage", "Dit tilbud er afsendt");
+                ctx.sessionAttribute("bagdeNeedsUpdate", true);
             }
             else
             {

@@ -403,6 +403,33 @@ public class OrderMapper
         }
     }
 
+    public int getNumberOfOrdersByStatus(OrderStatus orderStatus) throws DatabaseException
+    {
+        String sql = """
+                SELECT COUNT(*)
+                FROM orders o
+                WHERE o.order_status = ?
+                """;
+        try(Connection connection = connectionPool.getConnection();
+            PreparedStatement ps = connection.prepareStatement(sql))
+        {
+            ps.setString(1,orderStatus.name());
+            ResultSet rs = ps.executeQuery();
+            if(rs.next())
+            {
+                return rs.getInt("count");
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl ved hentning af total af ordre ved status" + e.getMessage());
+        }
+    }
+
     private Order buildOrderFromResultSet(ResultSet rs) throws SQLException
     {
         Double coveragePercentage = (Double) rs.getObject("coverage_percentage");
