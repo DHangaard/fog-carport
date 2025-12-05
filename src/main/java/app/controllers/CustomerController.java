@@ -4,9 +4,11 @@ import app.dto.CustomerOfferDTO;
 import app.dto.OrderOverviewDTO;
 import app.dto.UserDTO;
 import app.entities.Order;
+import app.entities.OrderDetail;
 import app.enums.OrderStatus;
 import app.exceptions.DatabaseException;
 import app.services.ICarportService;
+import app.services.IEmailService;
 import app.services.IOrderService;
 import app.services.svg.CarportSvgSide;
 import app.services.svg.CarportSvgTop;
@@ -21,11 +23,13 @@ public class CustomerController
 
     private IOrderService orderService;
     private ICarportService carportService;
+    private IEmailService emailService;
 
-    public CustomerController(IOrderService orderService, ICarportService carportService)
+    public CustomerController(IOrderService orderService, ICarportService carportService, IEmailService emailService)
     {
         this.orderService = orderService;
         this.carportService = carportService;
+        this.emailService = emailService;
     }
 
     public void addRoutes(Javalin app)
@@ -105,6 +109,7 @@ public class CustomerController
             return;
         }
         int orderId = Integer.parseInt(ctx.pathParam("id"));
+        UserDTO currentUser =  ctx.sessionAttribute("currentUser");
 
         try
         {
@@ -114,6 +119,11 @@ public class CustomerController
 
             if (isUpdated)
             {
+                if(orderStatus.equals(OrderStatus.ACCEPTED))
+                {
+                    OrderDetail orderDetail = orderService.getOrderDetailByOrderId(orderId);
+                    emailService.sendOrderConfirmation(currentUser, orderDetail);
+                }
                 ctx.sessionAttribute("successMessage", "Tilbuddet er " + acceptOrDeny);
                 ctx.redirect("/my-page");
             }
