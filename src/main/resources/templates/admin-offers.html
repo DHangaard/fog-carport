@@ -51,7 +51,7 @@
 
 
         <section class="order-section">
-            <h2>Afventer kunde accept<span class="badge" th:if="${offersToAccept != null}" th:text="${offersToAccept.size()}"></span></h2>
+            <h2>Afventer kunde accept<span class="badge-secondary" th:if="${offersToAccept != null}" th:text="${offersToAccept.size()}"></span></h2>
 
             <div th:if="${offersToAccept != null and ! offersToAccept.isEmpty()}" class="orders-table">
                 <table th:replace="~{fragments :: orderTable(${offersToAccept}, '/carport/details/view/{id}', 'offers')}"></table>
