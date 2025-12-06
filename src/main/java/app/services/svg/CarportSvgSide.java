@@ -234,8 +234,10 @@ public class CarportSvgSide
 
         final double bottomBoardWidth = FACADE_CLADDING_BOARD_WIDTH;
         final double topBoardWidth = 5.0;
+        final double carportEndOffSet = 30.0;
 
-        double facadeCladdingStartX = carport.getLength() - carport.getShed().getLength();
+        double totalShedLengthWithEndOffSet = carport.getShed().getLength() + carportEndOffSet;
+        double facadeCladdingStartX = carport.getLength() - totalShedLengthWithEndOffSet;
         double facadeCladdingEndX = POST_BACK_PLACEMENT_CM;
         double maxHeight = POST_WITH_BEAM_CUTOUT_HEIGHT_CM;
         double startY = yPositionBottom - maxHeight;
