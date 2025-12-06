@@ -1,5 +1,7 @@
 package app.util;
 
+import app.entities.Shed;
+
 public class ValidationUtil
 {
 
@@ -99,16 +101,52 @@ public class ValidationUtil
         }
     }
 
-    public static void validateCarportDimensions(int length, int width, int height)
+    public static void validateCarportDimensions(int carportWidth, int carportLength)
     {
-        if (length < 240 || length > 780)
+        if (carportWidth < 240 || carportWidth > 600)
+        {
+            throw new IllegalArgumentException("Carport bredde skal være mellem 240 og 600 cm");
+        }
+
+        if (carportLength < 240 || carportLength > 780)
         {
             throw new IllegalArgumentException("Carport længde skal være mellem 240 og 780 cm");
         }
+    }
 
-        if (width < 240 || width > 600)
+    public static void validateShedDimensions(int carportWidth, int carportLength, Shed shed, int shedSideMargin)
+    {
+        int shedSides = 2;
+        int maxAllowedShedWidth = carportWidth - (shedSides * shedSideMargin);
+
+        if (shed.getWidth() <= 0 || shed.getLength() <= 0)
         {
-            throw new IllegalArgumentException("Carport bredde skal være mellem 240 og 600 cm");
+            throw new IllegalArgumentException("Skuret skal have både bredde og længde");
+        }
+
+        if (shed.getWidth() > carportWidth)
+        {
+            throw new IllegalArgumentException("Skurets bredde må ikke være større end carportens bredde");
+        }
+
+        if (shed.getLength() > carportLength)
+        {
+            throw new IllegalArgumentException("Skurets længde må ikke være større end carportens længde");
+        }
+
+        if (shed.getWidth() > carportWidth)
+        {
+            throw new IllegalArgumentException("Skurets bredde må ikke være større end carportens bredde");
+        }
+
+        if (shed.getWidth() > maxAllowedShedWidth)
+        {
+            throw new IllegalArgumentException("Skurets bredde på " + shed.getWidth() + " cm er for stor. Den maksimale bredde for et skur er " + maxAllowedShedWidth + " cm (Carportbredde - 70 cm).");
+        }
+
+        if (shed.getLength() > carportLength)
+        {
+            throw new IllegalArgumentException("Skurets længde må ikke være større end carportens længde");
         }
     }
 }
