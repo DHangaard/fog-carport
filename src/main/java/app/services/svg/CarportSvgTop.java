@@ -155,28 +155,29 @@ private void addFrame()
 
 private void addMetalStrap()
 {
-    /*
-    double metalStrapEnd = Math.round(carport.getLength() * 0.712);
-    double xPosStart = MAX_SPACING_CM + RAFTER_WIDTH_CM;
     double ySpacing = 5;
-
-    carportInnerSvg.addLine(xPosStart, yPositionTop, metalStrapEnd, yPositionBottom, DASHARRAY_STYLE);
-    carportInnerSvg.addLine(xPosStart, yPositionTop + ySpacing, metalStrapEnd, yPositionBottom + ySpacing, DASHARRAY_STYLE);
-
-    carportInnerSvg.addLine(xPosStart, yPositionBottom, metalStrapEnd, yPositionTop, DASHARRAY_STYLE);
-    carportInnerSvg.addLine(xPosStart, yPositionBottom + ySpacing, metalStrapEnd, yPositionTop + ySpacing, DASHARRAY_STYLE);
-     */
-    double ySpacing = 5;
-    double xMetalStrapEnd = carport.getLength();
+    double xMetalStrapStart = 0;
+    double xMetalStrapEnd = 0;
     double yMetalStrapOffset = 5;
     double yMetalStrapPositionTop = yPositionTop - yMetalStrapOffset;
-    double yMetalStrapPositonBottom = yPositionBottom + yMetalStrapOffset;
+    double yMetalStrapPositionBottom = yPositionBottom + yMetalStrapOffset;
 
-    carportInnerSvg.addLine(0, yMetalStrapPositionTop, xMetalStrapEnd , yMetalStrapPositonBottom, DASHARRAY_STYLE);
-    carportInnerSvg.addLine(0, yMetalStrapPositionTop + ySpacing, xMetalStrapEnd, yMetalStrapPositonBottom + ySpacing, DASHARRAY_STYLE);
+    if(carport.getShed() == null)
+    {
+        xMetalStrapEnd = carport.getLength();
+    }
+    else
+    {
+        double shedLengthWithPostOffSet = carport.getShed().getLength() + POST_OFFSET_END_POSITION_CM;
+        xMetalStrapStart = MAX_SPACING_CM + RAFTER_WIDTH_CM;
+        xMetalStrapEnd = (carport.getLength() - shedLengthWithPostOffSet) + POST_WIDTH_CM;
+    }
 
-    carportInnerSvg.addLine(0, yMetalStrapPositonBottom, xMetalStrapEnd, yMetalStrapPositionTop, DASHARRAY_STYLE);
-    carportInnerSvg.addLine(0, yMetalStrapPositonBottom + ySpacing, xMetalStrapEnd, yMetalStrapPositionTop + ySpacing, DASHARRAY_STYLE);
+    carportInnerSvg.addLine(xMetalStrapStart, yMetalStrapPositionTop, xMetalStrapEnd , yMetalStrapPositionBottom, DASHARRAY_STYLE);
+    carportInnerSvg.addLine(xMetalStrapStart, yMetalStrapPositionTop + ySpacing, xMetalStrapEnd, yMetalStrapPositionBottom + ySpacing, DASHARRAY_STYLE);
+
+    carportInnerSvg.addLine(xMetalStrapStart, yMetalStrapPositionBottom, xMetalStrapEnd, yMetalStrapPositionTop, DASHARRAY_STYLE);
+    carportInnerSvg.addLine(xMetalStrapStart, yMetalStrapPositionBottom + ySpacing, xMetalStrapEnd, yMetalStrapPositionTop + ySpacing, DASHARRAY_STYLE);
 }
 
 private void addArrows()
