@@ -50,7 +50,7 @@
         <h1>Ordre</h1>
 
         <section class="order-section">
-            <h2>Betalte ordre<span class="badge" th:if="${paidOrders != null}" th:text="${paidOrders.size()}"></span></h2>
+            <h2>Betalte ordre<span class="badge-secondary" th:if="${paidOrders != null}" th:text="${paidOrders.size()}"></span></h2>
 
             <div th:if="${paidOrders != null and ! paidOrders.isEmpty()}" class="orders-table">
                 <table th:replace="~{fragments :: orderTable(${paidOrders}, '/carport/details/view/{id}', 'orders')}"></table>
