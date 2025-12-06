@@ -189,7 +189,8 @@ public class CarportController
             {
                 int shedWidth = Integer.parseInt(shedWidthString);
                 int shedLength = Integer.parseInt(shedLengthString);
-                shed = new Shed(0, shedLength, shedWidth, ShedPlacement.FULL_WIDTH);
+
+                shed = carportService.createShedWithPlacement(carportWidth, shedWidth, shedLength);
             }
 
             Carport carport = new Carport(0, carportLength, carportWidth, RoofType.valueOf(roofType), shed);
@@ -225,10 +226,10 @@ public class CarportController
         List<Integer> carportLengthDimensions = getDimensionFromTo(240, 780, 30);
         ctx.attribute("carportLengths", carportLengthDimensions);
 
-        List<Integer> shedWidthDimensions = getDimensionFromTo(210, 720, 30);
+        List<Integer> shedWidthDimensions = getDimensionFromTo(200, 530, 30);
         ctx.attribute("shedWidths", shedWidthDimensions);
 
-        List<Integer> shedLengthDimensions = getDimensionFromTo(150, 690, 30);
+        List<Integer> shedLengthDimensions = getDimensionFromTo(150, 720, 30);
         ctx.attribute("shedLengths", shedLengthDimensions);
 
         ctx.render("request-offer-carport");
