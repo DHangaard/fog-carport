@@ -55,7 +55,7 @@ public class Main
         UserController userController = new UserController(userService);
         CarportController carportController = new CarportController(carportService, userService, emailService, orderService);
         SellerController sellerController = new SellerController(orderService, carportService, materialService);
-        CustomerController customerController = new CustomerController(orderService, carportService);
+        CustomerController customerController = new CustomerController(orderService, carportService, emailService);
         OrderController orderController = new OrderController(orderService, carportService);
 
         app.before(ctx -> BeforeHandlersUtil.addBagdeCount(ctx, orderService));
