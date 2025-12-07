@@ -25,12 +25,11 @@ public class CarportSvgSide
     private final double RAFTER_WIDTH_CM = 4.5;
     private final double RAFTER_TOP_OFFSET_CM = 22.0;
     private final double ROOF_DROP_CM = 10.0;
-    private final double POST_START_POSITION_CM = 100.0;
+    private final int INNER_SVG_X_START = 150;
+    private final int INNER_SVG_Y_START = 50;
 
     private double yPositionBottom;
     private double yPositionTop;
-    private final int INNER_SVG_X_START = 150;
-    private final int INNER_SVG_Y_START = 50;
     double arrowLeftXStart;
     double arrowInnerLeftXStart;
     double arrowRightXStart;
@@ -67,7 +66,6 @@ public class CarportSvgSide
         carportSideSvg.addArrowDefs();
         addFrame();
         addPost();
-        //addFacadeCladding();
         addFacadeCladding();
         addRafters();
         addBeamAndWeatherBoard();
