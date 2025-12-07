@@ -155,15 +155,29 @@ private void addFrame()
 
 private void addMetalStrap()
 {
-    double metalStrapEnd = Math.round(carport.getLength() * 0.712);
-    double xPosStart = MAX_SPACING_CM + RAFTER_WIDTH_CM;
     double ySpacing = 5;
+    double xMetalStrapStart = 0;
+    double xMetalStrapEnd = 0;
+    double yMetalStrapOffset = 5;
+    double yMetalStrapPositionTop = yPositionTop - yMetalStrapOffset;
+    double yMetalStrapPositionBottom = yPositionBottom + yMetalStrapOffset;
 
-    carportInnerSvg.addLine(xPosStart, yPositionTop, metalStrapEnd, yPositionBottom, DASHARRAY_STYLE);
-    carportInnerSvg.addLine(xPosStart, yPositionTop + ySpacing, metalStrapEnd, yPositionBottom + ySpacing, DASHARRAY_STYLE);
+    if(carport.getShed() == null)
+    {
+        xMetalStrapEnd = carport.getLength();
+    }
+    else
+    {
+        double shedLengthWithPostOffSet = carport.getShed().getLength() + POST_OFFSET_END_POSITION_CM;
+        xMetalStrapStart = MAX_SPACING_CM + RAFTER_WIDTH_CM;
+        xMetalStrapEnd = (carport.getLength() - shedLengthWithPostOffSet) + POST_WIDTH_CM;
+    }
 
-    carportInnerSvg.addLine(xPosStart, yPositionBottom, metalStrapEnd, yPositionTop, DASHARRAY_STYLE);
-    carportInnerSvg.addLine(xPosStart, yPositionBottom + ySpacing, metalStrapEnd, yPositionTop + ySpacing, DASHARRAY_STYLE);
+    carportInnerSvg.addLine(xMetalStrapStart, yMetalStrapPositionTop, xMetalStrapEnd , yMetalStrapPositionBottom, DASHARRAY_STYLE);
+    carportInnerSvg.addLine(xMetalStrapStart, yMetalStrapPositionTop + ySpacing, xMetalStrapEnd, yMetalStrapPositionBottom + ySpacing, DASHARRAY_STYLE);
+
+    carportInnerSvg.addLine(xMetalStrapStart, yMetalStrapPositionBottom, xMetalStrapEnd, yMetalStrapPositionTop, DASHARRAY_STYLE);
+    carportInnerSvg.addLine(xMetalStrapStart, yMetalStrapPositionBottom + ySpacing, xMetalStrapEnd, yMetalStrapPositionTop + ySpacing, DASHARRAY_STYLE);
 }
 
 private void addArrows()

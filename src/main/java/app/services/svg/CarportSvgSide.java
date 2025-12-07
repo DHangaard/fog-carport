@@ -15,21 +15,21 @@ public class CarportSvgSide
     private final int CARPORT_TOP_HEIGHT_FRONT_CM = 230;
     private final int CARPORT_TOP_HEIGHT_REAR_CM = 220;
     private final double CARPORT_HEIGHT_OFFSET_TO_TOP_BEAM = 20;
-    private final double BEAM_HEIGHT_CM =  19.5;
+    private final double BEAM_HEIGHT_CM = 19.5;
     private final double WEATHER_BOARD_HEIGHT_CM = 15.0;
     private final double POST_WIDTH_CM = 10.0;
+    private final double FACADE_CLADDING_BOARD_WIDTH = 10.0;
     private final double POST_HEIGHT_CM = 210;
     private final double POST_WITH_BEAM_CUTOUT_HEIGHT_CM = 210.0 - BEAM_HEIGHT_CM;
     private final double SPACE_BETWEEN_WEATHERBOARD_AND_BEAM_CM = 3.0;
     private final double RAFTER_WIDTH_CM = 4.5;
     private final double RAFTER_TOP_OFFSET_CM = 22.0;
     private final double ROOF_DROP_CM = 10.0;
-    private final double POST_START_POSITION_CM = 100.0;
+    private final int INNER_SVG_X_START = 150;
+    private final int INNER_SVG_Y_START = 50;
 
     private double yPositionBottom;
     private double yPositionTop;
-    private final int INNER_SVG_X_START = 150;
-    private final int INNER_SVG_Y_START = 50;
     double arrowLeftXStart;
     double arrowInnerLeftXStart;
     double arrowRightXStart;
@@ -61,10 +61,12 @@ public class CarportSvgSide
         this.arrowRightXStart = arrowBottomXEnd * 1.04;
         this.arrowYBottomMargin = CARPORT_TOP_HEIGHT_FRONT_CM + (INNER_SVG_Y_START * 1.5);
         this.arrowYTopMargin = INNER_SVG_Y_START * 0.75;
+        this.POST_BACK_PLACEMENT_CM = carport.getLength() - 30.0;
 
         carportSideSvg.addArrowDefs();
         addFrame();
         addPost();
+        addFacadeCladding();
         addRafters();
         addBeamAndWeatherBoard();
         addArrows();
@@ -77,8 +79,8 @@ public class CarportSvgSide
         double measureLineFront = CARPORT_TOP_HEIGHT_FRONT_CM - (BEAM_HEIGHT_CM + WEATHER_BOARD_HEIGHT_CM + 10);
         double measureLineBack = CARPORT_TOP_HEIGHT_FRONT_CM - (BEAM_HEIGHT_CM + WEATHER_BOARD_HEIGHT_CM + 20);
 
-        carportInnerSvg.addLine(0,yPositionBottom,carport.getLength(), CARPORT_TOP_HEIGHT_FRONT_CM, BASE_STYLE);
-        carportInnerSvg.addLine(0,yPositionBottom, 0, measureLineFront, BASE_STYLE);
+        carportInnerSvg.addLine(0, yPositionBottom, carport.getLength(), CARPORT_TOP_HEIGHT_FRONT_CM, BASE_STYLE);
+        carportInnerSvg.addLine(0, yPositionBottom, 0, measureLineFront, BASE_STYLE);
         carportInnerSvg.addLine(carport.getLength(), yPositionBottom, carport.getLength(), measureLineBack, BASE_STYLE);
     }
 
@@ -94,7 +96,7 @@ public class CarportSvgSide
         double rafterYPoint = WEATHER_BOARD_HEIGHT_CM + SPACE_BETWEEN_WEATHERBOARD_AND_BEAM_CM + BEAM_HEIGHT_CM - RAFTER_TOP_OFFSET_CM;
         double currentXPos = 0;
 
-        for(int i = 0; i < numberOfRafters ; i++)
+        for (int i = 0; i < numberOfRafters; i++)
         {
             carportInnerSvg.addRectangle(currentXPos, rafterYPoint, rafterHeight, rafterWidth, BASE_STYLE);
             currentXPos += spacing;
@@ -104,15 +106,13 @@ public class CarportSvgSide
 
     private void addPost()
     {
-        POST_BACK_PLACEMENT_CM = carport.getLength() - 30.0;
-
         int totalNumberOfPost = PartCalculator.calculateNumberOfPostsWithOutShed(carport.getLength());
         int numberOfPostsPerRow = totalNumberOfPost / 2;
 
         carportInnerSvg.addRectangle(POST_FRONT_PLACEMENT_CM, yPositionBottom - POST_WITH_BEAM_CUTOUT_HEIGHT_CM, POST_WITH_BEAM_CUTOUT_HEIGHT_CM, POST_WIDTH_CM, BASE_STYLE);
         carportInnerSvg.addRectangle(POST_BACK_PLACEMENT_CM, yPositionBottom - POST_WITH_BEAM_CUTOUT_HEIGHT_CM, POST_WITH_BEAM_CUTOUT_HEIGHT_CM, POST_WIDTH_CM, BASE_STYLE);
 
-        if(numberOfPostsPerRow == 3)
+        if (numberOfPostsPerRow == 3)
         {
             carportInnerSvg.addRectangle(POST_CENTER_PLACEMENT_CM, yPositionBottom - POST_WITH_BEAM_CUTOUT_HEIGHT_CM, POST_WITH_BEAM_CUTOUT_HEIGHT_CM, POST_WIDTH_CM, BASE_STYLE);
         }
@@ -142,19 +142,19 @@ public class CarportSvgSide
         double innerArrowTopY = INNER_SVG_Y_START + CARPORT_HEIGHT_OFFSET_TO_TOP_BEAM;
         double rightArrowTopY = INNER_SVG_Y_START + ROOF_DROP_CM;
 
-        RafterCalculationDTO rafterCalculationDTO = PartCalculator.calculateRafters(carport.getLength(),4.5);
+        RafterCalculationDTO rafterCalculationDTO = PartCalculator.calculateRafters(carport.getLength(), 4.5);
         int numberOfSpaces = rafterCalculationDTO.numberOfRafters() - 1;
         double spacing = rafterCalculationDTO.spacing();
 
-        for(int i = 0; i < numberOfSpaces; i++)
+        for (int i = 0; i < numberOfSpaces; i++)
         {
             double x1 = INNER_SVG_X_START + (i * spacing + xStartOffSet);
             double x2 = INNER_SVG_X_START + ((i + 1) * spacing + xStartOffSet);
             double y = arrowYTopMargin;
 
             carportSideSvg.addLineWithArrows(x1, y, x2, y);
-            carportSideSvg.addLine(x1, y - tickLength/2, x1, y + tickLength/2, BASE_STYLE);
-            carportSideSvg.addLine(x2, y - tickLength/2, x2, y + tickLength/2, BASE_STYLE);
+            carportSideSvg.addLine(x1, y - tickLength / 2, x1, y + tickLength / 2, BASE_STYLE);
+            carportSideSvg.addLine(x2, y - tickLength / 2, x2, y + tickLength / 2, BASE_STYLE);
 
             double midX = (x1 + x2) / 2.0;
             double spacing_meters = spacing / 100.0;
@@ -214,13 +214,64 @@ public class CarportSvgSide
 
     private void addBeamOrWeatherBoard(double x1, double y1, double x2, double y2, double offset)
     {
-            String points = String.format("%.1f,%.1f %.1f,%.1f %.1f,%.1f %.1f,%.1f",
-                    x1, y1,             // Top left
-                    x2, y2,             // Top right
-                    x2, y2 + offset,    // Bottom right
-                    x1, y1 + offset);   // Bottom left
+        String points = String.format("%.1f,%.1f %.1f,%.1f %.1f,%.1f %.1f,%.1f",
+                x1, y1,             // Top left
+                x2, y2,             // Top right
+                x2, y2 + offset,    // Bottom right
+                x1, y1 + offset);   // Bottom left
 
-            carportInnerSvg.addPolygon(points, BASE_STYLE);
+        carportInnerSvg.addPolygon(points, BASE_STYLE);
+    }
+
+    private void addFacadeCladding()
+    {
+        if (carport.getShed() == null)
+        {
+            return;
+        }
+
+        final double bottomBoardWidth = FACADE_CLADDING_BOARD_WIDTH;
+        final double topBoardWidth = 5.0;
+        final double carportEndOffSet = 30.0;
+
+        double totalShedLengthWithEndOffSet = carport.getShed().getLength() + carportEndOffSet;
+        double facadeCladdingStartX = carport.getLength() - totalShedLengthWithEndOffSet;
+        double facadeCladdingEndX = POST_BACK_PLACEMENT_CM;
+        double maxHeight = POST_WITH_BEAM_CUTOUT_HEIGHT_CM;
+        double startY = yPositionBottom - maxHeight;
+
+        double currentXPos = facadeCladdingStartX;
+        int boardCounter = 0;
+
+        while (currentXPos < facadeCladdingEndX)
+        {
+            double boardWidthToDraw;
+
+            if (boardCounter % 2 == 0)
+            {
+                boardWidthToDraw = bottomBoardWidth;
+            }
+            else
+            {
+                boardWidthToDraw = topBoardWidth;
+            }
+
+            double remainingLength = facadeCladdingEndX - currentXPos;
+
+            if (boardWidthToDraw > remainingLength)
+            {
+                boardWidthToDraw = remainingLength;
+            }
+
+            carportInnerSvg.addRectangle(currentXPos, startY, maxHeight, boardWidthToDraw, BASE_STYLE);
+            currentXPos += boardWidthToDraw;
+            boardCounter++;
+
+            if (boardWidthToDraw <= 0)
+            {
+                break;
+            }
+        }
     }
 
     private String getInnerViewBox(int height, int length)
