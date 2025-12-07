@@ -741,7 +741,7 @@ footer {
 }
 
 .badge-secondary {
-    background-color: var(--color-text-dark);
+    background-color: var(--color-fog-blue);
     color: var(--color-text-primary);
     border-radius: var(--radius-md);
     min-width: 24px;
