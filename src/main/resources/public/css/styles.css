@@ -820,7 +820,7 @@ footer {
     padding: var(--spacing-lg);
     background-color: var(--color-body);
     border-radius: var(--radius-md);
-    border: 1px solid #ddd;
+    border: 1px solid var(--color-outline-blue);
 }
 
 .info-item{
@@ -919,6 +919,17 @@ footer {
     grid-template-columns: 1fr 1fr;
     gap: 1.5rem;
     margin: 1.5rem 0;
+}
+
+.price-overview-grid {
+    display: flex;
+    gap: var(--spacing-xl);
+    margin-top: var(--spacing-lg);
+}
+
+.price-overview-grid .price-summary-box {
+    flex: 1;
+    max-width: none;
 }
 
 .price-summary-box{
@@ -1032,14 +1043,14 @@ footer {
     margin-bottom: 20px;
     border: 1px solid var(--color-outline-blue);
     border-radius: var(--radius-sm);
-    background-color: var(--color-cards);
+    background-color: var(--color-body);
     color: var(--color-text-header)
 }
 
 .box legend {
     font-weight: bold;
     color: var(--color-text-header);
-    font-size: 2rem;
+    font-size: 1rem;
     padding: 0 10px;
 }
 

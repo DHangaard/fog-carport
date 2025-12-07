@@ -41,7 +41,7 @@
         </div>
 
         <section class="section">
-            <h2>Carport & Kunde information</h2>
+            <h2>Carport & kunde information</h2>
 
             <div class="info">
 
@@ -98,8 +98,8 @@
             </div>
 
             <div class="info">
-                <div class="info-section">
-                    <h2>Sælgerinformation</h2>
+                <div class="info-content">
+                    <h2>Sælger information - kontakt ved spørgsmål</h2>
                     <div class="info-item">
                         <strong>Navn:</strong> <span th:text="${orderDetail.seller.firstName} + ' ' + ${orderDetail.seller.lastName}"></span>
                     </div>
@@ -144,6 +144,7 @@
                     <th>Bredde</th>
                     <th>Højde</th>
                     <th>Enhed</th>
+                    <th>Stk. per enhed</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -156,6 +157,7 @@
                     <td th:text="${line.materialVariant.material.materialWidth != null ? line.materialVariant.material.materialWidth + ' cm' : '-'}"></td>
                     <td th:text="${line.materialVariant.material.materialHeight != null ? line.materialVariant.material.materialHeight + ' cm' : '-'}"></td>
                     <td th:text="${line. materialVariant.material.unit}"></td>
+                    <td th:text="${line. materialVariant.piecesPerUnit}"></td>
                 </tr>
                 </tbody>
             </table>
@@ -163,8 +165,10 @@
 
         <section class="section">
             <h2>Pris oversigt</h2>
-            <div class="price-summary-box">
+            <div class="price-overview-grid">
 
+            <div class="price-summary-box">
+             <h3>Total pris med og uden moms</h3>
                 <div class="price-row">
                     <span class="price-label">Pris uden moms:</span>
                     <div class="price-amount">
@@ -185,12 +189,8 @@
                 </div>
             </div>
 
-        </section>
-
-        <section class="section">
-            <div th:if="${session.currentUser.role.name() == 'SALESREP'}"><h2>Dækningsgrad og fortjeneste</h2></div>
-            <div th:if="${session.currentUser.role.name() == 'SALESREP'}" class="price-summary-box">
-
+                <div th:if="${session.currentUser.role.name() == 'SALESREP'}" class="price-summary-box">
+                <h3>Dækningsgrad og fortjeneste</h3>
                     <div class="price-row">
                         <span class="price-label">Kostpris:</span>
                         <div class="price-amount">
@@ -203,7 +203,7 @@
                     <div class="price-row">
                         <span class="price-label">Dækningsgrad:</span>
                         <div class="price-amount">
-                    <span class="price-display"
+                          <span class="price-display"
                           th:text="${orderDetail.pricingDetails.formattedCoveragePercentage}"></span>
                             <span class="unit">%</span>
                         </div>
@@ -217,8 +217,8 @@
                             <span class="unit">kr.</span>
                         </div>
                     </div>
-
                 </div>
+            </div>
         </section>
     </div>
 </main>
