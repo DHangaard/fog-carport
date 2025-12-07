@@ -1176,6 +1176,10 @@ footer {
     font-weight: var(--text-weight-bold);
 }
 
+.uppercase-text {
+    text-transform: uppercase;
+}
+
 .order-info-box {
     padding-left: var(--spacing-lg);
     flex-shrink: 0;

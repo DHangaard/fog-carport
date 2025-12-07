@@ -7,8 +7,8 @@ public enum OrderStatus
     ACCEPTED("Accepteret"),
     REJECTED("Afvist"),
     EXPIRED("Udløbet"),
-    PAID("BETALT"), // Intentionally capitalized
-    CANCELLED("ANNULLERET"); // Intentionally capitalized
+    PAID("Betalt"),
+    CANCELLED("Annulleret");
 
 
     private final String displayName;

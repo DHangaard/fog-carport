@@ -35,7 +35,7 @@
                 <div class="order-info-box">
                     <p class=bold-text>Ordre #<span th:text="${orderDetail.orderId}"></span></p>
                     <p>Oprettet : <span th:text="${orderDetail.orderTimeLine.relativeTime}"></span></p>
-                    <p>Status : <span class="bold-text" th:text="${orderDetail.orderStatus.displayName}"></span></p>
+                    <p>Status : <span class="bold-text uppercase-text" th:text="${orderDetail.orderStatus.displayName}"></span></p>
                 </div>
             </div>
         </div>
