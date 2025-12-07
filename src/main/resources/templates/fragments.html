@@ -109,6 +109,33 @@
     </tbody>
 </table>
 
+<!-- Search fragment -->
+
+<div th:fragment="orderSearch(pageType, actionUrl)" class="order-search">
+<h2>Søg efter forespørgsel</h2>
+
+<form method="get" th:action="@{/orders/search}">
+    <div class="search-form">
+        <select name="searchType" required>
+            <option value="">Vælg søgetype</option>
+            <option value="id" th:selected="${searchType == 'id'}">Ordre ID</option>
+            <option value="name" th:selected="${searchType == 'name'}">Kundenavn</option>
+            <option value="email" th:selected="${searchType == 'email'}">Kundeemail</option>
+        </select>
+
+        <input type="text"
+               name="searchQuery"
+               th:value="${searchQuery}"
+               placeholder="Indtast søgeord..."
+               required>
+
+        <button class="btn btn-primary" type="submit">Søg</button>
+        <a th:href="@{/pageType}" class="reset-button">Nulstil</a>
+    </div>
+</form>
+</div>
+
+
 <!-- Footer Fragment -->
 <div th:fragment="footerFragment">
     <footer>
