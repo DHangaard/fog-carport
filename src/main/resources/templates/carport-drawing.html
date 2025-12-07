@@ -2,19 +2,16 @@
 <html lang="da" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
-    <title>Fog - Holder i længden</title>
+    <title>Fog - Carport tegning</title>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link rel="stylesheet" href="/public/css/styles.css" th:href="@{/css/styles.css}"/>
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
 </head>
 <body>
 
 <main>
     <div class="carport-display">
         <div class="drawing-header">
-            <img class="carport-logo"
-                 src="/images/logo-carport.svg"
-                 alt="Fog logo"
-                 th:src="@{/images/logo-carport.svg}">
+            <img class="carport-logo" alt="Fog logo" th:src="@{/images/logo-carport.svg}">
             <div class="order-number">Ordre # <span th:text="${order.orderId}"></span></div>
         </div>
 

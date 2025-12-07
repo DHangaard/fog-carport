@@ -29,7 +29,7 @@
                    href="login.html"
                    th:href="@{/login}"
                    class="icon-link-vertical">
-                    <img src="/images/profile.svg" alt="Login" th:src="@{/images/profile.svg}">
+                    <img alt="Login" th:src="@{/images/profile.svg}">
                     <span>Fog konto</span>
                 </a>
 
@@ -41,7 +41,7 @@
                         <span class="username" th:text="${session.currentUser.email}">user@example.com</span>
 
                         <a href="my-page.html" th:href="@{/my-page}" class="icon-link-vertical">
-                            <img src="/images/profile.svg" alt="Min side" th:src="@{/images/profile.svg}">
+                            <img alt="Min side" th:src="@{/images/profile.svg}">
                             <span>Min side</span>
                         </a>
                     </div>
@@ -58,7 +58,7 @@
 
                     <form th:action="@{/logout}" method="post">
                         <button type="submit" class="icon-link-vertical logout-btn">
-                            <img src="/images/logout.svg" alt="Log ud" th:src="@{/images/logout.svg}">
+                            <img alt="Log ud" th:src="@{/images/logout.svg}">
                             <span>Log ud</span>
                         </button>
                     </form>
