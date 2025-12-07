@@ -131,7 +131,7 @@
         </section>
 
         <section class="section">
-            <h2>Stykliste & Prisberegning</h2>
+            <h2>Stykliste</h2>
 
             <table class="orders-table">
                 <thead>
@@ -161,57 +161,65 @@
             </table>
         </section>
 
-            <section class="section">
+        <section class="section">
+            <h2>Pris oversigt</h2>
+            <div class="price-summary-box">
 
-                <div class="price-summary">
-                    <div class="price-summary-box">
-                        <h3>Pris oversigt</h3>
-
-                        <div class="price-row">
-                            <label>Pris uden moms:</label>
-                            <span class="price-display"
-                                  th:text="${orderDetail.pricingDetails.formattedPriceWithoutVat}"></span>
-                            <span class="unit">kr.</span>
-                        </div>
-
-
-                        <hr class="horizontal-line">
-
-                        <div class="price-row price-total">
-                            <label><strong>Total pris:</strong></label>
-                            <span class="price-display price-highlight-green"
-                                  th:text="${orderDetail.pricingDetails.formattedTotalPrice}"></span>
-                            <span class="unit"><strong>kr.</strong></span>
-                        </div>
-
-                    </div>
-
-                    <div th:if="${session.currentUser.role.name() == 'SALESREP'}" class="price-summary-box">
-                        <h3>Dækningsgrad og fortjeneste</h3>
-
-                        <div class="price-row">
-                            <label>Kostpris:</label>
-                            <span class="price-display"
-                                  th:text="${orderDetail.pricingDetails.formattedCostPrice}"></span>
-                            <span class="unit">kr.</span>
-                        </div>
-
-                        <div class="price-row">
-                            <label>Dækningsgrad:</label>
-                            <span class="price-display"
-                                  th:text="${orderDetail.pricingDetails.formattedCoveragePercentage}"></span>
-                            <span class="unit">%</span>
-                        </div>
-
-                        <div class="price-row">
-                            <label>Fortjeneste uden moms:</label>
-                            <span class="price-display"
-                                  th:text="${orderDetail.pricingDetails.formattedProfit}"></span>
-                            <span class="unit">kr. </span>
-                        </div>
+                <div class="price-row">
+                    <span class="price-label">Pris uden moms:</span>
+                    <div class="price-amount">
+                        <span class="price-display"
+                              th:text="${orderDetail.pricingDetails.formattedPriceWithoutVat}"></span>
+                        <span class="unit">kr.</span>
                     </div>
                 </div>
-            </section>
+
+                <hr class="horizontal-line">
+                <div class="price-row">
+                    <span class="price-label">Total pris:</span>
+                    <div class="price-amount">
+                        <span class="price-display"
+                              th:text="${orderDetail.pricingDetails.formattedTotalPrice}"></span>
+                        <span class="unit">kr.</span>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <section class="section">
+            <div th:if="${session.currentUser.role.name() == 'SALESREP'}"><h2>Dækningsgrad og fortjeneste</h2></div>
+            <div th:if="${session.currentUser.role.name() == 'SALESREP'}" class="price-summary-box">
+
+                    <div class="price-row">
+                        <span class="price-label">Kostpris:</span>
+                        <div class="price-amount">
+                        <span class="price-display"
+                              th:text="${orderDetail.pricingDetails.formattedCostPrice}"></span>
+                        <span class="unit">kr.</span>
+                        </div>
+                    </div>
+
+                    <div class="price-row">
+                        <span class="price-label">Dækningsgrad:</span>
+                        <div class="price-amount">
+                    <span class="price-display"
+                          th:text="${orderDetail.pricingDetails.formattedCoveragePercentage}"></span>
+                            <span class="unit">%</span>
+                        </div>
+                    </div>
+
+                    <div class="price-row">
+                        <span class="price-label">Fortjeneste uden moms:</span>
+                        <div class="price-amount">
+                    <span class="price-display"
+                          th:text="${orderDetail.pricingDetails.formattedProfit}"></span>
+                            <span class="unit">kr.</span>
+                        </div>
+                    </div>
+
+                </div>
+        </section>
     </div>
 </main>
 
