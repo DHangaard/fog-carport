@@ -57,11 +57,12 @@ public class OrderService implements IOrderService
             try
             {
                 Integer shedId = null;
+                Shed savedShed = null;
                 Shed shed = createOrderRequest.carport().getShed();
 
                 if(shed != null)
                 {
-                    Shed savedShed = shedMapper.createShed(
+                    savedShed = shedMapper.createShed(
                             connection, shed.getLength(),
                             shed.getWidth(),
                             shed.getShedPlacement()
@@ -70,6 +71,7 @@ public class OrderService implements IOrderService
                 }
 
                 Carport carport = createOrderRequest.carport();
+
                 Carport savedCarport = carportMapper.createCarport(
                         connection,
                         carport.getLength(),
@@ -77,6 +79,11 @@ public class OrderService implements IOrderService
                         shedId,
                         carport.getRoofType()
                 );
+
+                if(savedShed != null)
+                {
+                    savedCarport.setShed(savedShed);
+                }
 
                 List<MaterialLine> bom = bomService.getBillOfMaterialByCarport(savedCarport);
                 PricingDetails pricingDetails = bomService.calculateCarportPrice(bom);
