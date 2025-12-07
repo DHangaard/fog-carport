@@ -820,7 +820,7 @@ footer {
     padding: var(--spacing-lg);
     background-color: var(--color-body);
     border-radius: var(--radius-md);
-    border: 1px solid #ddd;
+    border: 1px solid var(--color-outline-blue);
 }
 
 .info-item{
@@ -921,7 +921,58 @@ footer {
     margin: 1.5rem 0;
 }
 
-.price-row {
+.price-overview-grid {
+    display: flex;
+    gap: var(--spacing-xl);
+    margin-top: var(--spacing-lg);
+}
+
+.price-overview-grid .price-summary-box {
+    flex: 1;
+    max-width: none;
+}
+
+.price-summary-box{
+    background-color: var(--color-body);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-outline-blue);
+    padding: var(--spacing-xl);
+    margin-top: var(--spacing-lg);
+    max-width: 600px;
+}
+
+.price-summary-box .price-row{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-md) 0;
+}
+
+.price-summary-box .price-row .price-label {
+    color: var(--color-text-dark);
+    font-size: 1.125rem;
+    font-weight: 500;
+}
+
+.price-summary-box .price-row .price-amount {
+    display: flex;
+    align-items: baseline;
+    gap: var(--spacing-xs);
+}
+
+.price-summary-box .price-row .unit {
+    color: var(--color-text-dark);
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.price-summary-box .horizontal-line {
+    border: none;
+    border-top: 2px solid var(--color-outline-blue);
+    margin: 0;
+}
+
+.calculator-container .price-row {
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -992,14 +1043,14 @@ footer {
     margin-bottom: 20px;
     border: 1px solid var(--color-outline-blue);
     border-radius: var(--radius-sm);
-    background-color: var(--color-cards);
+    background-color: var(--color-body);
     color: var(--color-text-header)
 }
 
 .box legend {
     font-weight: bold;
     color: var(--color-text-header);
-    font-size: 2rem;
+    font-size: 1rem;
     padding: 0 10px;
 }
 

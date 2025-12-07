@@ -2,9 +2,9 @@
 <html lang="da" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
-    <title>Fog - Holder i længden</title>
+    <title>Fog - Ordre detaljer</title>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link rel="stylesheet" href="/public/css/styles.css" th:href="@{/css/styles.css}"/>
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
     <link rel="icon" th:href="@{/images/logo.svg}">
 </head>
 <body>
@@ -41,7 +41,7 @@
         </div>
 
         <section class="section">
-            <h2>Carport & Kunde information</h2>
+            <h2>Carport & kunde information</h2>
 
             <div class="info">
 
@@ -98,8 +98,8 @@
             </div>
 
             <div class="info">
-                <div class="info-section">
-                    <h2>Sælgerinformation</h2>
+                <div class="info-content">
+                    <h2>Sælger information - kontakt ved spørgsmål</h2>
                     <div class="info-item">
                         <strong>Navn:</strong> <span th:text="${orderDetail.seller.firstName} + ' ' + ${orderDetail.seller.lastName}"></span>
                     </div>
@@ -131,7 +131,7 @@
         </section>
 
         <section class="section">
-            <h2>Stykliste & Prisberegning</h2>
+            <h2>Stykliste</h2>
 
             <table class="orders-table">
                 <thead>
@@ -144,6 +144,7 @@
                     <th>Bredde</th>
                     <th>Højde</th>
                     <th>Enhed</th>
+                    <th>Stk. per enhed</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -156,67 +157,72 @@
                     <td th:text="${line.materialVariant.material.materialWidth != null ? line.materialVariant.material.materialWidth + ' cm' : '-'}"></td>
                     <td th:text="${line.materialVariant.material.materialHeight != null ? line.materialVariant.material.materialHeight + ' cm' : '-'}"></td>
                     <td th:text="${line. materialVariant.material.unit}"></td>
+                    <td th:text="${line. materialVariant.piecesPerUnit}"></td>
                 </tr>
                 </tbody>
             </table>
         </section>
 
-            <section class="section">
+        <section class="section">
+            <h2>Pris oversigt</h2>
+            <div class="price-overview-grid">
 
-                <div class="price-summary">
-                    <div class="price-summary-box">
-                        <h3>Pris oversigt</h3>
+            <div class="price-summary-box">
+             <h3>Total pris med og uden moms</h3>
+                <div class="price-row">
+                    <span class="price-label">Pris uden moms:</span>
+                    <div class="price-amount">
+                        <span class="price-display"
+                              th:text="${orderDetail.pricingDetails.formattedPriceWithoutVat}"></span>
+                        <span class="unit">kr.</span>
+                    </div>
+                </div>
 
-                        <div class="price-row">
-                            <label>Pris uden moms:</label>
-                            <span class="price-display"
-                                  th:text="${orderDetail.pricingDetails.formattedPriceWithoutVat}"></span>
-                            <span class="unit">kr.</span>
+                <hr class="horizontal-line">
+                <div class="price-row">
+                    <span class="price-label">Total pris:</span>
+                    <div class="price-amount">
+                        <span class="price-display"
+                              th:text="${orderDetail.pricingDetails.formattedTotalPrice}"></span>
+                        <span class="unit">kr.</span>
+                    </div>
+                </div>
+            </div>
+
+                <div th:if="${session.currentUser.role.name() == 'SALESREP'}" class="price-summary-box">
+                <h3>Dækningsgrad og fortjeneste</h3>
+                    <div class="price-row">
+                        <span class="price-label">Kostpris:</span>
+                        <div class="price-amount">
+                        <span class="price-display"
+                              th:text="${orderDetail.pricingDetails.formattedCostPrice}"></span>
+                        <span class="unit">kr.</span>
                         </div>
-
-
-                        <hr class="horizontal-line">
-
-                        <div class="price-row price-total">
-                            <label><strong>Total pris:</strong></label>
-                            <span class="price-display price-highlight-green"
-                                  th:text="${orderDetail.pricingDetails.formattedTotalPrice}"></span>
-                            <span class="unit"><strong>kr.</strong></span>
-                        </div>
-
                     </div>
 
-                    <div th:if="${session.currentUser.role.name() == 'SALESREP'}" class="price-summary-box">
-                        <h3>Dækningsgrad og fortjeneste</h3>
-
-                        <div class="price-row">
-                            <label>Kostpris:</label>
-                            <span class="price-display"
-                                  th:text="${orderDetail.pricingDetails.formattedCostPrice}"></span>
-                            <span class="unit">kr.</span>
-                        </div>
-
-                        <div class="price-row">
-                            <label>Dækningsgrad:</label>
-                            <span class="price-display"
-                                  th:text="${orderDetail.pricingDetails.formattedCoveragePercentage}"></span>
+                    <div class="price-row">
+                        <span class="price-label">Dækningsgrad:</span>
+                        <div class="price-amount">
+                          <span class="price-display"
+                          th:text="${orderDetail.pricingDetails.formattedCoveragePercentage}"></span>
                             <span class="unit">%</span>
                         </div>
+                    </div>
 
-                        <div class="price-row">
-                            <label>Fortjeneste uden moms:</label>
-                            <span class="price-display"
-                                  th:text="${orderDetail.pricingDetails.formattedProfit}"></span>
-                            <span class="unit">kr. </span>
+                    <div class="price-row">
+                        <span class="price-label">Fortjeneste uden moms:</span>
+                        <div class="price-amount">
+                    <span class="price-display"
+                          th:text="${orderDetail.pricingDetails.formattedProfit}"></span>
+                            <span class="unit">kr.</span>
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
+        </section>
     </div>
 </main>
 
-
 <div th:replace="~{fragments :: footerFragment}"></div>
-<script th:src="@{/javascript/price-calculator.js}"></script>
 </body>
 </html>

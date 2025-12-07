@@ -2,9 +2,9 @@
 <html lang="da" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
-    <title>Fog - Holder i længden</title>
+    <title>Fog - Forespørgsel detaljer</title>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link rel="stylesheet" href="/public/css/styles.css" th:href="@{/css/styles.css}"/>
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
     <link rel="icon" th:href="@{/images/logo.svg}">
 </head>
 <body>
@@ -117,6 +117,7 @@
                     <th>Bredde</th>
                     <th>Højde</th>
                     <th>Enhed</th>
+                    <th>Stk. per enhed</th>
                     <th>Handling</th>
                 </tr>
                 </thead>
@@ -138,6 +139,7 @@
                     <td th:text="${line.materialVariant.material.materialWidth != null ? line.materialVariant.material.materialWidth + ' cm' : '-'}"></td>
                     <td th:text="${line.materialVariant.material.materialHeight != null ? line.materialVariant.material.materialHeight + ' cm' : '-'}"></td>
                     <td th:text="${line. materialVariant.material.unit}"></td>
+                    <td th:text="${line. materialVariant.piecesPerUnit}"></td>
                     <td>
                         <form th:action="@{/requests/{id}/delete-bom-line(id=${orderDetail.orderId})}" method="post">
                             <input type="hidden" name="materialLineId" th:value="${line.materialLineId}">
