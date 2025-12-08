@@ -62,13 +62,45 @@ public class MaterialService implements IMaterialService
     @Override
     public boolean deleteMaterialVariant(int materialVariantId) throws DatabaseException
     {
-        return false;
+        return materialVariantMapper.deleteMaterialVariant(materialVariantId);
     }
 
     @Override
     public boolean updateMaterialVariant(MaterialVariant variant) throws DatabaseException
     {
-        return false;
+        boolean isUpdated = false;
+
+        try (Connection connection = connectionPool.getConnection())
+        {
+            connection.setAutoCommit(false);
+
+            try
+            {
+                isUpdated = materialMapper.updateMaterial(
+                        connection,
+                        variant.getMaterial()
+                );
+
+                isUpdated = materialVariantMapper.updateMaterialVariant(
+                        connection,
+                        variant
+                );
+
+                connection.commit();
+                return isUpdated;
+            }
+            catch (DatabaseException e)
+            {
+                connection.rollback();
+
+                throw new DatabaseException("Fejl ved opdatering af materiale" + e.getMessage());
+            }
+
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl ved opdatering af materiale" + e.getMessage());
+        }
     }
 
     @Override

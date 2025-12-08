@@ -63,6 +63,46 @@ public class MaterialController
     private void handleUpdateMaterial(Context ctx)
     {
         if (!userIsAdmin(ctx)) return;
+
+        int materialVariantId = Integer.parseInt(ctx.pathParam("id"));
+
+        try
+        {
+            MaterialVariant oldMaterialVariant = materialService.getMaterialVariantById(materialVariantId);
+
+            MaterialVariant updatedMaterialVariant = buildVariantFromForm(ctx);
+
+            updatedMaterialVariant.setMaterialVariantId(oldMaterialVariant.getMaterialVariantId());
+            updatedMaterialVariant.setMaterialId(oldMaterialVariant.getMaterialId());
+
+            Material updatedMaterial = updatedMaterialVariant.getMaterial();
+
+            updatedMaterial.setMaterialId(oldMaterialVariant.getMaterialId());
+            updatedMaterialVariant.setMaterial(updatedMaterial);
+
+            boolean isUpdated = materialService.updateMaterialVariant(updatedMaterialVariant);
+
+            if(isUpdated)
+            {
+                ctx.sessionAttribute("successMessage", "Du har opdateret material varianten med id: " + updatedMaterialVariant.getMaterialVariantId());
+            }
+            else
+            {
+                ctx.sessionAttribute("errorMessage", "Noget gik galt ved opdatering af materiale varianten med id: " + updatedMaterialVariant.getMaterialVariantId());
+            }
+
+            ctx.redirect("/materials");
+        }
+        catch (DatabaseException e)
+        {
+            ctx.sessionAttribute("errorMessage", e.getMessage());
+            ctx.redirect("/materials/" + materialVariantId + "/update");
+        }
+        catch (IllegalArgumentException e)
+        {
+            ctx.sessionAttribute("errorMessage", e.getMessage());
+            ctx.redirect("/materials/" + materialVariantId + "/update");
+        }
     }
 
     private void handleCreateMaterial(Context ctx)
@@ -75,7 +115,7 @@ public class MaterialController
             MaterialVariant newMaterialVariant = materialService.createMaterialVariant(materialVariant);
             if(newMaterialVariant != null)
             {
-                ctx.sessionAttribute("successMessage", "Du har oprettet et nyt materiale med variant id: " + newMaterialVariant.getMaterialVariantId());
+                ctx.sessionAttribute("successMessage", "Du har oprettet et nyt materiale med id: " + newMaterialVariant.getMaterial().getMaterialId());
             }
             else
             {
