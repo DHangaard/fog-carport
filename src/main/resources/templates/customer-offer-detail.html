@@ -33,11 +33,11 @@
                 </div>
                 <div class="order-info-box">
                     <p>Kundenummer : <span th:text="${offer.customer.userId}"></span></p>
-                    <p>Tilbud #<span class="bold-text" th:text="${offer.customer.userId}"></span></p>
+                    <p>Tilbud #<span class="bold-text" th:text="${offer.orderId}"></span></p>
                     <p>Oprettet : <span th:text="${offer.orderTimeLine.createdAtFormatted}"></span></p>
                     <p>Udløber : <span th:text="${offer.orderTimeLine.expirationDateFormatted}"></span></p>
                     <p>Status : <span class="bold-text uppercase-text" th:text="${offer.orderStatus.displayName}"></span></p>
-                    <p>Totalpris : <span class="price-display" th:text="${offer.totalPrice} + ',-'"></span></p>
+                    <p>Totalpris : <span class="price-display" th:text="${formattedTotalPrice} + ',-'"></span></p>
                 </div>
             </div>
         </div>

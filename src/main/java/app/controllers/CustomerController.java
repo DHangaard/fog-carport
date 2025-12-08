@@ -12,6 +12,7 @@ import app.services.IEmailService;
 import app.services.IOrderService;
 import app.services.svg.CarportSvgSide;
 import app.services.svg.CarportSvgTop;
+import app.util.PriceFormatUtil;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 
@@ -89,9 +90,11 @@ public class CustomerController
             CustomerOfferDTO offer = orderService.getCustomerOfferByOrderId(orderId);
             CarportSvgTop carportSvgTop = carportService.getCarportTopSvgView(offer.carport());
             CarportSvgSide carportSvgSide = carportService.getCarportSideSvgView(offer.carport());
+
             ctx.attribute("carportSvgTop", carportSvgTop);
             ctx.attribute("carportSvgSide", carportSvgSide);
             ctx.attribute("offer", offer);
+            ctx.attribute("formattedTotalPrice", PriceFormatUtil.getFormattedPrice(offer.totalPrice()));
 
             ctx.render("customer-offer-detail.html");
         }
