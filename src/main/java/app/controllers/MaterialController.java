@@ -111,11 +111,10 @@ public class MaterialController
         {
             MaterialVariant materialVariant = buildVariantFromForm(ctx);
             MaterialVariant newMaterialVariant = materialService.createMaterialVariant(materialVariant);
-            System.out.println(newMaterialVariant);
 
             if(newMaterialVariant != null)
             {
-                ctx.sessionAttribute("successMessage", "Du har oprettet et nyt materiale med id: " + newMaterialVariant.getMaterial().getMaterialId());
+                ctx.sessionAttribute("successMessage", "Du har oprettet et nyt materiale variant med id: " + newMaterialVariant.getMaterialVariantId());
             }
             else
             {
