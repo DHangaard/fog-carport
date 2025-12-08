@@ -36,7 +36,7 @@
                     <p>Kundenummer : <span th:text="${orderDetail.customer.userId}"></span></p>
                     <p>Ordre #<span class="bold-text" th:text="${orderDetail.orderId}"></span></p>
                     <p>Oprettet : <span th:text="${orderDetail.orderTimeLine.createdAtFormatted}"></span></p>
-                    <p>Status : <span class="bold-text" th:text="${orderDetail.orderStatus.displayName}"></span></p>
+                    <p>Status : <span class="bold-text uppercase-text" th:text="${orderDetail.orderStatus.displayName}"></span></p>
                 </div>
             </div>
         </div>
