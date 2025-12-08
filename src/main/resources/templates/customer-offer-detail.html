@@ -22,11 +22,24 @@
             <p th:text="${errorMessage}"></p>
         </div>
         <div class="hero-content">
-            <h1>Tilbud #<span th:text="${offer.orderId}"></span></h1>
-            <p>Oprettet : <span th:text="${offer.orderTimeLine.createdAtFormatted}"></span></p>
-            <p>Udløber : <span th:text="${offer.orderTimeLine.expirationDateFormatted}"></span></p>
-            <p>Status : <span th:text="${offer.orderStatus.displayName}"></span></p>
-            <p>Totalpris : <span class="price-display" th:text="${offer.totalPrice} + ',-'"></span></p>
+            <div class="hero-p-and-order-info">
+                <div th:if="${session.currentUser.role.name() != 'SALESREP'}">
+                    <p class="bold-text">Kære <span th:text="${offer.customer.firstName}">NAVN</span>,</p>
+                    <p>Tak fordi du har valgt at indhente et tilbud hos Fog.
+                        Vi sætter pris på din tillid til vores kvalitetsløsninger og arbejde “med omtanke”.<br>
+                        Har du behov for opsætning, kan en entreprenør rekvireres gennem din sælger.
+                        Spørgsmål til tilbuddet kan rettes direkte til din sælger, hvis kontaktoplysninger fremgår herunder.
+                    </p>
+                </div>
+                <div class="order-info-box">
+                    <p>Kundenummer : <span th:text="${offer.customer.userId}"></span></p>
+                    <p>Tilbud #<span class="bold-text" th:text="${offer.customer.userId}"></span></p>
+                    <p>Oprettet : <span th:text="${offer.orderTimeLine.createdAtFormatted}"></span></p>
+                    <p>Udløber : <span th:text="${offer.orderTimeLine.expirationDateFormatted}"></span></p>
+                    <p>Status : <span class="bold-text uppercase-text" th:text="${offer.orderStatus.displayName}"></span></p>
+                    <p>Totalpris : <span class="price-display" th:text="${offer.totalPrice} + ',-'"></span></p>
+                </div>
+            </div>
         </div>
 
         <section class="section">
