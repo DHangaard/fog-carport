@@ -58,6 +58,7 @@ public class Main
         SellerController sellerController = new SellerController(orderService, carportService, materialService);
         CustomerController customerController = new CustomerController(orderService, carportService, emailService);
         OrderController orderController = new OrderController(orderService, carportService);
+        MaterialController materialController = new MaterialController(materialService);
 
         app.before(ctx -> BeforeHandlersUtil.addBagdeCount(ctx, orderService));
         userController.addRoutes(app);
