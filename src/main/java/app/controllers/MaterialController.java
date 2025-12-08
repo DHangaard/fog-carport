@@ -29,7 +29,7 @@ public class MaterialController
         app.get("/materials/{id}/update-material", ctx -> showUpdateMaterialPage(ctx));
         app.get("/materials/create", ctx -> showCreateMaterialPage(ctx));
 
-        app.post("/materials/create", ctx -> handleCreateMaterial(ctx));
+        app.post("/materials/create/material", ctx -> handleCreateMaterial(ctx));
         app.post("/materials/{id}/update", ctx -> handleUpdateMaterial(ctx));
         app.post("/materials/{id}/delete-material", ctx -> handleDeleteMaterial(ctx));
     }
@@ -68,6 +68,32 @@ public class MaterialController
     private void handleCreateMaterial(Context ctx)
     {
         if (!userIsAdmin(ctx)) return;
+
+        try
+        {
+            MaterialVariant materialVariant = buildVariantFromForm(ctx);
+            MaterialVariant newMaterialVariant = materialService.createMaterialVariant(materialVariant);
+            if(newMaterialVariant != null)
+            {
+                ctx.sessionAttribute("successMessage", "Du har oprettet et nyt materiale med variant id: " + newMaterialVariant.getMaterialVariantId());
+            }
+            else
+            {
+                ctx.sessionAttribute("errorMessage", "Noget gik galt ved oprettelse af nyt materiale");
+            }
+
+            ctx.redirect("/materials");
+        }
+        catch (DatabaseException e)
+        {
+            ctx.sessionAttribute("errorMessage", e.getMessage());
+            ctx.redirect("/materials/create");
+        }
+        catch (IllegalArgumentException e)
+        {
+            ctx.sessionAttribute("errorMessage", e.getMessage());
+            ctx.redirect("/materials/create");
+        }
     }
 
     private void showCreateMaterialPage(Context ctx)
@@ -145,10 +171,10 @@ public class MaterialController
         ValidationUtil.validateMaterialValue(usage, "Hjælpe tekst");
         ValidationUtil.validateMaterialValue(unit, "Enhed");
 
-        int width = parseIntOrThrow(ctx.formParam("width"), "Bredde");
-        int height = parseIntOrThrow(ctx.formParam("height"), "Højde");
-        int length = parseIntOrThrow(ctx.formParam("length"), "Længde");
-        int piecesPerUnit = parseIntOrThrow(ctx.formParam("piecesPerUnit"), "Antal per enhed");
+        Integer width = parseOptionalIntWithValidation(ctx.formParam("width"), "Bredde");
+        Integer height = parseOptionalIntWithValidation(ctx.formParam("height"), "Højde");
+        Integer length = parseOptionalIntWithValidation(ctx.formParam("length"), "Længde");
+        Integer piecesPerUnit = parseOptionalIntWithValidation(ctx.formParam("piecesPerUnit"), "Antal per enhed");
         double unitPrice = parseDoubleOrThrow(ctx.formParam("unitPrice"), "Pris");
 
         MaterialCategory category = MaterialCategory.valueOf(categoryStr);
@@ -170,24 +196,30 @@ public class MaterialController
                 0,
                 length,
                 unitPrice,
-                piecesPerUnit
+                piecesPerUnit,
+                material
         );
     }
 
-    private int parseIntOrThrow(String value, String fieldName)
+    private Integer parseOptionalIntWithValidation(String value, String fieldName)
     {
+        if (value == null || value.isBlank())
+        {
+            return null;
+        }
+
         try
         {
             return Integer.parseInt(value);
         }
         catch (NumberFormatException e)
         {
-            throw new IllegalArgumentException(fieldName + " skal være et tal.");
+            throw new IllegalArgumentException(fieldName + " skal være et heltal.");
         }
     }
 
-    private double parseDoubleOrThrow(String value, String fieldName)
-    {
+    private double parseDoubleOrThrow(String value, String fieldName) {
+
         try
         {
             return Double.parseDouble(value);

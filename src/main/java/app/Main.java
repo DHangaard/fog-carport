@@ -44,13 +44,14 @@ public class Main
         CarportMapper carportMapper = new CarportMapper(connectionPool);
         MaterialVariantMapper materialVariantMapper = new MaterialVariantMapper(connectionPool);
         MaterialLineMapper materialLineMapper = new MaterialLineMapper(connectionPool);
+        MaterialMapper materialMapper = new MaterialMapper(connectionPool);
         OrderMapper orderMapper = new OrderMapper(connectionPool);
 
         IBomService bomService = new BomService(materialVariantMapper);
         IUserService userService = new UserService(userMapper, zipCodeMapper);
         ICarportService carportService = new CarportService(carportMapper);
         IEmailService emailService = new SendGridEmailService();
-        IMaterialService materialService = new MaterialService(materialLineMapper, materialVariantMapper);
+        IMaterialService materialService = new MaterialService(materialLineMapper, materialVariantMapper, materialMapper, connectionPool);
         IOrderService orderService = new OrderService(userMapper, materialLineMapper, shedMapper, carportMapper, orderMapper, bomService, emailService, connectionPool);
 
         UserController userController = new UserController(userService);

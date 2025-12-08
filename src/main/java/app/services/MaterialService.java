@@ -1,13 +1,17 @@
 package app.services;
 
-import app.entities.MaterialLine;
-import app.entities.MaterialVariant;
+import app.entities.*;
 import app.enums.MaterialCategory;
 import app.enums.MaterialType;
 import app.exceptions.DatabaseException;
+import app.exceptions.MaterialNotFoundException;
+import app.persistence.ConnectionPool;
 import app.persistence.MaterialLineMapper;
+import app.persistence.MaterialMapper;
 import app.persistence.MaterialVariantMapper;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,11 +19,15 @@ public class MaterialService implements IMaterialService
 {
     private MaterialLineMapper materialLineMapper;
     private MaterialVariantMapper materialVariantMapper;
+    private MaterialMapper materialMapper;
+    private ConnectionPool connectionPool;
 
-    public MaterialService(MaterialLineMapper materialLineMapper, MaterialVariantMapper materialVariantMapper)
+    public MaterialService(MaterialLineMapper materialLineMapper, MaterialVariantMapper materialVariantMapper, MaterialMapper materialMapper, ConnectionPool connectionPool)
     {
         this.materialLineMapper = materialLineMapper;
         this.materialVariantMapper = materialVariantMapper;
+        this.materialMapper = materialMapper;
+        this.connectionPool = connectionPool;
     }
 
     @Override
@@ -66,7 +74,46 @@ public class MaterialService implements IMaterialService
     @Override
     public MaterialVariant createMaterialVariant(MaterialVariant variant) throws DatabaseException
     {
-        return null;
+        try (Connection connection = connectionPool.getConnection())
+        {
+            connection.setAutoCommit(false);
+
+            try
+            {
+                Material newMaterial = materialMapper.createMaterial(
+                        connection,
+                        variant.getMaterial().getName(),
+                        variant.getMaterial().getCategory(),
+                        variant.getMaterial().getType(),
+                        variant.getMaterial().getMaterialWidth(),
+                        variant.getMaterial().getMaterialHeight(),
+                        variant.getMaterial().getUnit(),
+                        variant.getMaterial().getUsage()
+                );
+
+                MaterialVariant materialVariant = materialVariantMapper.createMaterialVariant(
+                        connection,
+                        newMaterial.getMaterialId(),
+                        variant.getVariantLength(),
+                        variant.getUnitPrice(),
+                        variant.getPiecesPerUnit()
+                );
+
+                connection.commit();
+                return materialVariant;
+            }
+            catch (DatabaseException e)
+            {
+                connection.rollback();
+
+                throw new DatabaseException("Fejl ved oprettelse af nyt materiale" + e.getMessage());
+            }
+
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl ved oprettelse af nyt materiale" + e.getMessage());
+        }
     }
 
     @Override
