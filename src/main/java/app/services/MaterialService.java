@@ -6,16 +6,19 @@ import app.enums.MaterialCategory;
 import app.enums.MaterialType;
 import app.exceptions.DatabaseException;
 import app.persistence.MaterialLineMapper;
+import app.persistence.MaterialVariantMapper;
 
 import java.util.List;
 
 public class MaterialService implements IMaterialService
 {
     private MaterialLineMapper materialLineMapper;
+    private MaterialVariantMapper materialVariantMapper;
 
-    public MaterialService(MaterialLineMapper materialLineMapper)
+    public MaterialService(MaterialLineMapper materialLineMapper, MaterialVariantMapper materialVariantMapper)
     {
         this.materialLineMapper = materialLineMapper;
+        this.materialVariantMapper = materialVariantMapper;
     }
 
     @Override
@@ -63,6 +66,36 @@ public class MaterialService implements IMaterialService
     public MaterialVariant createMaterialVariant(MaterialVariant variant) throws DatabaseException
     {
         return null;
+    }
+
+    @Override
+    public List<MaterialVariant> searchMaterials(String searchType, String query) throws DatabaseException
+    {
+        if(searchType == null || searchType.isEmpty() || query == null || query.isEmpty())
+        {
+            throw new IllegalArgumentException("Dit søge input mangler en type eller søgning prøv igen");
+        }
+
+        return switch (searchType.toLowerCase())
+        {
+            case "id" -> materialVariantMapper.searchById(parseQuery(query));
+            case "name" -> materialVariantMapper.searchByName(query);
+            case "category" -> materialVariantMapper.searchByCategory(query.toUpperCase());
+            case "type" -> materialVariantMapper.searchByType(query.toUpperCase());
+            default -> List.of();
+        };
+    }
+
+    private int parseQuery(String query)
+    {
+        try
+        {
+            return Integer.parseInt(query);
+        }
+        catch (NumberFormatException e)
+        {
+            throw new IllegalArgumentException("Kun hel tal i søgning efter id");
+        }
     }
 
     public List<MaterialVariant> getMaterialVariantsByType(MaterialType materialType) throws DatabaseException

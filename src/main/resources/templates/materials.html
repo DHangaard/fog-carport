@@ -21,47 +21,42 @@
     </section>
 
     <section class="section">
-        <a th:href="@{/materials/create}" class="btn btn-secondary">Nulstil</a>
-    <div class="order-search">
         <h2>Søg efter materialer</h2>
 
-        <form method="get" th:action="@{/materials/search}">
-            <label>Søg efter:</label>
-            <select name="searchType">
-                <option value="name">Navn</option>
-                <option value="id">ID</option>
-                <option value="category">Kategori</option>
-                <option value="type">Type</option>
-            </select>
+        <form method="get" th:action="@{/materials}">
+            <div class="search-form">
+                <label for="searchType">Søg i:</label>
+                <select name="searchType" id="searchType" required>
+                    <option value="">-- Vælg søgefelt --</option>
+                    <option value="id" th:selected="${searchType == 'id'}">ID</option>
+                    <option value="name" th:selected="${searchType == 'name'}">Navn</option>
+                    <option value="category" th:selected="${searchType == 'category'}">Kategori</option>
+                    <option value="type" th:selected="${searchType == 'type'}">Type</option>
+                </select>
 
-            <label for="text">Søgeord:</label>
-            <input type="text" id="text" name="query">
+                <label for="query">Søgeord:</label>
+                <input type="text"
+                       id="query"
+                       name="query"
+                       th:value="${query}"
+                       placeholder="Indtast søgeord..."
+                       required>
 
-            <label>Kategori:</label>
-            <select name="category">
-                <option value="">-- Vælg kategori --</option>
-                <option th:each="category : ${categories}"
-                        th:value="${category}"
-                        th:text="${category}">
-                </option>
-            </select>
-
-            <label>Type:</label>
-            <select name="type">
-                <option value="">-- Vælg type --</option>
-                <option th:each="category : ${types}"
-                        th:value="${category}"
-                        th:text="${category}">
-                </option>
-            </select>
-
-            <button type="submit">Søg</button>
+                <button class="btn btn-primary" type="submit">Søg</button>
+                <a th:href="@{/materials}" class="btn btn-secondary">Nulstil</a>
+            </div>
         </form>
-    </div>
 
+        <p class="help-text">
+            <strong>Tip:</strong> Du kan søge efter:
+            <br>* <strong>ID:</strong> fx "123"
+            <br>* <strong>Navn:</strong> fx "Stolpe", "Spær", "Skrue"
+            <br>* <strong>Kategori:</strong> fx "Træ", "Skrue"
+            <br>* <strong>Type:</strong> fx "Post", "Rafter", "Fastener"
+        </p>
     </section>
 
-    <section class="section">
+    <section class="order-section">
         <h2>Søge resultat</h2>
 
         <table class="orders-table">
@@ -104,6 +99,8 @@
             </tr>
             </tbody>
         </table>
+
+        <p th:if="${variants == null or variants.isEmpty()}" class="no-results">Ingen søge resultat fundet</p>
     </section>
 </main>
 

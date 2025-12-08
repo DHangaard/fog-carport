@@ -17,7 +17,7 @@ public interface IMaterialService
     public boolean deleteMaterialVariant(int materialVariantId) throws DatabaseException;
     public boolean updateMaterialVariant(MaterialVariant variant) throws DatabaseException;
     public MaterialVariant createMaterialVariant(MaterialVariant variant) throws DatabaseException;
-    public List<MaterialVariant> getMaterialVariantsByType(MaterialType materialType) throws DatabaseException;
+    public List<MaterialVariant> searchMaterials(String searchType, String query) throws DatabaseException;
     public List<MaterialVariant> getMaterialVariantsByName(String name) throws DatabaseException;
     public List<MaterialVariant> getMaterialVariantsById(int materialVariantId) throws DatabaseException;
     public List<MaterialVariant> getMaterialVariantsByCategory(MaterialCategory category) throws DatabaseException;

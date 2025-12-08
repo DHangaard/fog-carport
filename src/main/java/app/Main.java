@@ -50,7 +50,7 @@ public class Main
         IUserService userService = new UserService(userMapper, zipCodeMapper);
         ICarportService carportService = new CarportService(carportMapper);
         IEmailService emailService = new SendGridEmailService();
-        IMaterialService materialService = new MaterialService(materialLineMapper);
+        IMaterialService materialService = new MaterialService(materialLineMapper, materialVariantMapper);
         IOrderService orderService = new OrderService(userMapper, materialLineMapper, shedMapper, carportMapper, orderMapper, bomService, emailService, connectionPool);
 
         UserController userController = new UserController(userService);
@@ -66,5 +66,6 @@ public class Main
         sellerController.addRoutes(app);
         customerController.addRoutes(app);
         orderController.addRoutes(app);
+        materialController.addRoutes(app);
     }
 }
