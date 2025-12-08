@@ -10,6 +10,7 @@ import app.services.ICarportService;
 import app.services.IOrderService;
 import app.services.svg.CarportSvgSide;
 import app.services.svg.CarportSvgTop;
+import app.util.PriceFormatUtil;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 
@@ -39,7 +40,10 @@ public class OrderController
 
     private void deleteOrder(Context ctx)
     {
-        if(!userIsAdmin(ctx)){return;}
+        if (!userIsAdmin(ctx))
+        {
+            return;
+        }
 
         int orderId = Integer.parseInt(ctx.pathParam("id"));
         String pageType = ctx.formParam("pageType");
@@ -48,7 +52,7 @@ public class OrderController
         {
             boolean isDeleted = orderService.deleteOrder(orderId);
 
-            if(isDeleted)
+            if (isDeleted)
             {
                 ctx.sessionAttribute("successMessage", "Ordren blev slettet");
             }
@@ -83,6 +87,22 @@ public class OrderController
             ctx.attribute("carportSvgTop", carportSvgTop);
             ctx.attribute("carportSvgSide", carportSvgSide);
 
+            ctx.attribute("formattedPriceWithoutVat", PriceFormatUtil
+                    .getFormattedPrice(orderDetail.getPricingDetails().getPriceWithoutVat()));
+
+            ctx.attribute("formattedTotalPrice", PriceFormatUtil
+                    .getFormattedPrice(orderDetail.getPricingDetails().getTotalPrice()));
+
+            ctx.attribute("formattedCostPrice", PriceFormatUtil
+                    .getFormattedPrice(orderDetail.getPricingDetails().getCostPrice()));
+
+            ctx.attribute("formattedCoveragePercentage", PriceFormatUtil
+                    .getFormattedCoveragePercentage(orderDetail.getPricingDetails().getCoveragePercentage()));
+
+            ctx.attribute("formattedProfit", PriceFormatUtil
+                    .getFormattedProfit(orderDetail.getPricingDetails().getPriceWithoutVat(),
+                            orderDetail.getPricingDetails().getCostPrice()));
+
             displayMessages(ctx);
             ctx.render("order-detail");
         }
@@ -96,7 +116,10 @@ public class OrderController
 
     private void showOrderOverview(Context ctx)
     {
-        if(!userIsAdmin(ctx)){return;}
+        if (!userIsAdmin(ctx))
+        {
+            return;
+        }
 
         try
         {
@@ -121,7 +144,7 @@ public class OrderController
 
     private void showOfferOverview(Context ctx)
     {
-        if(!userIsAdmin(ctx)) return;
+        if (!userIsAdmin(ctx)) return;
 
         try
         {
@@ -149,7 +172,7 @@ public class OrderController
     {
         UserDTO userDTO = ctx.sessionAttribute("currentUser");
 
-        if(userDTO == null)
+        if (userDTO == null)
         {
             ctx.sessionAttribute("errorMessage", "Du skal logge ind for at tilgå denne side");
             ctx.redirect("/login");
@@ -182,7 +205,7 @@ public class OrderController
         String errorMessage = ctx.sessionAttribute("errorMessage");
         String successMessage = ctx.sessionAttribute("successMessage");
 
-        ctx. attribute("errorMessage", errorMessage);
+        ctx.attribute("errorMessage", errorMessage);
         ctx.attribute("successMessage", successMessage);
 
         ctx.sessionAttribute("errorMessage", null);
