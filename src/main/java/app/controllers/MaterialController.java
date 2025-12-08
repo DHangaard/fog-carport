@@ -71,13 +71,11 @@ public class MaterialController
             MaterialVariant oldMaterialVariant = materialService.getMaterialVariantById(materialVariantId);
 
             MaterialVariant updatedMaterialVariant = buildVariantFromForm(ctx);
+            Material updatedMaterial = updatedMaterialVariant.getMaterial();
+            updatedMaterial.setMaterialId(oldMaterialVariant.getMaterialId());
 
             updatedMaterialVariant.setMaterialVariantId(oldMaterialVariant.getMaterialVariantId());
             updatedMaterialVariant.setMaterialId(oldMaterialVariant.getMaterialId());
-
-            Material updatedMaterial = updatedMaterialVariant.getMaterial();
-
-            updatedMaterial.setMaterialId(oldMaterialVariant.getMaterialId());
             updatedMaterialVariant.setMaterial(updatedMaterial);
 
             boolean isUpdated = materialService.updateMaterialVariant(updatedMaterialVariant);
@@ -113,6 +111,8 @@ public class MaterialController
         {
             MaterialVariant materialVariant = buildVariantFromForm(ctx);
             MaterialVariant newMaterialVariant = materialService.createMaterialVariant(materialVariant);
+            System.out.println(newMaterialVariant);
+
             if(newMaterialVariant != null)
             {
                 ctx.sessionAttribute("successMessage", "Du har oprettet et nyt materiale med id: " + newMaterialVariant.getMaterial().getMaterialId());

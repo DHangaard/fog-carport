@@ -131,6 +131,8 @@ public class MaterialService implements IMaterialService
                         variant.getPiecesPerUnit()
                 );
 
+                materialVariant.setMaterial(newMaterial);
+
                 connection.commit();
                 return materialVariant;
             }

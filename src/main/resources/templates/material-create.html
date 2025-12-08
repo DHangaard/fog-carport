@@ -34,7 +34,8 @@
             </div>
 
             <label>Kategori</label>
-            <select name="category">
+            <select name="category" required>
+                <option value="">-- Vælg type --</option>
                 <option th:each="cat : ${categories}"
                         th:value="${cat.name()}"
                         th:text="${cat.displayCategory}">
@@ -42,7 +43,8 @@
             </select>
 
             <label>Type</label>
-            <select name="type">
+            <select name="type" required>
+                <option value="">-- Vælg kategori --</option>
                 <option th:each="type : ${types}"
                         th:value="${type.name()}"
                         th:text="${type.displayName}">
@@ -50,18 +52,18 @@
             </select>
 
             <div class="form-field">
-                <label for="width">Bredde</label>
-                <input class="form-input" type="number" name="width" id="width" placeholder="Ved ingen bredde udfyld ikke">
+                <label for="width">Bredde (MM)</label>
+                <input class="form-input" type="number" name="width" id="width" placeholder="Indtast bredde i millimeter. Ved ingen bredde udfyld ikke" min="0" max="1000000" step="any">
             </div>
 
             <div class="form-field">
-                <label for="height">Højde</label>
-                <input class="form-input" type="number" name="height" id="height" placeholder="Ved ingen højde udfyld ikke">
+                <label for="height">Højde (MM)</label>
+                <input class="form-input" type="number" name="height" id="height" placeholder="Indtast højde i millimeter. Ved ingen højde udfyld ikke" min="0" max="1000000" step="any">
             </div>
 
             <div class="form-field">
-                <label for="length">Længde</label>
-                <input class="form-input" type="number" name="length" id="length" placeholder="Ved ingen længde udfyld ikke">
+                <label for="length">Længde (CM)</label>
+                <input class="form-input" type="number" name="length" id="length" placeholder="Indtast længde i centimeter. Ved ingen længde udfyld ikke" min="0" max="1000000" step="any">
             </div>
 
             <div class="form-field">
@@ -71,12 +73,12 @@
 
             <div class="form-field">
                 <label for="piecesPerUnit">Antal per enhed</label>
-                <input class="form-input" type="number" name="piecesPerUnit" id="piecesPerUnit" placeholder="1..2..3..." required>
+                <input class="form-input" type="number" name="piecesPerUnit" id="piecesPerUnit" min="0" max="1000000"placeholder="1..2..3..." required>
             </div>
 
             <div class="form-field">
                 <label for="unitPrice">Enheds pris</label>
-                <input class="form-input" type="number" name="unitPrice" id="unitPrice" placeholder="Pris per enhed" required>
+                <input class="form-input" type="number" name="unitPrice" id="unitPrice" placeholder="Pris per enhed" min="0" max="1000000" step="any">
             </div>
 
             <div class="form-field">

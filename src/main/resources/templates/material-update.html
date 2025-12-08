@@ -53,20 +53,20 @@
             </select>
 
             <div class="form-field">
-                <label for="width">Bredde</label>
-                <input class="form-input" type="number" name="width" id="width"
+                <label for="width">Bredde (MM)</label>
+                <input class="form-input" type="number" name="width" id="width" min="0" max="1000000"
                        th:value="${materialVariant.material.materialWidth}">
             </div>
 
             <div class="form-field">
-                <label for="height">Højde</label>
-                <input class="form-input" type="number" name="height" id="height"
+                <label for="height">Højde (MM)</label>
+                <input class="form-input" type="number" name="height" id="height" min="0" max="1000000"
                        th:value="${materialVariant.material.materialHeight}">
             </div>
 
             <div class="form-field">
-                <label for="length">Længde</label>
-                <input class="form-input" type="number" name="length" id="length"
+                <label for="length">Længde (CM)</label>
+                <input class="form-input" type="number" name="length" id="length" min="0" max="1000000"
                        th:value="${materialVariant.variantLength}">
             </div>
 
@@ -78,13 +78,13 @@
 
             <div class="form-field">
                 <label for="piecesPerUnit">Antal per enhed</label>
-                <input class="form-input" type="number" name="piecesPerUnit" id="piecesPerUnit"
+                <input class="form-input" type="number" name="piecesPerUnit" id="piecesPerUnit" min="0" max="1000000" step="any"
                        th:value="${materialVariant.piecesPerUnit}" required>
             </div>
 
             <div class="form-field">
                 <label for="unitPrice">Enheds pris</label>
-                <input class="form-input" type="number" name="unitPrice" id="unitPrice"
+                <input class="form-input" type="number" name="unitPrice" id="unitPrice" min="0" max="1000000" step="any"
                        th:value="${materialVariant.unitPrice}" required>
             </div>
 
