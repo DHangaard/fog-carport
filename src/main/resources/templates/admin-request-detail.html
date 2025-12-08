@@ -23,9 +23,14 @@
         </div>
 
         <div class="hero-content">
-            <h1>Forespørgsel #<span th:text="${orderDetail.orderId}"></span></h1>
-            <p>Oprettet : <span th:text="${orderDetail.orderTimeLine.relativeTime}"></span></p>
-            <p>Status : <span th:text="${orderDetail.orderStatus.displayName}"></span></p>
+            <div class="hero-p-and-order-info">
+                <div class="order-info-box">
+                    <p>Kundenummer : <span th:text="${orderDetail.customer.userId}"></span></p>
+                    <p>Forespørgsel #<span  class="bold-text" th:text="${orderDetail.orderId}"></span></p>
+                    <p>Oprettet : <span th:text="${orderDetail.orderTimeLine.relativeTime}"></span></p>
+                    <p>Status : <span class="bold-text uppercase-text" th:text="${orderDetail.orderStatus.displayName}"></span></p>
+                </div>
+            </div>
         </div>
 
         <section class="section">
@@ -100,7 +105,8 @@
                 </div>
             </div>
 
-            <a th:href="@{/show-carport-drawing/{id}(id=${orderDetail.orderId})}" class="btn btn-primary"  target="_blank" rel="noopener noreferrer">Se stor tegning her</a>
+            <a th:href="@{/show-carport-drawing/{id}(id=${orderDetail.orderId})}" class="btn btn-primary"
+               target="_blank" rel="noopener noreferrer">Se stor tegning her</a>
         </section>
 
         <section class="section">
@@ -124,7 +130,8 @@
                 <tbody>
                 <tr th:each="line : ${orderDetail.materialLines}">
                     <td>
-                        <form th:action="@{/requests/{id}/update-bom(id=${orderDetail.orderId})}" method="post" class="quantity-form">
+                        <form th:action="@{/requests/{id}/update-bom(id=${orderDetail.orderId})}" method="post"
+                              class="quantity-form">
                             <input type="hidden" name="materialLineId" th:value="${line.materialLineId}">
                             <input type="number" name="quantity" th:value="${line.quantity}" min="0">
                             <button type="submit" class="btn-table btn-view"
@@ -155,102 +162,102 @@
 
         <section class="section">
             <h1>Prisberegning & tilbuds periode</h1>
-        <form th:action="@{/requests/{id}/send-offer(id=${orderDetail.orderId})}" method="post">
+            <form th:action="@{/requests/{id}/send-offer(id=${orderDetail.orderId})}" method="post">
 
-            <div class="calculator-container">
-                <fieldset class="box">
-                    <legend>Dækningsgrad efter prisforslag</legend>
+                <div class="calculator-container">
+                    <fieldset class="box">
+                        <legend>Dækningsgrad efter prisforslag</legend>
 
-                    <div class="price-row">
-                        <label class="price-change-label">I alt uden moms:</label>
-                        <span class="price-display price-highlight-green" id="priceWithOutVatDisplay"
-                              th:text="${orderDetail.pricingDetails.priceWithoutVat}"></span>
-                        <span class="unit">kr.</span>
-                    </div>
+                        <div class="price-row">
+                            <label class="price-change-label">I alt uden moms:</label>
+                            <span class="price-display price-highlight-green" id="priceWithOutVatDisplay"
+                                  th:text="${orderDetail.pricingDetails.priceWithoutVat}"></span>
+                            <span class="unit">kr.</span>
+                        </div>
 
-                    <div class="price-row">
-                        <label>Samlet kostpris:</label>
-                        <span class="price-display" id="costPriceDisplay" name="costPrice"
-                              th:text="${orderDetail.pricingDetails.costPrice}"></span>
-                        <span class="unit">kr.</span>
-                    </div>
+                        <div class="price-row">
+                            <label>Samlet kostpris:</label>
+                            <span class="price-display" id="costPriceDisplay" name="costPrice"
+                                  th:text="${orderDetail.pricingDetails.costPrice}"></span>
+                            <span class="unit">kr.</span>
+                        </div>
 
-                    <hr class="horizontal-line">
+                        <hr class="horizontal-line">
 
-                    <div class="price-row red-text" >
-                        <label class="price-change-label-red">Dækningsgrad:</label>
-                        <span class="price-display price-highlight-red" id="coverageDisplay"
-                              th:text="${orderDetail.pricingDetails.coveragePercentage}"></span>
-                        <span class="unit">%</span>
-                    </div>
-                </fieldset>
+                        <div class="price-row red-text">
+                            <label class="price-change-label-red">Dækningsgrad:</label>
+                            <span class="price-display price-highlight-red" id="coverageDisplay"
+                                  th:text="${orderDetail.pricingDetails.coveragePercentage}"></span>
+                            <span class="unit">%</span>
+                        </div>
+                    </fieldset>
 
-                <fieldset class="box">
-                    <legend>Pris og prisforslag</legend>
+                    <fieldset class="box">
+                        <legend>Pris og prisforslag</legend>
 
-                    <div class="price-row">
-                        <label class="price-change-label">Pris uden moms:</label>
-                        <span class="price-display" id="priceWithoutVatDisplay2"
-                              th:text="${orderDetail.pricingDetails.priceWithoutVat}"></span>
-                        <span class="unit">kr.</span>
-                    </div>
+                        <div class="price-row">
+                            <label class="price-change-label">Pris uden moms:</label>
+                            <span class="price-display" id="priceWithoutVatDisplay2"
+                                  th:text="${orderDetail.pricingDetails.priceWithoutVat}"></span>
+                            <span class="unit">kr.</span>
+                        </div>
 
-                    <div class="price-row">
-                        <label>Pris med moms:</label>
-                        <span class="price-display" id="priceWithVatDisplay"
-                              th:text="${orderDetail.pricingDetails.totalPrice}"></span>
-                        <span class="unit">kr.</span>
-                    </div>
+                        <div class="price-row">
+                            <label>Pris med moms:</label>
+                            <span class="price-display" id="priceWithVatDisplay"
+                                  th:text="${orderDetail.pricingDetails.totalPrice}"></span>
+                            <span class="unit">kr.</span>
+                        </div>
 
-                    <hr class="horizontal-line">
+                        <hr class="horizontal-line">
 
-                    <div class="price-row">
-                        <label class="price-change-label">Prisforslag ved salg:</label>
-                        <input id="totalPriceInput"
-                               class="price-display price-input-green"
-                               name="totalPrice"
-                               type="number"
-                               step="any"
-                               th:value="${#numbers.formatDecimal(orderDetail.pricingDetails.totalPrice, 1, 2, 'POINT')}"
-                               th:data-costprice="${#numbers.formatDecimal(orderDetail.pricingDetails.costPrice, 1, 2, 'POINT')}"
-                               th:data-original="${#numbers.formatDecimal(orderDetail.pricingDetails.totalPrice, 1, 2, 'POINT')}">
-                        <span class="unit">kr.</span>
-                    </div>
+                        <div class="price-row">
+                            <label class="price-change-label">Prisforslag ved salg:</label>
+                            <input id="totalPriceInput"
+                                   class="price-display price-input-green"
+                                   name="totalPrice"
+                                   type="number"
+                                   step="any"
+                                   th:value="${#numbers.formatDecimal(orderDetail.pricingDetails.totalPrice, 1, 2, 'POINT')}"
+                                   th:data-costprice="${#numbers.formatDecimal(orderDetail.pricingDetails.costPrice, 1, 2, 'POINT')}"
+                                   th:data-original="${#numbers.formatDecimal(orderDetail.pricingDetails.totalPrice, 1, 2, 'POINT')}">
+                            <span class="unit">kr.</span>
+                        </div>
 
-                    <div class="price-row">
-                        <label class="label-red">Prisændring:</label>
-                        <span id="differenceDisplay">0.00</span>
-                        <span class="unit">kr.</span>
-                    </div>
-                </fieldset>
-            </div>
+                        <div class="price-row">
+                            <label class="label-red">Prisændring:</label>
+                            <span id="differenceDisplay">0.00</span>
+                            <span class="unit">kr.</span>
+                        </div>
+                    </fieldset>
+                </div>
 
-            <input type="hidden"
-                   id="coverageInput"
-                   name="coveragePercentage"
-                   th:value="${orderDetail.pricingDetails.coveragePercentage}">
+                <input type="hidden"
+                       id="coverageInput"
+                       name="coveragePercentage"
+                       th:value="${orderDetail.pricingDetails.coveragePercentage}">
 
-            <input type="hidden"
-                   id="costPriceInput"
-                   name="costPrice"
-                   th:value="${orderDetail.pricingDetails.costPrice}">
+                <input type="hidden"
+                       id="costPriceInput"
+                       name="costPrice"
+                       th:value="${orderDetail.pricingDetails.costPrice}">
 
-            <div class="offer-validity">
-                <label for="offerValidDays"><strong>Tilbud gyldigt i (dage):</strong></label>
-                <input type="number"
-                       id="offerValidDays"
-                       name="offerValidDays"
-                       value="14"
-                       min="1"
-                       max="90"
-                       required>
-            </div>
+                <div class="offer-validity">
+                    <label for="offerValidDays"><strong>Tilbud gyldigt i (dage):</strong></label>
+                    <input type="number"
+                           id="offerValidDays"
+                           name="offerValidDays"
+                           value="14"
+                           min="1"
+                           max="90"
+                           required>
+                </div>
 
-            <div class="form-actions">
-                <button type="submit" class="btn btn-secondary btn-large">Send Tilbud til Kunde</button>
-                <a th:href="@{/carport-requests}" class="btn btn-secondary btn-large">Tilbage til oversigt</a>
-            </div>
-        </form>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-secondary btn-large">Send Tilbud til Kunde</button>
+                    <a th:href="@{/carport-requests}" class="btn btn-secondary btn-large">Tilbage til oversigt</a>
+                </div>
+            </form>
         </section>
     </div>
 </main>
