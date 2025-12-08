@@ -48,20 +48,6 @@ public class MaterialService implements IMaterialService
     }
 
     @Override
-    public List<MaterialVariant> getMaterialVariantsBySearchQuery(String searchQuery) throws DatabaseException
-    {
-        if(searchQuery == null)
-        {
-            throw new IllegalArgumentException("Venligst indtast et søge ord");
-        }
-
-        switch (searchQuery)
-        {
-            case 
-        }
-    }
-
-    @Override
     public boolean deleteMaterialVariant(int materialVariantId) throws DatabaseException
     {
         return false;
@@ -79,19 +65,19 @@ public class MaterialService implements IMaterialService
         return null;
     }
 
-    private List<MaterialVariant> getMaterialVariantsByType(MaterialType materialType) throws DatabaseException
+    public List<MaterialVariant> getMaterialVariantsByType(MaterialType materialType) throws DatabaseException
     {
         return null;
     }
-    private List<MaterialVariant> getMaterialVariantsByName(String name) throws DatabaseException
+    public List<MaterialVariant> getMaterialVariantsByName(String name) throws DatabaseException
     {
         return null;
     }
-    private List<MaterialVariant> getMaterialVariantsById(int materialVariantId) throws DatabaseException
+    public List<MaterialVariant> getMaterialVariantsById(int materialVariantId) throws DatabaseException
     {
         return null;
     }
-    private List<MaterialVariant> getMaterialVariantsByCategory(MaterialCategory category) throws DatabaseException
+    public List<MaterialVariant> getMaterialVariantsByCategory(MaterialCategory category) throws DatabaseException
     {
         return null;
     }

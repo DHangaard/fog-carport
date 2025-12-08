@@ -23,27 +23,39 @@
     <section class="section">
         <a th:href="@{/materials/create}" class="btn btn-secondary">Nulstil</a>
     <div class="order-search">
-        <h2>Søg efter forespørgsel</h2>
+        <h2>Søg efter materialer</h2>
 
-        <form method="get" th:action="@{/materials}">
-            <div class="search-form">
-                <select name="searchType" required>
-                    <option value="">Vælg søgetype</option>
-                    <option value="id" th:selected="${searchType == 'id'}">Material Id</option>
-                    <option value="name" th:selected="${searchType == 'name'}">Materiale navn</option>
-                    <option value="type" th:selected="${searchType == 'type'}">Materiale type</option>
-                    <option value="category" th:selected="${searchType == 'category'}">Materiale kategori</option>
-                </select>
+        <form method="get" th:action="@{/materials/search}">
+            <label>Søg efter:</label>
+            <select name="searchType">
+                <option value="name">Navn</option>
+                <option value="id">ID</option>
+                <option value="category">Kategori</option>
+                <option value="type">Type</option>
+            </select>
 
-                <input type="text"
-                       name="searchQuery"
-                       th:value="${searchQuery}"
-                       placeholder="Indtast søgeord..."
-                       required>
+            <label for="text">Søgeord:</label>
+            <input type="text" id="text" name="query">
 
-                <button class="search-button" type="submit">Søg</button>
-                <a th:href="@{/materials}" class="btn btn-secondary">Nulstil</a>
-            </div>
+            <label>Kategori:</label>
+            <select name="category">
+                <option value="">-- Vælg kategori --</option>
+                <option th:each="category : ${categories}"
+                        th:value="${category}"
+                        th:text="${category}">
+                </option>
+            </select>
+
+            <label>Type:</label>
+            <select name="type">
+                <option value="">-- Vælg type --</option>
+                <option th:each="category : ${types}"
+                        th:value="${category}"
+                        th:text="${category}">
+                </option>
+            </select>
+
+            <button type="submit">Søg</button>
         </form>
     </div>
 
