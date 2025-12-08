@@ -9,6 +9,7 @@ import app.persistence.MaterialLineMapper;
 import app.persistence.MaterialVariantMapper;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MaterialService implements IMaterialService
 {
@@ -78,41 +79,46 @@ public class MaterialService implements IMaterialService
 
         return switch (searchType.toLowerCase())
         {
-            case "id" -> materialVariantMapper.searchById(parseQuery(query));
-            case "name" -> materialVariantMapper.searchByName(query);
-            case "category" -> materialVariantMapper.searchByCategory(query.toUpperCase());
-            case "type" -> materialVariantMapper.searchByType(query.toUpperCase());
+            case "id" ->
+            {
+                if (!query.matches("\\d+"))
+                {
+                    throw new IllegalArgumentException("ID skal være et tal.");
+                }
+                yield materialVariantMapper.searchById(Integer.parseInt(query));
+            }
+            case "name" -> getMaterialVariantsByName(query);
+            case "category" -> getMaterialVariantsByCategory(query);
+            case "type" -> getMaterialVariantsByType(query);
             default -> List.of();
         };
     }
 
-    private int parseQuery(String query)
+    @Override
+    public MaterialVariant getMaterialVariantById(int materialVariantId) throws DatabaseException
     {
-        try
-        {
-            return Integer.parseInt(query);
-        }
-        catch (NumberFormatException e)
-        {
-            throw new IllegalArgumentException("Kun hel tal i søgning efter id");
-        }
+        return materialVariantMapper.getVariantWithMaterialById(materialVariantId);
     }
 
-    public List<MaterialVariant> getMaterialVariantsByType(MaterialType materialType) throws DatabaseException
+    private List<MaterialVariant> getMaterialVariantsByType(String type) throws DatabaseException
     {
-        return null;
+        return materialVariantMapper.getAllMaterialVariants().stream()
+                .filter(materialVariant -> materialVariant.getMaterial().getType().getDisplayName().toLowerCase().contains(type.toLowerCase()))
+                .collect(Collectors.toList());
     }
-    public List<MaterialVariant> getMaterialVariantsByName(String name) throws DatabaseException
+
+    private List<MaterialVariant> getMaterialVariantsByName(String name) throws DatabaseException
     {
-        return null;
+        return materialVariantMapper.getAllMaterialVariants().stream()
+                .filter(materialVariant -> materialVariant.getMaterial().getName().toLowerCase().contains(name.toLowerCase()))
+                .collect(Collectors.toList());
     }
-    public List<MaterialVariant> getMaterialVariantsById(int materialVariantId) throws DatabaseException
+
+    private List<MaterialVariant> getMaterialVariantsByCategory(String category) throws DatabaseException
     {
-        return null;
-    }
-    public List<MaterialVariant> getMaterialVariantsByCategory(MaterialCategory category) throws DatabaseException
-    {
-        return null;
+        return materialVariantMapper.getAllMaterialVariants().stream()
+                .filter(materialVariant -> materialVariant.getMaterial().getCategory().getDisplayCategory().toLowerCase().contains(category.toLowerCase()))
+                .collect(Collectors.toList());
     }
 
     private double calculateLineTotal(MaterialLine materialLine)

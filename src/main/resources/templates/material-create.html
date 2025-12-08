@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Fog - Holder i længden</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+    <link rel="icon" th:href="@{/images/logo.svg}">
+</head>
+<body>
+
+<div th:replace="~{fragments :: headerFragment}"></div>
+
+<main>
+    <div class="content-contact">
+        <h1>Opret materiale</h1>
+    </div>
+
+    <div class="form-container">
+
+        <div th:if="${successMessage}" class="message message-success">
+            <p th:text="${successMessage}"></p>
+        </div>
+
+        <div th:if="${errorMessage}" class="message message-error">
+            <p th:text="${errorMessage}"></p>
+        </div>
+
+        <form th:action="@{/materials/create/material}" method="post" class="form">
+
+            <div class="form-field">
+                <label for="name">Materiale navn</label>
+                <input class="form-input" type="text" name="name" id="name" placeholder="Navn på materialet" required>
+            </div>
+
+            <label>Kategori</label>
+            <select name="category">
+                <option th:each="cat : ${categories}"
+                        th:value="${cat.name()}"
+                        th:text="${cat.displayCategory}">
+                </option>
+            </select>
+
+            <label>Type</label>
+            <select name="category">
+                <option th:each="type : ${types}"
+                        th:value="${type.name()}"
+                        th:text="${type.displayName}">
+                </option>
+            </select>
+
+            <div class="form-field">
+                <label for="width">Bredde</label>
+                <input class="form-input" type="number" name="width" id="width" placeholder="Ved ingen bredde udfyld ikke">
+            </div>
+
+            <div class="form-field">
+                <label for="height">Højde</label>
+                <input class="form-input" type="number" name="height" id="height" placeholder="Ved ingen højde udfyld ikke">
+            </div>
+
+            <div class="form-field">
+                <label for="length">Længde</label>
+                <input class="form-input" type="number" name="length" id="length" placeholder="Ved ingen længde udfyld ikke">
+            </div>
+
+            <div class="form-field">
+                <label for="unit">Enhed</label>
+                <input class="form-input" type="text" name="unit" id="unit" placeholder="Stk. pakke, rulle, mm." required>
+            </div>
+
+            <div class="form-field">
+                <label for="unitPrice">Enheds pris</label>
+                <input class="form-input" type="number" name="unitPrice" id="unitPrice" placeholder="Pris per enhed" required>
+            </div>
+
+            <div class="form-field">
+                <label for="usage">Hjælpe tekst</label>
+                <input class="form-input" type="text" name="usage" id="usage" placeholder="Varens brug" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Opret</button>
+        </form>
+    </div>
+</main>
+
+
+<div th:replace="~{fragments :: footerFragment}"></div>
+
+</body>
+</html>

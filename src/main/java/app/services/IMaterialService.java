@@ -1,9 +1,6 @@
 package app.services;
 
-import app.entities.Material;
 import app.entities.MaterialVariant;
-import app.enums.MaterialCategory;
-import app.enums.MaterialType;
 import app.exceptions.DatabaseException;
 
 import java.util.List;
@@ -18,7 +15,6 @@ public interface IMaterialService
     public boolean updateMaterialVariant(MaterialVariant variant) throws DatabaseException;
     public MaterialVariant createMaterialVariant(MaterialVariant variant) throws DatabaseException;
     public List<MaterialVariant> searchMaterials(String searchType, String query) throws DatabaseException;
-    public List<MaterialVariant> getMaterialVariantsByName(String name) throws DatabaseException;
-    public List<MaterialVariant> getMaterialVariantsById(int materialVariantId) throws DatabaseException;
-    public List<MaterialVariant> getMaterialVariantsByCategory(MaterialCategory category) throws DatabaseException;
+    public MaterialVariant getMaterialVariantById(int materialVariantId) throws DatabaseException;
+
 }

@@ -9,6 +9,7 @@ import app.exceptions.DatabaseException;
 import app.services.IMaterialService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -24,47 +25,77 @@ public class MaterialController
     public void addRoutes(Javalin app)
     {
         app.get("/materials", ctx -> showMaterialsPage(ctx));
+        app.get("/materials/{id}/update-material", ctx -> showUpdateMaterialPage(ctx));
+        app.get("/materials/create", ctx -> showCreateMaterialPage(ctx));
+    }
+
+    private void showCreateMaterialPage(Context ctx)
+    {
+        displayMessages(ctx);
+        ctx.attribute("categories", MaterialCategory.values());
+        ctx.attribute("types", MaterialType.values());
+        ctx.render("material-create");
+    }
+
+    private void showUpdateMaterialPage(Context ctx)
+    {
+        int materialVariantId = Integer.parseInt(ctx.pathParam("id"));
+        displayMessages(ctx);
+
+        try
+        {
+            MaterialVariant materialVariant = materialService.getMaterialVariantById(materialVariantId);
+            ctx.attribute("materialVariant", materialVariant);
+            ctx.attribute("categories", MaterialCategory.values());
+            ctx.attribute("types", MaterialType.values());
+            ctx.render("material-update");
+        }
+        catch (DatabaseException e)
+        {
+            ctx.attribute("errorMessage",e.getMessage());
+        }
     }
 
     private void showMaterialsPage(Context ctx)
     {
         if (!userIsAdmin(ctx)) return;
+        displayMessages(ctx);
 
         String searchType = ctx.queryParam("searchType");
         String query = ctx.queryParam("query");
 
         List<MaterialVariant> variants = List.of();
 
-        if(searchType != null || !searchType.isEmpty()  && query != null || query.isEmpty())
+        if(hasSearch(searchType) && hasSearch(query))
         {
 
-        try
-        {
-            variants = materialService.searchMaterials(searchType, query.trim());
+            try
+            {
+                variants = materialService.searchMaterials(searchType, query.trim());
 
-            ctx.attribute("searchType", searchType);
-            ctx.attribute("query", query);
-        }
-        catch (DatabaseException e)
-        {
-            ctx.sessionAttribute("errorMessage", "Søgning fejlede: " + e.getMessage());
-            ctx.redirect("/materials");
-        }
-        catch (IllegalArgumentException e)
-        {
-            ctx.sessionAttribute("errorMessage", "Søgning fejlede: " + e.getMessage());
-            ctx.redirect("/materials");
+                ctx.attribute("searchType", searchType);
+                ctx.attribute("query", query);
+            }
+            catch (DatabaseException e)
+            {
+                ctx.sessionAttribute("errorMessage","Søgning fejlede: " + e.getMessage());
+                ctx.redirect("/materials");
+            }
+            catch (IllegalArgumentException e)
+            {
+                ctx.sessionAttribute("errorMessage","Søgning fejlede: " + e.getMessage());
+                ctx.redirect("/materials");
+            }
         }
 
-        }
-
-
-        displayMessages(ctx);
         ctx.attribute("variants", variants);
         ctx.render("materials");
-
     }
 
+    private boolean hasSearch(String value)
+    {
+        return value != null && !value.isBlank();
+    }
 
     private boolean userIsAdmin(Context ctx)
     {
