@@ -167,6 +167,8 @@ public class MaterialController
         if (!userIsAdmin(ctx)) return;
         displayMessages(ctx);
 
+        boolean hasSearched = false;
+
         String searchType = ctx.queryParam("searchType");
         String query = ctx.queryParam("query");
 
@@ -174,7 +176,7 @@ public class MaterialController
 
         if(hasSearch(searchType) && hasSearch(query))
         {
-
+            hasSearched = true;
             try
             {
                 variants = materialService.searchMaterials(searchType, query.trim());
@@ -195,6 +197,7 @@ public class MaterialController
         }
 
         ctx.attribute("variants", variants);
+        ctx.attribute("hasSearched", hasSearched);
         ctx.render("materials");
     }
 

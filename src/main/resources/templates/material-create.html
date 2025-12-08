@@ -33,60 +33,64 @@
                 <input class="form-input" type="text" name="name" id="name" placeholder="Navn på materialet" required>
             </div>
 
+            <div class="form-field">
             <label>Kategori</label>
             <select name="category" required>
-                <option value="">-- Vælg type --</option>
+                <option value="">-- Vælg kategori --</option>
                 <option th:each="cat : ${categories}"
                         th:value="${cat.name()}"
                         th:text="${cat.displayCategory}">
                 </option>
             </select>
+            </div>
 
+            <div class="form-field">
             <label>Type</label>
             <select name="type" required>
-                <option value="">-- Vælg kategori --</option>
+                <option value="">-- Vælg type --</option>
                 <option th:each="type : ${types}"
                         th:value="${type.name()}"
                         th:text="${type.displayName}">
                 </option>
             </select>
-
-            <div class="form-field">
-                <label for="width">Bredde (MM)</label>
-                <input class="form-input" type="number" name="width" id="width" placeholder="Indtast bredde i millimeter. Ved ingen bredde udfyld ikke" min="0" max="1000000" step="any">
             </div>
 
             <div class="form-field">
-                <label for="height">Højde (MM)</label>
-                <input class="form-input" type="number" name="height" id="height" placeholder="Indtast højde i millimeter. Ved ingen højde udfyld ikke" min="0" max="1000000" step="any">
+                <label for="width">Bredde (mm)</label>
+                <input class="form-input" type="number" name="width" id="width" placeholder="Bredde i mm (valgfri)" min="0" max="1000000" step="any">
             </div>
 
             <div class="form-field">
-                <label for="length">Længde (CM)</label>
-                <input class="form-input" type="number" name="length" id="length" placeholder="Indtast længde i centimeter. Ved ingen længde udfyld ikke" min="0" max="1000000" step="any">
+                <label for="height">Højde (mm)</label>
+                <input class="form-input" type="number" name="height" id="height" placeholder="Højde i mm (valgfri)" min="0" max="1000000" step="any">
+            </div>
+
+            <div class="form-field">
+                <label for="length">Længde (cm)</label>
+                <input class="form-input" type="number" name="length" id="length" placeholder="Længde i cm (valgfri)" min="0" max="10000" step="any">
             </div>
 
             <div class="form-field">
                 <label for="unit">Enhed</label>
-                <input class="form-input" type="text" name="unit" id="unit" placeholder="Stk. pakke, rulle, mm." required>
+                <input class="form-input" type="text" name="unit" id="unit" placeholder="F.eks. stk., pakke, rulle" required>
             </div>
 
             <div class="form-field">
                 <label for="piecesPerUnit">Antal per enhed</label>
-                <input class="form-input" type="number" name="piecesPerUnit" id="piecesPerUnit" min="0" max="1000000"placeholder="1..2..3..." required>
+                <input class="form-input" type="number" name="piecesPerUnit" id="piecesPerUnit" min="0" max="100000" placeholder="Antal pr. enhed, f.eks. 1, 2, 3" required>
             </div>
 
             <div class="form-field">
                 <label for="unitPrice">Enheds pris</label>
-                <input class="form-input" type="number" name="unitPrice" id="unitPrice" placeholder="Pris per enhed" min="0" max="1000000" step="any">
+                <input class="form-input" type="number" name="unitPrice" id="unitPrice" placeholder="Pris pr. enhed i DKK" min="0" max="1000000" step="any">
             </div>
 
             <div class="form-field">
                 <label for="usage">Hjælpe tekst</label>
-                <input class="form-input" type="text" name="usage" id="usage" placeholder="Varens brug" required>
+                <input class="form-input" type="text" name="usage" id="usage" placeholder="Kort beskrivelse af materialets anvendelse" required>
             </div>
 
-            <button type="submit" class="btn btn-primary">Opret</button>
+            <button type="submit" class="btn btn-primary">Gem materiale</button>
         </form>
     </div>
 </main>

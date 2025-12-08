@@ -34,6 +34,7 @@
                        th:value="${materialVariant.material.name}" required>
             </div>
 
+            <div class="form-field">
             <label>Kategori</label>
             <select name="category">
                 <option th:each="cat : ${categories}"
@@ -42,7 +43,9 @@
                         th:selected="${materialVariant.material.category == cat}">
                 </option>
             </select>
+            </div>
 
+            <div class="form-field">
             <label>Type</label>
             <select name="type">
                 <option th:each="typ : ${types}"
@@ -51,22 +54,23 @@
                         th:selected="${typ == materialVariant.material.type}">
                 </option>
             </select>
+            </div>
 
             <div class="form-field">
-                <label for="width">Bredde (MM)</label>
+                <label for="width">Bredde (mm)</label>
                 <input class="form-input" type="number" name="width" id="width" min="0" max="1000000"
                        th:value="${materialVariant.material.materialWidth}">
             </div>
 
             <div class="form-field">
-                <label for="height">Højde (MM)</label>
+                <label for="height">Højde (mm)</label>
                 <input class="form-input" type="number" name="height" id="height" min="0" max="1000000"
                        th:value="${materialVariant.material.materialHeight}">
             </div>
 
             <div class="form-field">
-                <label for="length">Længde (CM)</label>
-                <input class="form-input" type="number" name="length" id="length" min="0" max="1000000"
+                <label for="length">Længde (cm)</label>
+                <input class="form-input" type="number" name="length" id="length" min="0" max="10000"
                        th:value="${materialVariant.variantLength}">
             </div>
 
@@ -94,7 +98,7 @@
                        th:value="${materialVariant.material.usage}" required>
             </div>
 
-            <button type="submit" class="btn btn-primary">Opdater</button>
+            <button type="submit" class="btn btn-primary">Opdater materiale</button>
         </form>
     </div>
 
