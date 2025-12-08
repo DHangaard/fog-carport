@@ -88,16 +88,16 @@ public class ValidationUtil
         }
     }
 
-    public static void validateCity(String city)
+    public static void validateMaterialValue(String value, String fieldName)
     {
-        if (city == null || city.trim().isEmpty())
+        if (value == null || value.trim().isEmpty())
         {
-            throw new IllegalArgumentException("By kan ikke være tom");
+            throw new IllegalArgumentException(fieldName + " kan ikke være tom");
         }
 
-        if (city.length() < 2)
+        if (value.length() < 2)
         {
-            throw new IllegalArgumentException("By skal være mindst 2 tegn");
+            throw new IllegalArgumentException(fieldName + " skal være mindst 2 tegn");
         }
     }
 

@@ -1,6 +1,6 @@
 package app.services;
 
-import app.dto.CreateOrderRequest;
+import app.dto.CreateOrderRequestDTO;
 import app.dto.CustomerOfferDTO;
 import app.dto.OrderOverviewDTO;
 import app.dto.UserDTO;
@@ -48,7 +48,7 @@ public class OrderService implements IOrderService
     }
 
     @Override
-    public Order createPendingOrder(CreateOrderRequest createOrderRequest) throws DatabaseException
+    public Order createPendingOrder(CreateOrderRequestDTO createOrderRequestDTO) throws DatabaseException
     {
         try(Connection connection = connectionPool.getConnection())
         {
@@ -58,7 +58,7 @@ public class OrderService implements IOrderService
             {
                 Integer shedId = null;
                 Shed savedShed = null;
-                Shed shed = createOrderRequest.carport().getShed();
+                Shed shed = createOrderRequestDTO.carport().getShed();
 
                 if(shed != null)
                 {
@@ -70,7 +70,7 @@ public class OrderService implements IOrderService
                     shedId = savedShed.getShedId();
                 }
 
-                Carport carport = createOrderRequest.carport();
+                Carport carport = createOrderRequestDTO.carport();
 
                 Carport savedCarport = carportMapper.createCarport(
                         connection,
@@ -88,8 +88,8 @@ public class OrderService implements IOrderService
                 List<MaterialLine> bom = bomService.getBillOfMaterialByCarport(savedCarport);
                 PricingDetails pricingDetails = bomService.calculateCarportPrice(bom);
 
-                int customerId = createOrderRequest.userId();
-                String customerComment = createOrderRequest.customerComment();
+                int customerId = createOrderRequestDTO.userId();
+                String customerComment = createOrderRequestDTO.customerComment();
 
                 Order savedOrder = orderMapper.createOrder(
                         connection,

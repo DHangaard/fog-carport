@@ -77,6 +77,12 @@
             </div>
 
             <div class="form-field">
+                <label for="piecesPerUnit">Antal per enhed</label>
+                <input class="form-input" type="number" name="piecesPerUnit" id="piecesPerUnit"
+                       th:value="${materialVariant.piecesPerUnit}" required>
+            </div>
+
+            <div class="form-field">
                 <label for="unitPrice">Enheds pris</label>
                 <input class="form-input" type="number" name="unitPrice" id="unitPrice"
                        th:value="${materialVariant.unitPrice}" required>
