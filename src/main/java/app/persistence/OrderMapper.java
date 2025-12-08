@@ -22,10 +22,10 @@ public class OrderMapper
     public Order createOrder(Connection connection, int customerId, int carportId, String customerComment, PricingDetails pricingDetails) throws DatabaseException
     {
         String sql = """
-               INSERT INTO "orders" (customer_id, carport_id, customer_comment, order_status, coverage_percentage, cost_price)
-               VALUES (?, ?, ?, 'PENDING', ?, ?)
-               RETURNING order_id, request_created_at, order_status
-               """;
+                INSERT INTO "orders" (customer_id, carport_id, customer_comment, order_status, coverage_percentage, cost_price)
+                VALUES (?, ?, ?, 'PENDING', ?, ?)
+                RETURNING order_id, request_created_at, order_status
+                """;
 
         try (PreparedStatement ps = connection.prepareStatement(sql))
         {
@@ -41,12 +41,13 @@ public class OrderMapper
                 ps.setNull(3, Types.VARCHAR);
             }
 
-            ps.setDouble(4,pricingDetails.getCoveragePercentage());
-            ps.setDouble(5,pricingDetails.getCostPrice());
+            ps.setDouble(4, pricingDetails.getCoveragePercentage());
+            ps.setDouble(5, pricingDetails.getCostPrice());
 
             ResultSet rs = ps.executeQuery();
 
-            if (rs.next()) {
+            if (rs.next())
+            {
 
                 return new Order(
                         rs.getInt("order_id"),
@@ -59,7 +60,7 @@ public class OrderMapper
                         customerComment,
                         OrderStatus.valueOf(rs.getString("order_status")),
                         pricingDetails
-                        );
+                );
             }
 
             throw new DatabaseException("Kunne ikke oprette ordren");
@@ -72,6 +73,7 @@ public class OrderMapper
 
     public Order getOrderById(int orderId) throws DatabaseException
     {
+        updateOrderStatusIfExpired();
         String sql = """
                 SELECT order_id, customer_id, seller_id, carport_id, request_created_at, created_at, offer_valid_days, order_status, customer_comment, coverage_percentage, cost_price
                 FROM orders 
@@ -103,6 +105,7 @@ public class OrderMapper
 
     public List<Order> getAllOrders() throws DatabaseException
     {
+        updateOrderStatusIfExpired();
         String sql = """
                 SELECT order_id, customer_id, seller_id, carport_id, request_created_at, created_at, offer_valid_days, order_status, customer_comment, coverage_percentage, cost_price
                 FROM orders
@@ -133,6 +136,7 @@ public class OrderMapper
 
     public List<Order> getAllOrdersByUserId(int userId) throws DatabaseException
     {
+        updateOrderStatusIfExpired();
         String sql = """
                 SELECT order_id, customer_id, seller_id, carport_id, request_created_at, created_at, offer_valid_days, order_status, customer_comment, coverage_percentage, cost_price
                 FROM orders
@@ -166,6 +170,7 @@ public class OrderMapper
 
     public List<Order> getAllOrdersByStatus(OrderStatus offerStatus) throws DatabaseException
     {
+        updateOrderStatusIfExpired();
         String sql = """
                 SELECT order_id, customer_id, seller_id, carport_id, request_created_at, created_at, offer_valid_days, order_status, customer_comment, coverage_percentage, cost_price
                 FROM orders
@@ -198,14 +203,15 @@ public class OrderMapper
 
     public List<OrderOverviewDTO> getAllOrderOverviewsByStatus(OrderStatus status) throws DatabaseException
     {
+        updateOrderStatusIfExpired();
         List<OrderOverviewDTO> orderOverviewDTOS = new ArrayList<>();
 
         String sql = """
-               SELECT o.order_id, u.first_name, u.last_name, u.email, o.request_created_at, o.order_status
-               FROM orders o
-               JOIN users u ON o.customer_id = u.user_id
-               WHERE o.order_status = ?
-               """;
+                SELECT o.order_id, u.first_name, u.last_name, u.email, o.request_created_at, o.order_status
+                FROM orders o
+                JOIN users u ON o.customer_id = u.user_id
+                WHERE o.order_status = ?
+                """;
 
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql))
@@ -234,14 +240,15 @@ public class OrderMapper
 
     public List<OrderOverviewDTO> getAllOrderOverviewsByUserId(int userId) throws DatabaseException
     {
+        updateOrderStatusIfExpired();
         List<OrderOverviewDTO> orderOverviewDTOS = new ArrayList<>();
 
         String sql = """
-               SELECT o.order_id, u.first_name, u.last_name, u.email, o.request_created_at, o.order_status
-               FROM orders o
-               JOIN users u ON o.customer_id = u.user_id
-               WHERE u.user_id = ?
-               """;
+                SELECT o.order_id, u.first_name, u.last_name, u.email, o.request_created_at, o.order_status
+                FROM orders o
+                JOIN users u ON o.customer_id = u.user_id
+                WHERE u.user_id = ?
+                """;
 
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql))
@@ -270,15 +277,16 @@ public class OrderMapper
 
     public List<OrderOverviewDTO> getAllOrderOverviewsByUserIdAndStatus(int userId, OrderStatus orderStatus) throws DatabaseException
     {
+        updateOrderStatusIfExpired();
         List<OrderOverviewDTO> orderOverviewDTOS = new ArrayList<>();
 
         String sql = """
-               SELECT o.order_id, u.first_name, u.last_name, u.email, o.request_created_at, o.order_status
-               FROM orders o
-               JOIN users u ON o.customer_id = u.user_id
-               WHERE u.user_id = ? AND o.order_status = ?
-               ORDER BY o.request_created_at DESC
-               """;
+                SELECT o.order_id, u.first_name, u.last_name, u.email, o.request_created_at, o.order_status
+                FROM orders o
+                JOIN users u ON o.customer_id = u.user_id
+                WHERE u.user_id = ? AND o.order_status = ?
+                ORDER BY o.request_created_at DESC
+                """;
 
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql))
@@ -309,10 +317,10 @@ public class OrderMapper
     public boolean updateOrder(Connection connection, Order order) throws DatabaseException
     {
         String sql = """
-               UPDATE orders
-               SET seller_id = ?, created_at = ?, offer_valid_days = ?, customer_comment = ?, order_status = ?, coverage_percentage = ?, cost_price = ?
-               WHERE order_id = ?
-               """;
+                UPDATE orders
+                SET seller_id = ?, created_at = ?, offer_valid_days = ?, customer_comment = ?, order_status = ?, coverage_percentage = ?, cost_price = ?
+                WHERE order_id = ?
+                """;
 
         try (PreparedStatement ps = connection.prepareStatement(sql))
         {
@@ -362,10 +370,10 @@ public class OrderMapper
     public boolean updateOrder(int orderId, double newCostPrice) throws DatabaseException
     {
         String sql = """
-               UPDATE orders
-               SET cost_price = ?
-               WHERE order_id = ?
-               """;
+                UPDATE orders
+                SET cost_price = ?
+                WHERE order_id = ?
+                """;
 
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql))
@@ -385,8 +393,8 @@ public class OrderMapper
     public boolean deleteOrder(int orderId) throws DatabaseException
     {
         String sql = """
-               DELETE FROM orders WHERE order_id = ?
-               """;
+                DELETE FROM orders WHERE order_id = ?
+                """;
 
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql))
@@ -410,12 +418,12 @@ public class OrderMapper
                 FROM orders o
                 WHERE o.order_status = ?
                 """;
-        try(Connection connection = connectionPool.getConnection();
-            PreparedStatement ps = connection.prepareStatement(sql))
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql))
         {
-            ps.setString(1,orderStatus.name());
+            ps.setString(1, orderStatus.name());
             ResultSet rs = ps.executeQuery();
-            if(rs.next())
+            if (rs.next())
             {
                 return rs.getInt("count");
             }
@@ -427,6 +435,26 @@ public class OrderMapper
         catch (SQLException e)
         {
             throw new DatabaseException("Fejl ved hentning af total af ordre ved status" + e.getMessage());
+        }
+    }
+
+    public int updateOrderStatusIfExpired() throws DatabaseException {
+        String sql = """
+        UPDATE orders
+        SET order_status = 'EXPIRED'
+        WHERE order_status = 'READY'
+          AND created_at IS NOT NULL
+          AND offer_valid_days IS NOT NULL
+          AND created_at + make_interval(days => offer_valid_days) < NOW()
+        """;
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            return ps.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new DatabaseException("Error updating expired orders: " + e.getMessage());
         }
     }
 
