@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Fog - Materialer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+    <link rel="icon" th:href="@{/images/logo.svg}">
+</head>
+<body>
+
+<div th:replace="~{fragments :: headerFragment}"></div>
+
+<main>
+
+    <h1>Materialer</h1>
+
+    <section class="section">
+        <h2>Opret nyt materiale</h2>
+        <a th:href="@{/materials/create}" class="btn btn-secondary">Opret materiale</a>
+    </section>
+
+    <section class="section">
+        <a th:href="@{/materials/create}" class="btn btn-secondary">Nulstil</a>
+    <div class="order-search">
+        <h2>Søg efter forespørgsel</h2>
+
+        <form method="get" th:action="@{/materials}">
+            <div class="search-form">
+                <select name="searchType" required>
+                    <option value="">Vælg søgetype</option>
+                    <option value="id" th:selected="${searchType == 'id'}">Material Id</option>
+                    <option value="name" th:selected="${searchType == 'name'}">Materiale navn</option>
+                    <option value="type" th:selected="${searchType == 'type'}">Materiale type</option>
+                    <option value="category" th:selected="${searchType == 'category'}">Materiale kategori</option>
+                </select>
+
+                <input type="text"
+                       name="searchQuery"
+                       th:value="${searchQuery}"
+                       placeholder="Indtast søgeord..."
+                       required>
+
+                <button class="search-button" type="submit">Søg</button>
+                <a th:href="@{/materials}" class="btn btn-secondary">Nulstil</a>
+            </div>
+        </form>
+    </div>
+
+    </section>
+
+    <section class="section">
+        <h2>Søge resultat</h2>
+
+        <table class="orders-table">
+            <thead>
+            <tr>
+                <th>Vare nr.</th>
+                <th>Vare beskrivelse</th>
+                <th>Hjælpe tekst</th>
+                <th>Længde</th>
+                <th>Bredde</th>
+                <th>Højde</th>
+                <th>Enhed</th>
+                <th>Stk. per enhed</th>
+                <th>Pris</th>
+                <th>Handling</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="variant : ${variants}">
+                <td th:text="${variant.materialVariantId}"></td>
+                <td th:text="${variant.material.description}"></td>
+                <td th:text="${variant.material.usage}"></td>
+                <td th:text="${variant.variantLength != null ? variant.variantLength + ' cm' : '-'}"></td>
+                <td th:text="${variant.material.materialWidth != null ? variant.material.materialWidth + ' cm' : '-'}"></td>
+                <td th:text="${variant.material.materialHeight != null ? variant.material.materialHeight + ' cm' : '-'}"></td>
+                <td th:text="${variant.material.unit}"></td>
+                <td th:text="${variant.piecesPerUnit}"></td>
+                <td th:text="${variant.unitPrice}"></td>
+                <td>
+                    <form th:action="@{/materials/{id}/delete-material(id=${variant.materialVariantId})}" method="post">
+                        <input type="hidden" name="materialVariantId" th:value="${variant.materialVariantId}">
+                        <button type="submit" class="btn-table btn-delete" title="Slet">
+                            <img th:src="@{/images/delete.svg}" alt="Slet"/>
+                        </button>
+                    </form>
+                    <a th:href="@{/materials/{id}/update-material(id=${variant.materialVariantId})}" class="btn-table btn-view" title="Rediger">
+                        <img th:src="@{/images/edit.svg}" alt="Rediger"/>
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+
+<div th:replace="~{fragments :: footerFragment}"></div>
+
+</body>
+</html>

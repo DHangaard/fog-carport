@@ -138,8 +138,8 @@
                     <td th:text="${line.materialVariant.variantLength != null ? line.materialVariant.variantLength + ' cm' : '-'}"></td>
                     <td th:text="${line.materialVariant.material.materialWidth != null ? line.materialVariant.material.materialWidth + ' cm' : '-'}"></td>
                     <td th:text="${line.materialVariant.material.materialHeight != null ? line.materialVariant.material.materialHeight + ' cm' : '-'}"></td>
-                    <td th:text="${line. materialVariant.material.unit}"></td>
-                    <td th:text="${line. materialVariant.piecesPerUnit}"></td>
+                    <td th:text="${line.materialVariant.material.unit}"></td>
+                    <td th:text="${line.materialVariant.piecesPerUnit}"></td>
                     <td>
                         <form th:action="@{/requests/{id}/delete-bom-line(id=${orderDetail.orderId})}" method="post">
                             <input type="hidden" name="materialLineId" th:value="${line.materialLineId}">
