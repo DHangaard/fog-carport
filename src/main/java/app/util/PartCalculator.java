@@ -161,4 +161,37 @@ public class PartCalculator
 
         return (int) Math.ceil((double) totalBracketScrews / screwsPerPackage);
     }
+
+
+    private int calculateCenterPostPlacement(Carport carport)
+    {
+        final double MAX_DISTANCE_BETWEEN_POSTS = 310.0;
+        final int MIN_DISTANCE_BETWEEN_POSTS = 100;
+        final double POST_EDGE_INSET_CM = 35.00;
+        final double POST_FRONT_PLACEMENT_CM = 100.0;
+        double POST_BACK_PLACEMENT_CM = carport.getLength() - POST_EDGE_INSET_CM; // Make this an int
+        double postCenterPlacementCm = POST_FRONT_PLACEMENT_CM + MAX_DISTANCE_BETWEEN_POSTS; // Make this an int
+
+        int result = 0;
+        int postShedPlacementCm; // Set this variable
+        int spaceBetweenCenterAndShedPost; // postShedPlacementCm - postCenterPlacementCm;
+        boolean isPostFurtherThanCenterPost = false;
+
+        // If spaceBetween is negative:
+        // spaceBetweenCenterAndShedPost = Math.abs(spaceBetweenCenterAndShedPost);
+        // isPostFurtherThanCenterPost = true;
+
+        // If spaceBetween is less than min spacing and post is further than center post:
+        // update centerpost placement to shedpost placement + min distance
+
+        // Else if spaceBetween is less than min spacing and post is not further than center post:
+        // update centerpost placement to shedpost placement - min distance
+
+        // Else return original centerpost placement
+        // result is equal to post front placement + max distance between posts
+
+        // Remember logic to catch if shed is full width or not - separate method!
+        return result;
+    }
+
 }

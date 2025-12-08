@@ -39,12 +39,15 @@ public class CarportSvgSide
     double arrowYTopMargin;
 
     // Verify
-    private final double POST_MAX_SPAN_CM = 310.0;
-    private final double POST_FRONT_PLACEMENT_CM = 100.0;
-    private final double POST_CENTER_PLACEMENT_CM = POST_FRONT_PLACEMENT_CM + POST_MAX_SPAN_CM;
-    private double POST_BACK_PLACEMENT_CM;
-    private final double MAX_SPACING_CM = 55.0;
+    private final double MAX_DISTANCE_BETWEEN_POSTS = 310.0;
+    private final int MIN_DISTANCE_BETWEEN_POSTS = 100;
     private final double POST_EDGE_INSET_CM = 35.00;
+    private final double POST_FRONT_PLACEMENT_CM = 100.0;
+    private double POST_BACK_PLACEMENT_CM;
+    private double postCenterPlacementCm = POST_FRONT_PLACEMENT_CM + MAX_DISTANCE_BETWEEN_POSTS;
+
+    private final double MAX_SPACING_CM = 55.0;
+
 
 
     public CarportSvgSide(Carport carport)
@@ -114,7 +117,7 @@ public class CarportSvgSide
 
         if (numberOfPostsPerRow == 3)
         {
-            carportInnerSvg.addRectangle(POST_CENTER_PLACEMENT_CM, yPositionBottom - POST_WITH_BEAM_CUTOUT_HEIGHT_CM, POST_WITH_BEAM_CUTOUT_HEIGHT_CM, POST_WIDTH_CM, BASE_STYLE);
+            carportInnerSvg.addRectangle(postCenterPlacementCm, yPositionBottom - POST_WITH_BEAM_CUTOUT_HEIGHT_CM, POST_WITH_BEAM_CUTOUT_HEIGHT_CM, POST_WIDTH_CM, BASE_STYLE);
         }
     }
 
