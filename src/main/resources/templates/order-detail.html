@@ -154,8 +154,8 @@
                     <td th:text="${line.materialVariant.material.description}"></td>
                     <td th:text="${line.materialVariant.material.usage}"></td>
                     <td th:text="${line.materialVariant.variantLength != null ? line.materialVariant.variantLength + ' cm' : '-'}"></td>
-                    <td th:text="${line.materialVariant.material.materialWidth != null ? line.materialVariant.material.materialWidth + ' cm' : '-'}"></td>
-                    <td th:text="${line.materialVariant.material.materialHeight != null ? line.materialVariant.material.materialHeight + ' cm' : '-'}"></td>
+                    <td th:text="${line.materialVariant.material.materialWidth != null ? line.materialVariant.material.materialWidth + ' mm' : '-'}"></td>
+                    <td th:text="${line.materialVariant.material.materialHeight != null ? line.materialVariant.material.materialHeight + ' mm' : '-'}"></td>
                     <td th:text="${line.materialVariant.material.unit}"></td>
                     <td th:text="${line.materialVariant.piecesPerUnit}"></td>
                 </tr>

@@ -87,8 +87,8 @@
                 <td th:text="${variant.material.description}"></td>
                 <td th:text="${variant.material.usage}"></td>
                 <td th:text="${variant.variantLength != null ? variant.variantLength + ' cm' : '-'}"></td>
-                <td th:text="${variant.material.materialWidth != null ? variant.material.materialWidth + ' cm' : '-'}"></td>
-                <td th:text="${variant.material.materialHeight != null ? variant.material.materialHeight + ' cm' : '-'}"></td>
+                <td th:text="${variant.material.materialWidth != null ? variant.material.materialWidth + ' mm' : '-'}"></td>
+                <td th:text="${variant.material.materialHeight != null ? variant.material.materialHeight + ' mm' : '-'}"></td>
                 <td th:text="${variant.material.unit}"></td>
                 <td th:text="${variant.piecesPerUnit}"></td>
                 <td th:text="${variant.unitPrice}"></td>
