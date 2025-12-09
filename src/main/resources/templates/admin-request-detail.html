@@ -61,7 +61,6 @@
                         <strong>Skur placering:</strong>
                         <span th:text="${orderDetail.carport.shed.shedPlacement.displayName}"></span>
                     </div>
-                    <a th:href="@{/requests/{id}/update-carport(id=${orderDetail.orderId})}" class="btn btn-secondary">Opdater carport mål</a>
                 </div>
 
                 <div class="info-content">
@@ -94,8 +93,8 @@
                         <span th:text="${orderDetail.customerComment}"></span>
                     </div>
                 </div>
-
             </div>
+            <a th:href="@{/requests/{id}/update-carport(id=${orderDetail.orderId})}" class="btn btn-secondary">Opdater carport mål</a>
         </section>
 
         <section class="section">
@@ -111,7 +110,7 @@
                 </div>
             </div>
 
-            <a th:href="@{/show-carport-drawing/{id}(id=${orderDetail.orderId})}" class="btn btn-primary"
+            <a th:href="@{/show-carport-drawing/{id}(id=${orderDetail.orderId})}" class="btn btn-secondary"
                target="_blank" rel="noopener noreferrer">Se stor tegning her</a>
         </section>
 
