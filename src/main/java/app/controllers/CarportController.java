@@ -1,17 +1,15 @@
 package app.controllers;
 
-import app.dto.CreateOrderRequest;
+import app.dto.CreateOrderRequestDTO;
 import app.dto.UserDTO;
 import app.entities.*;
 import app.enums.RoofType;
-import app.enums.ShedPlacement;
 import app.exceptions.DatabaseException;
 import app.services.*;
 import app.services.svg.CarportSvgSide;
 import app.services.svg.CarportSvgTop;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -147,7 +145,7 @@ public class CarportController
                 ctx.sessionAttribute("successMessage", "Dine kontakt oplysninger er opdateret!");
             }
 
-            CreateOrderRequest createOrderRequest = new CreateOrderRequest(
+            CreateOrderRequestDTO createOrderRequest = new CreateOrderRequestDTO(
                     currentUser.userId(),
                     carport,
                     customerNote

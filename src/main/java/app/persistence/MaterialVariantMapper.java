@@ -210,6 +210,50 @@ public class MaterialVariantMapper
         }
     }
 
+    public List<MaterialVariant> getAllMaterialVariants() throws DatabaseException
+    {
+        String sql = """
+            SELECT 
+            mv.material_variant_id,
+            mv.material_id,
+            mv.variant_length,
+            mv.unit_price,
+            mv.pieces_per_unit,
+                
+            m.material_id AS m_material_id,
+            m.name AS m_name,
+            m.category AS m_category,
+            m.type AS m_type,
+            m.material_width AS m_material_width,
+            m.material_height AS m_material_height,
+            m.unit AS m_unit,
+            m.usage AS m_usage
+                
+            FROM material_variant mv
+            JOIN material m ON mv.material_id = m.material_id
+            """;
+
+        List<MaterialVariant> variants = new ArrayList<>();
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql))
+        {
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next())
+            {
+                variants.add(buildMaterialVariantFromResultSet(rs));
+            }
+
+            return variants;
+
+        } catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl ved hentning af alle materialvarianter " + e.getMessage());
+        }
+    }
+
     public boolean deleteMaterialVariant(int materialVariantId) throws DatabaseException
     {
         String sql = """
@@ -269,6 +313,52 @@ public class MaterialVariantMapper
         catch (SQLException e)
         {
             throw new DatabaseException("Fejl ved opdatering af materiale: " + e.getMessage());
+        }
+    }
+
+    public List<MaterialVariant> searchByMaterialVariantId(int materialVariantId) throws DatabaseException
+    {
+        String sql = """
+            SELECT 
+            mv.material_variant_id,
+            mv.material_id,
+            mv.variant_length,
+            mv.unit_price,
+            mv.pieces_per_unit,
+                
+            m.material_id AS m_material_id,
+            m.name AS m_name,
+            m.category AS m_category,
+            m.type AS m_type,
+            m.material_width AS m_material_width,
+            m.material_height AS m_material_height,
+            m.unit AS m_unit,
+            m.usage AS m_usage
+                
+            FROM material_variant mv
+            JOIN material m ON mv.material_id = m.material_id
+            WHERE mv.material_variant_id= ?
+            """;
+
+        List<MaterialVariant> variants = new ArrayList<>();
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql))
+        {
+
+            ps.setInt(1, materialVariantId);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next())
+            {
+                variants.add(buildMaterialVariantFromResultSet(rs));
+            }
+
+            return variants;
+
+        } catch (SQLException e)
+        {
+            throw new DatabaseException("Database fejl ved søgning efter ID: " + e.getMessage());
         }
     }
 

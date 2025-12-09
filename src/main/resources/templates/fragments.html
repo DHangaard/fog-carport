@@ -4,21 +4,20 @@
         <nav class="header-nav">
             <!-- LEFT SECTION -->
             <div class="header-left">
-                <a href="index.html" th:href="@{/}" class="logo-link">
-                    <img src="/images/logo.svg"
-                         alt="Fog logo"
-                         th:src="@{/images/logo.svg}">
+                <a th:href="@{/}" class="logo-link">
+                    <img alt="Fog logo" th:src="@{/images/logo.svg}">
                 </a>
 
                 <!-- Sales links (conditional) -->
                 <div th:if="${session.currentUser != null and session.currentUser.role.name() == 'SALESREP'}"
                      class="admin-links">
-                    <a href="requests.html" th:href="@{/carport-requests}" class="nav-link">
+                    <a th:href="@{/carport-requests}" class="nav-link">
                         Forespørgsler
                         <span class="badge" th:if="${requestCount > 0}" th:text="${requestCount}">1</span>
                     </a>
-                    <a href="offers.html" th:href="@{/offers}" class="nav-link">Tilbud</a>
-                    <a href="orders.html" th:href="@{/orders}" class="nav-link">Ordrer</a>
+                    <a th:href="@{/offers}" class="nav-link">Tilbud</a>
+                    <a th:href="@{/orders}" class="nav-link">Ordrer</a>
+                    <a th:href="@{/materials}" class="nav-link">Materialer</a>
                 </div>
             </div>
 
@@ -26,7 +25,6 @@
             <div class="header-right">
                 <!-- Not logged in -->
                 <a th:if="${session.currentUser == null}"
-                   href="login.html"
                    th:href="@{/login}"
                    class="icon-link-vertical">
                     <img alt="Login" th:src="@{/images/profile.svg}">
@@ -40,7 +38,7 @@
                     <div th:if="${session.currentUser.role.name() == 'CUSTOMER'}" class="user-info user-actions">
                         <span class="username" th:text="${session.currentUser.email}">user@example.com</span>
 
-                        <a href="my-page.html" th:href="@{/my-page}" class="icon-link-vertical">
+                        <a th:href="@{/my-page}" class="icon-link-vertical">
                             <img alt="Min side" th:src="@{/images/profile.svg}">
                             <span>Min side</span>
                         </a>
@@ -92,7 +90,7 @@
             <div class="table-actions">
                 <a th:href="@{${viewRoute}(id=${order.orderId})}"
                    class="btn-table btn-view"
-                   title="Se detajler">
+                   title="Se detaljer">
                     <img th:src="@{/images/view.svg}" alt="Se detaljer"/>
                 </a>
 

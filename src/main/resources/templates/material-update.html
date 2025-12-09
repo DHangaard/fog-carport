@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Fog - Opdater materiale</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+    <link rel="icon" th:href="@{/images/logo.svg}">
+</head>
+<body>
+
+<div th:replace="~{fragments :: headerFragment}"></div>
+
+<main>
+    <div class="content-contact">
+        <h1>Opdater materiale</h1>
+    </div>
+
+    <div class="form-container">
+
+        <div th:if="${successMessage}" class="message message-success">
+            <p th:text="${successMessage}"></p>
+        </div>
+
+        <div th:if="${errorMessage}" class="message message-error">
+            <p th:text="${errorMessage}"></p>
+        </div>
+
+        <form th:action=" @{/materials/{id}/update(id=${materialVariant.materialVariantId})}" method="post" class="form">
+
+            <div class="form-field">
+                <label for="name">Materiale navn</label>
+                <input class="form-input" type="text" name="name" id="name"
+                       th:value="${materialVariant.material.name}" required>
+            </div>
+
+            <div class="form-field">
+                <label>Kategori</label>
+                <select name="category">
+                    <option th:each="cat : ${categories}"
+                            th:value="${cat.name()}"
+                            th:text="${cat.displayCategory}"
+                            th:selected="${materialVariant.material.category == cat}">
+                    </option>
+                </select>
+            </div>
+
+            <div class="form-field">
+                <label>Type</label>
+                <select name="type">
+                    <option th:each="typ : ${types}"
+                            th:value="${typ.name()}"
+                            th:text="${typ.displayName}"
+                            th:selected="${typ == materialVariant.material.type}">
+                    </option>
+                </select>
+            </div>
+
+            <div class="form-field">
+                <label for="width">Bredde (mm)</label>
+                <input class="form-input" type="number" name="width" id="width" min="0" max="1000000"
+                       th:value="${materialVariant.material.materialWidth}">
+            </div>
+
+            <div class="form-field">
+                <label for="height">Højde (mm)</label>
+                <input class="form-input" type="number" name="height" id="height" min="0" max="1000000"
+                       th:value="${materialVariant.material.materialHeight}">
+            </div>
+
+            <div class="form-field">
+                <label for="length">Længde (cm)</label>
+                <input class="form-input" type="number" name="length" id="length" min="0" max="10000"
+                       th:value="${materialVariant.variantLength}">
+            </div>
+
+            <div class="form-field">
+                <label for="unit">Enhed</label>
+                <input class="form-input" type="text" name="unit" id="unit"
+                       th:value="${materialVariant.material.unit}" required>
+            </div>
+
+            <div class="form-field">
+                <label for="piecesPerUnit">Antal per enhed</label>
+                <input class="form-input" type="number" name="piecesPerUnit" id="piecesPerUnit" min="0" max="1000000" step="any"
+                       th:value="${materialVariant.piecesPerUnit}" required>
+            </div>
+
+            <div class="form-field">
+                <label for="unitPrice">Enheds pris</label>
+                <input class="form-input" type="number" name="unitPrice" id="unitPrice" min="0" max="1000000" step="any"
+                       th:value="${materialVariant.unitPrice}" required>
+            </div>
+
+            <div class="form-field">
+                <label for="usage">Hjælpe tekst</label>
+                <input class="form-input" type="text" name="usage" id="usage"
+                       th:value="${materialVariant.material.usage}" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Opdater materiale</button>
+        </form>
+    </div>
+</main>
+
+<div th:replace="~{fragments :: footerFragment}"></div>
+
+</body>
+</html>

@@ -44,13 +44,14 @@ public class Main
         CarportMapper carportMapper = new CarportMapper(connectionPool);
         MaterialVariantMapper materialVariantMapper = new MaterialVariantMapper(connectionPool);
         MaterialLineMapper materialLineMapper = new MaterialLineMapper(connectionPool);
+        MaterialMapper materialMapper = new MaterialMapper(connectionPool);
         OrderMapper orderMapper = new OrderMapper(connectionPool);
 
         IBomService bomService = new BomService(materialVariantMapper);
         IUserService userService = new UserService(userMapper, zipCodeMapper);
         ICarportService carportService = new CarportService(carportMapper);
         IEmailService emailService = new SendGridEmailService();
-        IMaterialService materialService = new MaterialService(materialLineMapper);
+        IMaterialService materialService = new MaterialService(materialLineMapper, materialVariantMapper, materialMapper, connectionPool);
         IOrderService orderService = new OrderService(userMapper, materialLineMapper, shedMapper, carportMapper, orderMapper, bomService, emailService, connectionPool);
 
         UserController userController = new UserController(userService);
@@ -58,6 +59,7 @@ public class Main
         SellerController sellerController = new SellerController(orderService, carportService, materialService);
         CustomerController customerController = new CustomerController(orderService, carportService, emailService);
         OrderController orderController = new OrderController(orderService, carportService);
+        MaterialController materialController = new MaterialController(materialService);
 
         app.before(ctx -> BeforeHandlersUtil.addBagdeCount(ctx, orderService));
         userController.addRoutes(app);
@@ -65,5 +67,6 @@ public class Main
         sellerController.addRoutes(app);
         customerController.addRoutes(app);
         orderController.addRoutes(app);
+        materialController.addRoutes(app);
     }
 }

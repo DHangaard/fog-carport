@@ -1,21 +1,37 @@
 package app.services;
 
-import app.entities.MaterialLine;
+import app.entities.*;
 import app.exceptions.DatabaseException;
+import app.persistence.ConnectionPool;
 import app.persistence.MaterialLineMapper;
+import app.persistence.MaterialMapper;
+import app.persistence.MaterialVariantMapper;
+import app.util.ValidationUtil;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class MaterialService implements IMaterialService
 {
     private MaterialLineMapper materialLineMapper;
+    private MaterialVariantMapper materialVariantMapper;
+    private MaterialMapper materialMapper;
+    private ConnectionPool connectionPool;
 
-    public MaterialService(MaterialLineMapper materialLineMapper)
+    public MaterialService(MaterialLineMapper materialLineMapper, MaterialVariantMapper materialVariantMapper, MaterialMapper materialMapper, ConnectionPool connectionPool)
     {
         this.materialLineMapper = materialLineMapper;
+        this.materialVariantMapper = materialVariantMapper;
+        this.materialMapper = materialMapper;
+        this.connectionPool = connectionPool;
     }
 
     @Override
     public boolean updateBillOfMaterialLineQuantity(int materialLineId, int quantity) throws DatabaseException
     {
+        ValidationUtil.validateQuantity(quantity);
         return materialLineMapper.updateMaterialLineQuantity(materialLineId, quantity);
     }
 
@@ -35,11 +51,158 @@ public class MaterialService implements IMaterialService
     @Override
     public double calculateLinePriceDifference(int materialLineId, int quantity) throws DatabaseException
     {
+        ValidationUtil.validateQuantity(quantity);
+
         MaterialLine materialLine = materialLineMapper.getMaterialLineById(materialLineId);
         double oldMaterialLineTotal = calculateLineTotal(materialLine);
         double newMaterialLineTotal = materialLine.getMaterialVariant().getUnitPrice() * quantity;
 
         return newMaterialLineTotal - oldMaterialLineTotal;
+    }
+
+    @Override
+    public boolean deleteMaterialVariant(int materialVariantId) throws DatabaseException
+    {
+        return materialVariantMapper.deleteMaterialVariant(materialVariantId);
+    }
+
+    @Override
+    public boolean updateMaterialVariant(MaterialVariant variant) throws DatabaseException
+    {
+        if(variant == null)
+        {
+            return false;
+        }
+
+        boolean isUpdated = false;
+
+        try (Connection connection = connectionPool.getConnection())
+        {
+            connection.setAutoCommit(false);
+
+            try
+            {
+                isUpdated = materialMapper.updateMaterial(
+                        connection,
+                        variant.getMaterial()
+                );
+
+                isUpdated = materialVariantMapper.updateMaterialVariant(
+                        connection,
+                        variant
+                );
+
+                connection.commit();
+                return isUpdated;
+            }
+            catch (DatabaseException e)
+            {
+                connection.rollback();
+
+                throw new DatabaseException("Fejl ved opdatering af materiale" + e.getMessage());
+            }
+
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl ved opdatering af materiale" + e.getMessage());
+        }
+    }
+
+    @Override
+    public MaterialVariant createMaterialVariant(MaterialVariant variant) throws DatabaseException
+    {
+        try (Connection connection = connectionPool.getConnection())
+        {
+            connection.setAutoCommit(false);
+
+            try
+            {
+                Material newMaterial = materialMapper.createMaterial(
+                        connection,
+                        variant.getMaterial().getName(),
+                        variant.getMaterial().getCategory(),
+                        variant.getMaterial().getType(),
+                        variant.getMaterial().getMaterialWidth(),
+                        variant.getMaterial().getMaterialHeight(),
+                        variant.getMaterial().getUnit(),
+                        variant.getMaterial().getUsage()
+                );
+
+                MaterialVariant materialVariant = materialVariantMapper.createMaterialVariant(
+                        connection,
+                        newMaterial.getMaterialId(),
+                        variant.getVariantLength(),
+                        variant.getUnitPrice(),
+                        variant.getPiecesPerUnit()
+                );
+
+                materialVariant.setMaterial(newMaterial);
+
+                connection.commit();
+                return materialVariant;
+            }
+            catch (DatabaseException e)
+            {
+                connection.rollback();
+
+                throw new DatabaseException("Fejl ved oprettelse af nyt materiale" + e.getMessage());
+            }
+
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl ved oprettelse af nyt materiale" + e.getMessage());
+        }
+    }
+
+    @Override
+    public List<MaterialVariant> searchMaterials(String searchType, String query) throws DatabaseException
+    {
+        ValidationUtil.validateSearchTypeAndQuery(searchType, query);
+
+        return switch (searchType.toLowerCase())
+        {
+            case "id" ->
+            {
+                if (!query.matches("\\d+"))
+                {
+                    throw new IllegalArgumentException("ID skal være et tal.");
+                }
+                yield materialVariantMapper.searchByMaterialVariantId(Integer.parseInt(query));
+            }
+            case "name" -> getMaterialVariantsByName(query);
+            case "category" -> getMaterialVariantsByCategory(query);
+            case "type" -> getMaterialVariantsByType(query);
+            default -> List.of();
+        };
+    }
+
+    @Override
+    public MaterialVariant getMaterialVariantById(int materialVariantId) throws DatabaseException
+    {
+        return materialVariantMapper.getVariantWithMaterialById(materialVariantId);
+    }
+
+    private List<MaterialVariant> getMaterialVariantsByType(String type) throws DatabaseException
+    {
+        return materialVariantMapper.getAllMaterialVariants().stream()
+                .filter(materialVariant -> materialVariant.getMaterial().getType().getDisplayName().toLowerCase().contains(type.toLowerCase()))
+                .collect(Collectors.toList());
+    }
+
+    private List<MaterialVariant> getMaterialVariantsByName(String name) throws DatabaseException
+    {
+        return materialVariantMapper.getAllMaterialVariants().stream()
+                .filter(materialVariant -> materialVariant.getMaterial().getName().toLowerCase().contains(name.toLowerCase()))
+                .collect(Collectors.toList());
+    }
+
+    private List<MaterialVariant> getMaterialVariantsByCategory(String category) throws DatabaseException
+    {
+        return materialVariantMapper.getAllMaterialVariants().stream()
+                .filter(materialVariant -> materialVariant.getMaterial().getCategory().getDisplayCategory().toLowerCase().contains(category.toLowerCase()))
+                .collect(Collectors.toList());
     }
 
     private double calculateLineTotal(MaterialLine materialLine)
