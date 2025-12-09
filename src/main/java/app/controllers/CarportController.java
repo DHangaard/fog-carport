@@ -3,6 +3,7 @@ package app.controllers;
 import app.dto.CreateOrderRequestDTO;
 import app.dto.UserDTO;
 import app.entities.*;
+import app.enums.Role;
 import app.enums.RoofType;
 import app.exceptions.DatabaseException;
 import app.services.*;
@@ -10,7 +11,6 @@ import app.services.svg.CarportSvgSide;
 import app.services.svg.CarportSvgTop;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,15 +41,69 @@ public class CarportController
 
         app.post("/request-carport", ctx -> handleCarportRequest(ctx));
         app.post("/confirm-request", ctx -> confirmCarportRequest(ctx));
-        app.post("/requests/{id}/update", ctx -> updateCarportDimensions(ctx));
+        app.post("/requests/{id}/update-carport", ctx -> handleUpdateCarportDimensions(ctx));
     }
 
     private void showUpdateCarportFormular(Context ctx)
     {
+        if(!userIsAdmin(ctx)){return;}
+
+        int orderId = Integer.parseInt(ctx.pathParam("id"));
+        displayMessages(ctx);
+
+        try
+        {
+            Order order = orderService.getOrderById(orderId);
+            Carport carport = carportService.getCarportByCarportId(order.getCarportId());
+
+            fillCarportDimensionAttributes(ctx);
+            ctx.attribute("carport", carport);
+            ctx.attribute("orderDetail", order);
+            ctx.render("admin-update-carport");
+        }
+        catch (DatabaseException e)
+        {
+            ctx.sessionAttribute("errorMessage", "Kunne ikke hente carport data: " + e.getMessage());
+            ctx.redirect("/carport-requests");
+        }
     }
 
-    private void updateCarportDimensions(Context ctx)
+    private void handleUpdateCarportDimensions(Context ctx)
     {
+        int orderId = Integer.parseInt(ctx.pathParam("id"));
+
+        try
+        {
+            Carport updatedCarport = buildCarportFromRequest(ctx);
+            Order order = orderService.getOrderById(orderId);
+            Carport oldCarport = carportService.getCarportByCarportId(order.getCarportId());
+
+            updatedCarport.setCarportId(oldCarport.getCarportId());
+
+            if(updatedCarport.getShed() != null && oldCarport.getShed() != null)
+            {
+                updatedCarport.getShed().setShedId(oldCarport.getShed().getShedId());
+            }
+
+            boolean isUpdated = orderService.updateCarportAndBillOfMaterials(orderId, updatedCarport);
+
+            if(isUpdated)
+            {
+                ctx.sessionAttribute("successMessage", "Du har opdateret carport mål tilhørende ordre nr: " + order.getOrderId());
+            }
+            else
+            {
+                ctx.sessionAttribute("errorMessage", "Noget gik galt ved opdatering af carport tilhørende ordre nr: " + order.getOrderId());
+            }
+
+            ctx.redirect("/carport-request/details/" + orderId);
+
+        }
+        catch (DatabaseException e)
+        {
+            ctx.sessionAttribute("errorMessage", e.getMessage());
+            ctx.redirect("/carport-request/details/" + orderId);
+        }
 
     }
 
@@ -181,31 +235,11 @@ public class CarportController
     {
         if(!requireLogin(ctx)) {return;}
 
-        String carportWidthString = ctx.formParam("carportWidth").trim();
-        String carportLengthString = ctx.formParam("carportLength").trim();
-        String roofType = ctx.formParam("roofType").trim();
-        String shedWidthString = ctx.formParam("shedWidth").trim();
-        String shedLengthString = ctx.formParam("shedLength").trim();
         String customerNote = ctx.formParam("customerNote").trim();
-
-        Shed shed = null;
 
         try
         {
-            int carportWidth = Integer.parseInt(carportWidthString);
-            int carportLength = Integer.parseInt(carportLengthString);
-
-            if(!shedLengthString.equals("NONE") && !shedWidthString.equals("NONE"))
-            {
-                int shedWidth = Integer.parseInt(shedWidthString);
-                int shedLength = Integer.parseInt(shedLengthString);
-
-                shed = carportService.createShedWithPlacement(carportWidth, shedWidth, shedLength);
-            }
-
-            Carport carport = new Carport(0, carportLength, carportWidth, RoofType.valueOf(roofType), shed);
-
-            carportService.validateCarport(carport);
+            Carport carport = buildCarportFromRequest(ctx);
 
             ctx.sessionAttribute("carport",carport);
             ctx.sessionAttribute("customerNote", customerNote);
@@ -227,9 +261,14 @@ public class CarportController
     private void showCarportFormular(Context ctx)
     {
         if(!requireLogin(ctx)) {return;}
-
         displayMessages(ctx);
 
+        fillCarportDimensionAttributes(ctx);
+        ctx.render("request-offer-carport");
+    }
+
+    private void fillCarportDimensionAttributes(Context ctx)
+    {
         List<Integer> carportWidthDimensions = getDimensionFromTo(240, 600, 30);
         ctx.attribute("carportWidths", carportWidthDimensions);
 
@@ -241,14 +280,37 @@ public class CarportController
 
         List<Integer> shedLengthDimensions = getDimensionFromTo(150, 720, 30);
         ctx.attribute("shedLengths", shedLengthDimensions);
-
-        ctx.render("request-offer-carport");
     }
 
     private void showBuildCarportPage(Context ctx)
     {
         displayMessages(ctx);
         ctx.render("build-carport");
+    }
+
+    private Carport buildCarportFromRequest(Context ctx)
+    {
+        int carportWidth = Integer.parseInt(ctx.formParam("carportWidth").trim());
+        int carportLength = Integer.parseInt(ctx.formParam("carportLength").trim());
+        String roofType = ctx.formParam("roofType").trim();
+        String shedWidthString = ctx.formParam("shedWidth").trim();
+        String shedLengthString = ctx.formParam("shedLength").trim();
+
+        Shed shed = null;
+
+        if(!shedLengthString.equals("NONE") && !shedWidthString.equals("NONE"))
+        {
+            int shedWidth = Integer.parseInt(shedWidthString);
+            int shedLength = Integer.parseInt(shedLengthString);
+
+            shed = carportService.createShedWithPlacement(carportWidth, shedWidth, shedLength);
+        }
+
+        Carport carport = new Carport(0, carportLength, carportWidth, RoofType.valueOf(roofType), shed);
+
+        carportService.validateCarport(carport);
+
+        return carport;
     }
 
     private List<Integer> getDimensionFromTo(int from, int to, int increment)
@@ -274,6 +336,19 @@ public class CarportController
             return false;
         }
         return true;
+    }
+
+    private boolean userIsAdmin(Context ctx)
+    {
+        UserDTO userDTO = ctx.sessionAttribute("currentUser");
+
+        if(userDTO == null)
+        {
+            ctx.sessionAttribute("errorMessage", "Du skal logge ind for at tilgå denne side");
+            ctx.redirect("/login");
+            return false;
+        }
+        return userDTO.role().equals(Role.SALESREP);
     }
 
     private void displayMessages(Context ctx)

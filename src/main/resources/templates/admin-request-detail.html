@@ -56,6 +56,12 @@
                         <strong>Skur:</strong>
                         <span th:text="${orderDetail.carport.shed.length} + ' x ' + ${orderDetail.carport.shed.width} + ' cm'"></span>
                     </div>
+
+                    <div class="info-item" th:if="${orderDetail.carport.shed != null}">
+                        <strong>Skur placering:</strong>
+                        <span th:text="${orderDetail.carport.shed.shedPlacement.displayName}"></span>
+                    </div>
+                    <a th:href="@{/requests/{id}/update-carport(id=${orderDetail.orderId})}" class="btn btn-secondary">Opdater carport mål</a>
                 </div>
 
                 <div class="info-content">
@@ -124,6 +130,7 @@
                     <th>Højde</th>
                     <th>Enhed</th>
                     <th>Stk. per enhed</th>
+                    <th>Type</th>
                     <th>Handling</th>
                 </tr>
                 </thead>
@@ -147,6 +154,7 @@
                     <td th:text="${line.materialVariant.material.materialHeight != null ? line.materialVariant.material.materialHeight + ' mm' : '-'}"></td>
                     <td th:text="${line.materialVariant.material.unit}"></td>
                     <td th:text="${line.materialVariant.piecesPerUnit}"></td>
+                    <td th:text="${line.materialVariant.material.type.displayName}"></td>
                     <td>
                         <form th:action="@{/requests/{id}/delete-bom-line(id=${orderDetail.orderId})}" method="post" onsubmit="return confirm('Er du sikker på du vil slette denne? ')">
                             <input type="hidden" name="materialLineId" th:value="${line.materialLineId}">
