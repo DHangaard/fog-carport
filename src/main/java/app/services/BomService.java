@@ -175,7 +175,12 @@ public class BomService implements IBomService
         int distanceToCenterPost = PartCalculator.calculateCenterPostPlacement(carport);
         int centerPostDefaultPlacement = 410;
         int postEdgeInsetCm = 30;
-        int shedPostPlacement = carport.getShed().getLength() + postEdgeInsetCm;
+        int shedPostPlacement = 0;
+
+        if(carport.getShed() != null)
+        {
+            shedPostPlacement = carport.getShed().getLength() + postEdgeInsetCm;
+        }
 
         if (distanceToCenterPost < centerPostDefaultPlacement)
         {
