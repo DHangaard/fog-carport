@@ -15,10 +15,12 @@ class PartCalculatorTest
     @Test
     void calculatePost()
     {
-        int numberOfPostWith780 = PartCalculator.calculateNumberOfPostsWithShed(780, ShedPlacement.FULL_WIDTH);
+        Shed shedFullWidth = new Shed(0,530,400,ShedPlacement.FULL_WIDTH);
+        int numberOfPostWith780 = PartCalculator.calculateNumberOfPostsWithShed(780, shedFullWidth);
         assertEquals(11, numberOfPostWith780);
 
-        int numberOfPostWith750 = PartCalculator. calculateNumberOfPostsWithShed(750,  ShedPlacement.LEFT);
+        Shed shedLeft = new Shed(0, 240, 400, ShedPlacement.LEFT);
+        int numberOfPostWith750 = PartCalculator. calculateNumberOfPostsWithShed(750,  shedLeft);
         assertEquals(10, numberOfPostWith750);
 
         int numberOfPostWith780NoShed = PartCalculator.calculateNumberOfPostsWithOutShed(780);
@@ -27,7 +29,7 @@ class PartCalculatorTest
         int numberOfPostWith750NoShed = PartCalculator.calculateNumberOfPostsWithOutShed(750);
         assertEquals(6, numberOfPostWith750NoShed);
 
-        int numberOfPostWith600WithShed = PartCalculator.calculateNumberOfPostsWithShed(600,  ShedPlacement.FULL_WIDTH);
+        int numberOfPostWith600WithShed = PartCalculator.calculateNumberOfPostsWithShed(600,  shedFullWidth);
         assertEquals(9, numberOfPostWith600WithShed);
 
         int numberOfPostWith300NoShed = PartCalculator.calculateNumberOfPostsWithOutShed(300);
@@ -180,5 +182,41 @@ class PartCalculatorTest
 
         Carport carport420x420WithOutShed = new Carport(0, 600, 600, RoofType.FLAT, null);
         assertEquals(1, PartCalculator.calculateNumberOfBracketScrewsNeeded(carport420x420WithOutShed, screwsPerPackage));
+    }
+
+    @Test
+    void testCalculateCenterPostPlacementWith220cmShed()
+    {
+        Carport carport = new Carport(0, 780, 600, RoofType.FLAT, new Shed(0, 220, 220, ShedPlacement.FULL_WIDTH));
+        int centerpostPlacement = PartCalculator.calculateCenterPostPlacement(carport);
+
+        assertEquals(410, centerpostPlacement);
+    }
+
+    @Test
+    void testCalculateCenterPostPlacementWith270cmShed()
+    {
+        Carport carport = new Carport(0, 780, 600, RoofType.FLAT, new Shed(0, 270, 220, ShedPlacement.FULL_WIDTH));
+        int centerpostPlacement = PartCalculator.calculateCenterPostPlacement(carport);
+
+        assertEquals(380, centerpostPlacement);
+    }
+
+    @Test
+    void testCalculateCenterPostPlacementWith380cmShed()
+    {
+        Carport carport = new Carport(0, 780, 600, RoofType.FLAT, new Shed(0, 380, 220, ShedPlacement.FULL_WIDTH));
+        int centerpostPlacement = PartCalculator.calculateCenterPostPlacement(carport);
+
+        assertEquals(480, centerpostPlacement);
+    }
+
+    @Test
+    void testCalculateCenterPostPlacementWithShedLengthEqualToCenterPost()
+    {
+        Carport carport = new Carport(0, 780, 600, RoofType.FLAT, new Shed(0, 340, 220, ShedPlacement.FULL_WIDTH));
+        int centerpostPlacement = PartCalculator.calculateCenterPostPlacement(carport);
+
+        assertEquals(410, centerpostPlacement);
     }
 }

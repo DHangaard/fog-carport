@@ -2,6 +2,7 @@ package app.services.svg;
 
 import app.dto.RafterCalculationDTO;
 import app.entities.Carport;
+import app.enums.ShedPlacement;
 import app.util.PartCalculator;
 
 public class CarportSvgSide
@@ -41,10 +42,10 @@ public class CarportSvgSide
     // Verify
     private final double MAX_DISTANCE_BETWEEN_POSTS = 310.0;
     private final int MIN_DISTANCE_BETWEEN_POSTS = 100;
-    private final double POST_EDGE_INSET_CM = 35.00;
+    private final double POST_EDGE_INSET_CM = 30.00;
     private final double POST_FRONT_PLACEMENT_CM = 100.0;
     private double POST_BACK_PLACEMENT_CM;
-    private double postCenterPlacementCm = POST_FRONT_PLACEMENT_CM + MAX_DISTANCE_BETWEEN_POSTS;
+    private double postCenterPlacementCm;
 
     private final double MAX_SPACING_CM = 55.0;
 
@@ -64,7 +65,8 @@ public class CarportSvgSide
         this.arrowRightXStart = arrowBottomXEnd * 1.04;
         this.arrowYBottomMargin = CARPORT_TOP_HEIGHT_FRONT_CM + (INNER_SVG_Y_START * 1.5);
         this.arrowYTopMargin = INNER_SVG_Y_START * 0.75;
-        this.POST_BACK_PLACEMENT_CM = carport.getLength() - 30.0;
+        this.POST_BACK_PLACEMENT_CM = carport.getLength() - POST_EDGE_INSET_CM;
+        this.postCenterPlacementCm = PartCalculator.calculateCenterPostPlacement(carport);
 
         carportSideSvg.addArrowDefs();
         addFrame();
@@ -106,18 +108,64 @@ public class CarportSvgSide
         }
     }
 
+    private void addPostAndPostArrows()
+    {
+        double tickLength = 20;
+        double tickLengthLeft = tickLength / 6.0;
+
+        //POST ARROWS First arrow
+        carportSideSvg.addLineWithArrows(INNER_SVG_X_START, arrowYBottomMargin, POST_FRONT_PLACEMENT_CM, arrowYBottomMargin);
+        carportSideSvg.addLine(INNER_SVG_X_START, arrowYBottomMargin - tickLength, INNER_SVG_X_START, arrowYBottomMargin + tickLengthLeft, BASE_STYLE);
+        carportSideSvg.addLine(POST_FRONT_PLACEMENT_CM, arrowYBottomMargin - tickLength, POST_FRONT_PLACEMENT_CM, arrowYBottomMargin + tickLengthLeft, BASE_STYLE);
+
+        //POST ARROWS Second arrow
+        // If (carport > ? ) 6 posts
+
+        // if shed != null
+        // Case 1: shed is equal to center post (back to front)
+        // Case 2: shed is shorter that center post (back to front)
+        // Case 3: shed is longer than center post (back to front)
+
+        if (carport.getShed() == null)
+        {
+
+        }
+
+        //POST ARROWS Last arrow
+        carportSideSvg.addLineWithArrows(POST_BACK_PLACEMENT_CM, arrowYBottomMargin, arrowBottomXEnd, arrowYBottomMargin);
+        carportSideSvg.addLine(POST_BACK_PLACEMENT_CM, arrowYBottomMargin - tickLength, POST_BACK_PLACEMENT_CM, arrowYBottomMargin + tickLengthLeft, BASE_STYLE);
+        carportSideSvg.addLine(arrowBottomXEnd, arrowYBottomMargin - tickLength, arrowBottomXEnd, arrowYBottomMargin + tickLengthLeft, BASE_STYLE);
+    }
+
+
+    // Is Carport with 2 or 3 posts (per side)
+    // Is Carport with shed
+        // Is shed full width
+            // Is shedpost placement further than center post (back to front)
+                // Arrow points to shed post first, then centerpost
+            // Or is shedpost equal to centerpost
+                // Arrow only points to centerpost
+            // Else shedpost is not further than centerpost
+                // Arrow points to centerpost first, then shedpost
+        // Else shed is half width (LEFT)
+            // Not handled - include in report
 
     private void addPost()
     {
-        int totalNumberOfPost = PartCalculator.calculateNumberOfPostsWithOutShed(carport.getLength());
-        int numberOfPostsPerRow = totalNumberOfPost / 2;
+        int numberOfPostsPerRow = PartCalculator.calculateNumberOfPostsWithOutShed(carport.getLength());
 
         carportInnerSvg.addRectangle(POST_FRONT_PLACEMENT_CM, yPositionBottom - POST_WITH_BEAM_CUTOUT_HEIGHT_CM, POST_WITH_BEAM_CUTOUT_HEIGHT_CM, POST_WIDTH_CM, BASE_STYLE);
         carportInnerSvg.addRectangle(POST_BACK_PLACEMENT_CM, yPositionBottom - POST_WITH_BEAM_CUTOUT_HEIGHT_CM, POST_WITH_BEAM_CUTOUT_HEIGHT_CM, POST_WIDTH_CM, BASE_STYLE);
 
-        if (numberOfPostsPerRow == 3)
+        if (numberOfPostsPerRow == 3 && carport.getShed() == null)
         {
             carportInnerSvg.addRectangle(postCenterPlacementCm, yPositionBottom - POST_WITH_BEAM_CUTOUT_HEIGHT_CM, POST_WITH_BEAM_CUTOUT_HEIGHT_CM, POST_WIDTH_CM, BASE_STYLE);
+        }
+        else if (numberOfPostsPerRow > 3 && carport.getShed() != null)
+        {
+            double shedPostPlacement = PartCalculator.calculateShedPostPlacement(carport);
+            carportInnerSvg.addRectangle(postCenterPlacementCm, yPositionBottom - POST_WITH_BEAM_CUTOUT_HEIGHT_CM, POST_WITH_BEAM_CUTOUT_HEIGHT_CM, POST_WIDTH_CM, BASE_STYLE);
+            carportInnerSvg.addRectangle(shedPostPlacement, yPositionBottom - POST_WITH_BEAM_CUTOUT_HEIGHT_CM, POST_WITH_BEAM_CUTOUT_HEIGHT_CM, POST_WIDTH_CM, BASE_STYLE);
         }
     }
 
@@ -175,6 +223,8 @@ public class CarportSvgSide
         carportSideSvg.addLineWithArrows(arrowInnerLeftXStart, innerArrowTopY, arrowInnerLeftXStart, arrowBottomY);
         //Left inner measure line
         carportSideSvg.addLine(arrowInnerLeftXStart - tickLength, innerArrowTopY, arrowInnerLeftXStart + tickLength, innerArrowTopY, BASE_STYLE);
+
+
 
         // Bottom arrow
         carportSideSvg.addLineWithArrows(INNER_SVG_X_START, arrowYBottomMargin, arrowBottomXEnd, arrowYBottomMargin);

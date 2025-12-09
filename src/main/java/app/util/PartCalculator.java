@@ -5,6 +5,7 @@ import app.dto.RafterCalculationDTO;
 import app.entities.Carport;
 import app.entities.Material;
 import app.entities.MaterialVariant;
+import app.entities.Shed;
 import app.enums.ShedPlacement;
 
 import java.util.List;
@@ -12,14 +13,17 @@ import java.util.List;
 public class PartCalculator
 {
     private static final int SHED_FULL_SIZE_POSTS = 5;
-    private static final int SHED_NOT_FULL_SIZE_POSTS = 4;
+    private static final int SHED_NOT_FULL_SIZE_POSTS_SMALL = 4;
+    private static final int SHED_NOT_FULL_SIZE_POSTS_LARGE = 5;
     private static final int MAX_SPACING_CM = 60;
     private static final int RAFTER_START_END = 2;
+    private static final double MAX_DISTANCE_BETWEEN_POSTS = 310.0;
+    private static final double POST_EDGE_INSET_CM = 30.00;
 
-    public static int calculateNumberOfPostsWithShed(int length, ShedPlacement shedPlacement)
+    public static int calculateNumberOfPostsWithShed(int length, Shed shed)
     {
         int totalPosts = calculateNumberOfPostsWithOutShed(length);
-        totalPosts += getShedPosts(shedPlacement);
+        totalPosts += getShedPosts(shed);
 
         return totalPosts;
     }
@@ -69,10 +73,25 @@ public class PartCalculator
         return  (length - (2 * rafterWidth)) / (totalNumberOfRafters - 1);
     }
 
-    private static int getShedPosts(ShedPlacement shedPlacement)
+    private static int getShedPosts(Shed shed)
     {
-        return shedPlacement == ShedPlacement.FULL_WIDTH ? SHED_FULL_SIZE_POSTS : SHED_NOT_FULL_SIZE_POSTS;
+        if (shed.getShedPlacement() == ShedPlacement.LEFT || shed.getShedPlacement() == ShedPlacement.RIGHT)
+        {
+            if (shed.getLength() > MAX_DISTANCE_BETWEEN_POSTS)
+            {
+                return SHED_NOT_FULL_SIZE_POSTS_LARGE;
+            }
+            else
+            {
+                return SHED_NOT_FULL_SIZE_POSTS_SMALL;
+            }
+        }
+        else
+        {
+            return SHED_FULL_SIZE_POSTS;
+        }
     }
+
 
     public static int calculateNumberOfRoofTileRows(int carportWidth, int roofVariantWidth)
     {
@@ -125,7 +144,7 @@ public class PartCalculator
     {
         boolean hasShed = carport.getShed() != null;
         int postsWithoutBeam = 3;
-        int numberOfPosts = hasShed ? calculateNumberOfPostsWithShed(carport.getLength(), carport.getShed().getShedPlacement()) - postsWithoutBeam
+        int numberOfPosts = hasShed ? calculateNumberOfPostsWithShed(carport.getLength(), carport.getShed()) - postsWithoutBeam
                 : calculateNumberOfPostsWithOutShed(carport.getLength());
 
         boolean isSingleBeamPerRow = beamMaxVariantLength >= carport.getLength();
@@ -163,42 +182,49 @@ public class PartCalculator
     }
 
 
-    private int calculateCenterPostPlacement(Carport carport)
+    public static int calculateCenterPostPlacement(Carport carport)
     {
-        final double MAX_DISTANCE_BETWEEN_POSTS = 310.0;
         final int MIN_DISTANCE_BETWEEN_POSTS = 100;
-        final double POST_EDGE_INSET_CM = 35.00;
         final double POST_FRONT_PLACEMENT_CM = 100.0;
-        double POST_BACK_PLACEMENT_CM = carport.getLength() - POST_EDGE_INSET_CM; // Make this an int
-        double postCenterPlacementCm = POST_FRONT_PLACEMENT_CM + MAX_DISTANCE_BETWEEN_POSTS; // Make this an int
+        int postWidth = 10;
+        double postCenterPlacementCm = POST_FRONT_PLACEMENT_CM + MAX_DISTANCE_BETWEEN_POSTS;
 
-        double postShedPlacementCm = carport.getLength() - (carport.getShed().getLength() + POST_EDGE_INSET_CM); // Set this variable
+        if(carport.getShed() == null)
+        {
+            return (int) postCenterPlacementCm;
+        }
+
+        double postShedPlacementCm = calculateShedPostPlacement(carport);
         double spaceBetweenCenterAndShedPost = postShedPlacementCm - postCenterPlacementCm;
         boolean isPostFurtherThanCenterPost = false;
 
-        // If spaceBetween is negative:
-        // spaceBetweenCenterAndShedPost = Math.abs(spaceBetweenCenterAndShedPost);
-        // isPostFurtherThanCenterPost = true;
         if (spaceBetweenCenterAndShedPost < 0)
         {
             spaceBetweenCenterAndShedPost = Math.abs(spaceBetweenCenterAndShedPost);
             isPostFurtherThanCenterPost = true;
         }
 
-        // If spaceBetween is less than min spacing and post is further than center post:
-        // update centerpost placement to shedpost placement + min distance
-        // Else if spaceBetween is less than min spacing and post is not further than center post:
-        // update centerpost placement to shedpost placement - min distance
-        if (spaceBetweenCenterAndShedPost < MIN_DISTANCE_BETWEEN_POSTS)
+        if (spaceBetweenCenterAndShedPost == 0)
         {
-            postCenterPlacementCm = isPostFurtherThanCenterPost ? postShedPlacementCm + MIN_DISTANCE_BETWEEN_POSTS : postShedPlacementCm - MIN_DISTANCE_BETWEEN_POSTS;
-
+            return (int) postCenterPlacementCm;
+        }
+        else if (spaceBetweenCenterAndShedPost < MIN_DISTANCE_BETWEEN_POSTS)
+        {
+            if (isPostFurtherThanCenterPost)
+            {
+                postCenterPlacementCm = postShedPlacementCm + MIN_DISTANCE_BETWEEN_POSTS + postWidth;
+            }
+            else
+            {
+                postCenterPlacementCm = postShedPlacementCm - MIN_DISTANCE_BETWEEN_POSTS;
+            }
         }
 
-        // Else return original centerpost placement
-        // result is equal to post front placement + max distance between posts
-
-        // Remember logic to catch if shed is full width or not - separate method!
         return (int) postCenterPlacementCm;
+    }
+
+    public static int calculateShedPostPlacement(Carport carport)
+    {
+        return (int) (carport.getLength() - (carport.getShed().getLength() + POST_EDGE_INSET_CM));
     }
 }
