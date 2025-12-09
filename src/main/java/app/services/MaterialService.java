@@ -169,7 +169,7 @@ public class MaterialService implements IMaterialService
                 {
                     throw new IllegalArgumentException("ID skal være et tal.");
                 }
-                yield materialVariantMapper.searchById(Integer.parseInt(query));
+                yield materialVariantMapper.searchByMaterialVariantId(Integer.parseInt(query));
             }
             case "name" -> getMaterialVariantsByName(query);
             case "category" -> getMaterialVariantsByCategory(query);

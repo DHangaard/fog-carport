@@ -316,7 +316,7 @@ public class MaterialVariantMapper
         }
     }
 
-    public List<MaterialVariant> searchById(int materialVariantId) throws DatabaseException
+    public List<MaterialVariant> searchByMaterialVariantId(int materialVariantId) throws DatabaseException
     {
         String sql = """
             SELECT 
