@@ -10,6 +10,7 @@ import app.services.svg.CarportSvgSide;
 import app.services.svg.CarportSvgTop;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,9 +37,20 @@ public class CarportController
         app.get("/carport-formular", ctx -> showCarportFormular(ctx));
         app.get("/request-offer-contact", ctx -> showRequestOfferContact(ctx));
         app.get("/show-carport-drawing/{id}", ctx -> showCarportDrawing(ctx));
+        app.get("/requests/{id}/update-carport", ctx -> showUpdateCarportFormular(ctx));
 
         app.post("/request-carport", ctx -> handleCarportRequest(ctx));
         app.post("/confirm-request", ctx -> confirmCarportRequest(ctx));
+        app.post("/requests/{id}/update", ctx -> updateCarportDimensions(ctx));
+    }
+
+    private void showUpdateCarportFormular(Context ctx)
+    {
+    }
+
+    private void updateCarportDimensions(Context ctx)
+    {
+
     }
 
     private void showRequestOfferContact(Context ctx)
