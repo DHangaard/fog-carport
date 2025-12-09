@@ -172,26 +172,33 @@ public class PartCalculator
         double POST_BACK_PLACEMENT_CM = carport.getLength() - POST_EDGE_INSET_CM; // Make this an int
         double postCenterPlacementCm = POST_FRONT_PLACEMENT_CM + MAX_DISTANCE_BETWEEN_POSTS; // Make this an int
 
-        int result = 0;
-        int postShedPlacementCm; // Set this variable
-        int spaceBetweenCenterAndShedPost; // postShedPlacementCm - postCenterPlacementCm;
+        double postShedPlacementCm = carport.getLength() - (carport.getShed().getLength() + POST_EDGE_INSET_CM); // Set this variable
+        double spaceBetweenCenterAndShedPost = postShedPlacementCm - postCenterPlacementCm;
         boolean isPostFurtherThanCenterPost = false;
 
         // If spaceBetween is negative:
         // spaceBetweenCenterAndShedPost = Math.abs(spaceBetweenCenterAndShedPost);
         // isPostFurtherThanCenterPost = true;
+        if (spaceBetweenCenterAndShedPost < 0)
+        {
+            spaceBetweenCenterAndShedPost = Math.abs(spaceBetweenCenterAndShedPost);
+            isPostFurtherThanCenterPost = true;
+        }
 
         // If spaceBetween is less than min spacing and post is further than center post:
         // update centerpost placement to shedpost placement + min distance
-
         // Else if spaceBetween is less than min spacing and post is not further than center post:
         // update centerpost placement to shedpost placement - min distance
+        if (spaceBetweenCenterAndShedPost < MIN_DISTANCE_BETWEEN_POSTS)
+        {
+            postCenterPlacementCm = isPostFurtherThanCenterPost ? postShedPlacementCm + MIN_DISTANCE_BETWEEN_POSTS : postShedPlacementCm - MIN_DISTANCE_BETWEEN_POSTS;
+
+        }
 
         // Else return original centerpost placement
         // result is equal to post front placement + max distance between posts
 
         // Remember logic to catch if shed is full width or not - separate method!
-        return result;
+        return (int) postCenterPlacementCm;
     }
-
 }
