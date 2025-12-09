@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Fog - Materialer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+    <link rel="icon" th:href="@{/images/logo.svg}">
+</head>
+<body>
+
+<div th:replace="~{fragments :: headerFragment}"></div>
+
+<main>
+    <div class="orders-view">
+        <div th:if="${successMessage}" class="message message-success">
+            <p th:text="${successMessage}"></p>
+        </div>
+
+        <div th:if="${errorMessage}" class="message message-error">
+            <p th:text="${errorMessage}"></p>
+        </div>
+
+        <h1>Materialer</h1>
+
+        <section class="section">
+            <h2>Opret nyt materiale</h2>
+
+            <div class="create-material-card">
+                <p>Klik på knappen nedenfor for at oprette et nyt materiale</p>
+
+                <div class="create-button">
+                    <a th:href="@{/materials/create}" class="btn btn-secondary">Gå til oprettelse af materiale</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Søg efter materialer</h2>
+
+            <div class="search-container">
+                <form method="get" th:action="@{/materials}">
+                    <div class="material-search-form">
+                        <div class="search-row">
+                            <div class="form-group">
+                                <label for="searchType">Søg i:</label>
+                                <select name="searchType" id="searchType" required>
+                                    <option value="">-- Vælg søgefelt --</option>
+                                    <option value="id" th:selected="${searchType == 'id'}">ID</option>
+                                    <option value="name" th:selected="${searchType == 'name'}">Navn</option>
+                                    <option value="category" th:selected="${searchType == 'category'}">Kategori</option>
+                                    <option value="type" th:selected="${searchType == 'type'}">Type</option>
+                                </select>
+                                <div class="form-group">
+                                    <label for="query">Søgeord:</label>
+                                    <input type="text"
+                                           id="query"
+                                           name="query"
+                                           th:value="${query}"
+                                           placeholder='fx "123", "Stolpe", "Træ" (vælg "Søg i" først)'
+                                           required>
+                                </div>
+                                <div class="search-help-tip">
+                                    <p>Tip: Vælg først søgefelt (ID/Navn/Kategori/Type) og indtast søgeord.</p>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="search-actions">
+                            <button class="btn btn-primary" type="submit">Søg</button>
+                            <a th:href="@{/materials}" class="btn btn-secondary">Nulstil</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <section class="order-section">
+            <h2>Søgeresultater
+                <span th:if="${hasSearched}" class="badge-secondary" th:text="${variants != null ? variants.size() : 0}"></span>
+            </h2>
+
+            <div th:if="${!hasSearched}" class="no-results">
+                <p>Brug søgeformularen ovenfor til at finde materialer</p>
+            </div>
+
+            <div th:if="${hasSearched && (variants == null || variants.isEmpty())}" class="no-results">
+                <p>Ingen materialer fundet</p>
+            </div>
+
+            <div th:if="${hasSearched && variants != null && !variants.isEmpty()}" class="orders-table">
+                <table class="orders-table">
+                    <thead>
+                    <tr>
+                        <th>Vare nr.</th>
+                        <th>Vare beskrivelse</th>
+                        <th>Hjælpe tekst</th>
+                        <th>Længde</th>
+                        <th>Bredde</th>
+                        <th>Højde</th>
+                        <th>Enhed</th>
+                        <th>Stk. per enhed</th>
+                        <th>Pris</th>
+                        <th>Type</th>
+                        <th>Handling</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="variant : ${variants}">
+                        <td th:text="${variant.materialVariantId}"></td>
+                        <td th:text="${variant.material.description}"></td>
+                        <td th:text="${variant.material.usage}"></td>
+                        <td th:text="${variant.variantLength != null ? variant.variantLength + ' cm' : '-'}"></td>
+                        <td th:text="${variant.material.materialWidth != null ? variant.material.materialWidth + ' mm' : '-'}"></td>
+                        <td th:text="${variant.material.materialHeight != null ? variant.material.materialHeight + ' mm' : '-'}"></td>
+                        <td th:text="${variant.material.unit}"></td>
+                        <td th:text="${variant.piecesPerUnit}"></td>
+                        <td th:text="${variant.unitPrice}"></td>
+                        <td th:text="${variant.material.type.displayName}"></td>
+                        <td>
+                            <div class="table-actions">
+                                <form th:action="@{/materials/{id}/delete-material(id=${variant.materialVariantId})}" method="post" onsubmit="return confirm('Er du sikker på du vil slette denne? ')">
+                                    <input type="hidden" name="materialVariantId" th:value="${variant.materialVariantId}">
+                                    <button type="submit" class="btn-table btn-delete" title="Slet">
+                                        <img th:src="@{/images/delete.svg}" alt="Slet"/>
+                                    </button>
+                                </form>
+                                <a th:href="@{/materials/{id}/update-material(id=${variant.materialVariantId})}" class="btn-table btn-view" title="Rediger">
+                                    <img th:src="@{/images/edit.svg}" alt="Rediger"/>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+</main>
+
+<div th:replace="~{fragments :: footerFragment}"></div>
+
+</body>
+</html>

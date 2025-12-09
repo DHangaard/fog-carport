@@ -2,7 +2,7 @@ package app.dto;
 
 import app.entities.Carport;
 
-public record CreateOrderRequest(
+public record CreateOrderRequestDTO(
         int userId,
         Carport carport,
         String customerComment

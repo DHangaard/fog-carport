@@ -88,16 +88,32 @@ public class ValidationUtil
         }
     }
 
-    public static void validateCity(String city)
+    public static void validateQuantity(int quantity)
     {
-        if (city == null || city.trim().isEmpty())
+        if(quantity < 0)
         {
-            throw new IllegalArgumentException("By kan ikke være tom");
+            throw new IllegalArgumentException("Antal skal være positivt");
+        }
+    }
+
+    public static void validateSearchTypeAndQuery(String searchType, String query)
+    {
+        if(searchType == null || searchType.isEmpty() || query == null || query.isEmpty())
+        {
+            throw new IllegalArgumentException("Dit søge input mangler en type eller søgning prøv igen");
+        }
+    }
+
+    public static void validateMaterialValue(String value, String fieldName)
+    {
+        if (value == null || value.trim().isEmpty())
+        {
+            throw new IllegalArgumentException(fieldName + " kan ikke være tom");
         }
 
-        if (city.length() < 2)
+        if (value.length() < 2)
         {
-            throw new IllegalArgumentException("By skal være mindst 2 tegn");
+            throw new IllegalArgumentException(fieldName + " skal være mindst 2 tegn");
         }
     }
 
