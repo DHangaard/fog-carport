@@ -205,7 +205,6 @@ public class OrderService implements IOrderService
             catch (DatabaseException e)
             {
                 connection.rollback();
-
                 throw new DatabaseException("Fejl ved opdatering af carport" + e.getMessage());
             }
             catch (MaterialNotFoundException e)
@@ -213,7 +212,6 @@ public class OrderService implements IOrderService
                 connection.rollback();
                 throw new DatabaseException("Fejl ved opdatering af carport" + e.getMessage());
             }
-
         }
         catch (SQLException e)
         {
@@ -400,5 +398,4 @@ public class OrderService implements IOrderService
                 order.getCustomerComment()
         );
     }
-
 }
