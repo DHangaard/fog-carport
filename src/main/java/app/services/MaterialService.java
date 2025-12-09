@@ -1,14 +1,12 @@
 package app.services;
 
 import app.entities.*;
-import app.enums.MaterialCategory;
-import app.enums.MaterialType;
 import app.exceptions.DatabaseException;
-import app.exceptions.MaterialNotFoundException;
 import app.persistence.ConnectionPool;
 import app.persistence.MaterialLineMapper;
 import app.persistence.MaterialMapper;
 import app.persistence.MaterialVariantMapper;
+import app.util.ValidationUtil;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -33,6 +31,7 @@ public class MaterialService implements IMaterialService
     @Override
     public boolean updateBillOfMaterialLineQuantity(int materialLineId, int quantity) throws DatabaseException
     {
+        ValidationUtil.validateQuantity(quantity);
         return materialLineMapper.updateMaterialLineQuantity(materialLineId, quantity);
     }
 
@@ -52,6 +51,8 @@ public class MaterialService implements IMaterialService
     @Override
     public double calculateLinePriceDifference(int materialLineId, int quantity) throws DatabaseException
     {
+        ValidationUtil.validateQuantity(quantity);
+
         MaterialLine materialLine = materialLineMapper.getMaterialLineById(materialLineId);
         double oldMaterialLineTotal = calculateLineTotal(materialLine);
         double newMaterialLineTotal = materialLine.getMaterialVariant().getUnitPrice() * quantity;
@@ -68,6 +69,11 @@ public class MaterialService implements IMaterialService
     @Override
     public boolean updateMaterialVariant(MaterialVariant variant) throws DatabaseException
     {
+        if(variant == null)
+        {
+            return false;
+        }
+
         boolean isUpdated = false;
 
         try (Connection connection = connectionPool.getConnection())
@@ -153,10 +159,7 @@ public class MaterialService implements IMaterialService
     @Override
     public List<MaterialVariant> searchMaterials(String searchType, String query) throws DatabaseException
     {
-        if(searchType == null || searchType.isEmpty() || query == null || query.isEmpty())
-        {
-            throw new IllegalArgumentException("Dit søge input mangler en type eller søgning prøv igen");
-        }
+        ValidationUtil.validateSearchTypeAndQuery(searchType, query);
 
         return switch (searchType.toLowerCase())
         {

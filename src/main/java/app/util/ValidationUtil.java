@@ -88,6 +88,22 @@ public class ValidationUtil
         }
     }
 
+    public static void validateQuantity(int quantity)
+    {
+        if(quantity < 0)
+        {
+            throw new IllegalArgumentException("Antal skal være positivt");
+        }
+    }
+
+    public static void validateSearchTypeAndQuery(String searchType, String query)
+    {
+        if(searchType == null || searchType.isEmpty() || query == null || query.isEmpty())
+        {
+            throw new IllegalArgumentException("Dit søge input mangler en type eller søgning prøv igen");
+        }
+    }
+
     public static void validateMaterialValue(String value, String fieldName)
     {
         if (value == null || value.trim().isEmpty())

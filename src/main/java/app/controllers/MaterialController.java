@@ -36,7 +36,7 @@ public class MaterialController
 
     private void handleDeleteMaterial(Context ctx)
     {
-        if (!userIsAdmin(ctx)) return;
+        if (!userIsAdmin(ctx)){ return;}
         int materialVariantId = Integer.parseInt(ctx.pathParam("id"));
 
         try
@@ -49,7 +49,7 @@ public class MaterialController
           }
           else
           {
-              ctx.sessionAttribute("errorMessage", "Der skete en fejl, ved slettelse af materialet med id: " + materialVariantId);
+              ctx.sessionAttribute("errorMessage", "Der opstod en fejl, ved slettelse af materialet med id: " + materialVariantId);
               ctx.redirect("/materials");
           }
         }
@@ -62,7 +62,7 @@ public class MaterialController
 
     private void handleUpdateMaterial(Context ctx)
     {
-        if (!userIsAdmin(ctx)) return;
+        if (!userIsAdmin(ctx)) {return;}
 
         int materialVariantId = Integer.parseInt(ctx.pathParam("id"));
 
@@ -88,7 +88,6 @@ public class MaterialController
             {
                 ctx.sessionAttribute("errorMessage", "Noget gik galt ved opdatering af materiale varianten med id: " + updatedMaterialVariant.getMaterialVariantId());
             }
-
             ctx.redirect("/materials");
         }
         catch (DatabaseException e)
@@ -105,7 +104,7 @@ public class MaterialController
 
     private void handleCreateMaterial(Context ctx)
     {
-        if (!userIsAdmin(ctx)) return;
+        if (!userIsAdmin(ctx)) {return;}
 
         try
         {
@@ -164,7 +163,7 @@ public class MaterialController
 
     private void showMaterialsPage(Context ctx)
     {
-        if (!userIsAdmin(ctx)) return;
+        if (!userIsAdmin(ctx)) {return;}
         displayMessages(ctx);
 
         boolean hasSearched = false;
@@ -213,10 +212,10 @@ public class MaterialController
         ValidationUtil.validateMaterialValue(usage, "Hjælpe tekst");
         ValidationUtil.validateMaterialValue(unit, "Enhed");
 
-        Integer width = parseOptionalIntWithValidation(ctx.formParam("width"), "Bredde");
-        Integer height = parseOptionalIntWithValidation(ctx.formParam("height"), "Højde");
-        Integer length = parseOptionalIntWithValidation(ctx.formParam("length"), "Længde");
-        Integer piecesPerUnit = parseOptionalIntWithValidation(ctx.formParam("piecesPerUnit"), "Antal per enhed");
+        Integer width = parseIntOrThrowWithValidation(ctx.formParam("width"), "Bredde");
+        Integer height = parseIntOrThrowWithValidation(ctx.formParam("height"), "Højde");
+        Integer length = parseIntOrThrowWithValidation(ctx.formParam("length"), "Længde");
+        Integer piecesPerUnit = parseIntOrThrowWithValidation(ctx.formParam("piecesPerUnit"), "Antal per enhed");
         double unitPrice = parseDoubleOrThrow(ctx.formParam("unitPrice"), "Pris");
 
         MaterialCategory category = MaterialCategory.valueOf(categoryStr);
@@ -243,7 +242,7 @@ public class MaterialController
         );
     }
 
-    private Integer parseOptionalIntWithValidation(String value, String fieldName)
+    private Integer parseIntOrThrowWithValidation(String value, String fieldName)
     {
         if (value == null || value.isBlank())
         {
