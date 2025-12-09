@@ -141,7 +141,7 @@
                     <td th:text="${line.materialVariant.material.unit}"></td>
                     <td th:text="${line.materialVariant.piecesPerUnit}"></td>
                     <td>
-                        <form th:action="@{/requests/{id}/delete-bom-line(id=${orderDetail.orderId})}" method="post">
+                        <form th:action="@{/requests/{id}/delete-bom-line(id=${orderDetail.orderId})}" method="post" onsubmit="return confirm('Er du sikker på du vil slette denne? ')">
                             <input type="hidden" name="materialLineId" th:value="${line.materialLineId}">
                             <button type="submit" class="btn-table btn-delete" title="Slet">
                                 <img th:src="@{/images/delete.svg}" alt="Slet"/>

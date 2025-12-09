@@ -41,17 +41,17 @@ public class MaterialController
 
         try
         {
-          boolean success = materialService.deleteMaterialVariant(materialVariantId);
-          if(success)
-          {
-              ctx.sessionAttribute("successMessage", "Dit materiale blev slettet med id: " + materialVariantId);
-              ctx.redirect("/materials");
-          }
-          else
-          {
-              ctx.sessionAttribute("errorMessage", "Der opstod en fejl, ved slettelse af materialet med id: " + materialVariantId);
-              ctx.redirect("/materials");
-          }
+            boolean success = materialService.deleteMaterialVariant(materialVariantId);
+            if(success)
+            {
+                ctx.sessionAttribute("successMessage", "Dit materiale blev slettet med id: " + materialVariantId);
+                ctx.redirect("/materials");
+            }
+            else
+            {
+                ctx.sessionAttribute("errorMessage", "Der opstod en fejl, ved slettelse af materialet med id: " + materialVariantId);
+                ctx.redirect("/materials");
+            }
         }
         catch (DatabaseException e)
         {

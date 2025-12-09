@@ -2,7 +2,7 @@
 <html lang="da" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
-    <title>Fog - Holder i længden</title>
+    <title>Fog - Opdater materiale</title>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link rel="stylesheet" th:href="@{/css/styles.css}"/>
     <link rel="icon" th:href="@{/images/logo.svg}">
@@ -35,25 +35,25 @@
             </div>
 
             <div class="form-field">
-            <label>Kategori</label>
-            <select name="category">
-                <option th:each="cat : ${categories}"
-                        th:value="${cat.name()}"
-                        th:text="${cat.displayCategory}"
-                        th:selected="${materialVariant.material.category == cat}">
-                </option>
-            </select>
+                <label>Kategori</label>
+                <select name="category">
+                    <option th:each="cat : ${categories}"
+                            th:value="${cat.name()}"
+                            th:text="${cat.displayCategory}"
+                            th:selected="${materialVariant.material.category == cat}">
+                    </option>
+                </select>
             </div>
 
             <div class="form-field">
-            <label>Type</label>
-            <select name="type">
-                <option th:each="typ : ${types}"
-                        th:value="${typ.name()}"
-                        th:text="${typ.displayName}"
-                        th:selected="${typ == materialVariant.material.type}">
-                </option>
-            </select>
+                <label>Type</label>
+                <select name="type">
+                    <option th:each="typ : ${types}"
+                            th:value="${typ.name()}"
+                            th:text="${typ.displayName}"
+                            th:selected="${typ == materialVariant.material.type}">
+                    </option>
+                </select>
             </div>
 
             <div class="form-field">
@@ -101,9 +101,7 @@
             <button type="submit" class="btn btn-primary">Opdater materiale</button>
         </form>
     </div>
-
 </main>
-
 
 <div th:replace="~{fragments :: footerFragment}"></div>
 

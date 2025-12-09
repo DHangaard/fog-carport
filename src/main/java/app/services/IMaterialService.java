@@ -16,5 +16,4 @@ public interface IMaterialService
     public MaterialVariant createMaterialVariant(MaterialVariant variant) throws DatabaseException;
     public List<MaterialVariant> searchMaterials(String searchType, String query) throws DatabaseException;
     public MaterialVariant getMaterialVariantById(int materialVariantId) throws DatabaseException;
-
 }
