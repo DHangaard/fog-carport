@@ -122,7 +122,7 @@ public class CustomerController
 
             if (isUpdated)
             {
-                if(orderStatus.equals(OrderStatus.ACCEPTED))
+                if(orderStatus == OrderStatus.PAID)
                 {
                     OrderDetail orderDetail = orderService.getOrderDetailByOrderId(orderId);
                     emailService.sendOrderConfirmation(currentUser, orderDetail);
