@@ -3,8 +3,7 @@ package app.enums;
 public enum ShedPlacement
 {
     FULL_WIDTH("Fuld bredde"),
-    LEFT("Venstre"),
-    RIGHT("Højre");
+    LEFT("Venstre");
 
     private final String displayName;
 
