@@ -150,6 +150,7 @@ public class BomService implements IBomService
             }
 
             int totalRoofLengthCoverage = carport.getLength() + OVERHANG + OVERLAY;
+
             int remainingLength = totalRoofLengthCoverage - roofVariant.getVariantLength();
 
             MaterialVariant remainingVariant = findOptimalVariantLength(roofVariants, remainingLength);

@@ -126,19 +126,21 @@
                 </div>
             </div>
 
-            <a th:href="@{/show-carport-drawing/{id}(id=${offer.orderId})}" class=" btn btn-primary" target="_blank" rel="noopener noreferrer">Se stor tegning her</a>
+            <a th:href="@{/show-carport-drawing/{id}(id=${offer.orderId})}" class="btn btn-secondary"  target="_blank" rel="noopener noreferrer">Se stor tegning her</a>
+        </section>
+
+        <section class="section">
+            <div class="form-actions">
+            <form th:action="@{/customer-offer/{id}/accept(id=${offer.orderId})}" method="post">
+                <button type="submit" class="btn btn-primary">Accepter tilbud</button>
+            </form>
+            <form th:action="@{/customer-offer/{id}/reject(id=${offer.orderId})}" method="post">
+                <button type="submit" class="btn btn-primary">Afslå tilbud</button>
+            </form>
+            </div>
         </section>
     </div>
 </main>
-
-<div> <!-- Add class and flexbox in CSS -->
-    <form th:action="@{/customer-offer/{id}/accept(id=${offer.orderId})}" method="post">
-        <button type="submit" class="btn-primary btn-large">Accepter tilbud</button>
-    </form>
-    <form th:action="@{/customer-offer/{id}/reject(id=${offer.orderId})}" method="post">
-        <button type="submit" class="btn-primary btn-large">Afslå tilbud</button>
-    </form>
-</div>
 
 <div th:replace="~{fragments :: footerFragment}"></div>
 </body>
