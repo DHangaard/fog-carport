@@ -116,10 +116,7 @@ private void addFrame()
                 addShedPostPair(shedStartX, shedMiddleY, shedEndX);
 
             }
-            case RIGHT ->
-            {
 
-            }
             case LEFT ->
             {
 

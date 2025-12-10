@@ -14,9 +14,11 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class OrderService implements IOrderService
 {
@@ -39,12 +41,6 @@ public class OrderService implements IOrderService
         this.bomService = bomService;
         this.emailService = emailService;
         this.connectionPool = connectionPool;
-    }
-
-    @Override
-    public boolean saveOrderRequest(Carport carport, UserDTO userDTO) throws DatabaseException
-    {
-        return false;
     }
 
     @Override
@@ -176,12 +172,36 @@ public class OrderService implements IOrderService
             connection.setAutoCommit(false);
             try
             {
-                isUpdated = carportMapper.updateCarport(connection, carport);
+                Carport oldCarport = carportMapper.getCarportById(carport.getCarportId());
+                Shed oldShed = oldCarport.getShed();
+                Shed newShed = carport.getShed();
 
-                if(carport.getShed() != null)
+                Integer shedIdToUse = null;
+
+                if(oldShed == null && newShed != null)
                 {
-                    isUpdated = shedMapper.updateShed(connection, carport.getShed());
+                    Shed created = shedMapper.createShed(connection, newShed.getLength(), newShed.getWidth(), newShed.getShedPlacement());
+                    shedIdToUse = created.getShedId();
                 }
+                else if(oldShed != null && newShed == null)
+                {
+                    shedMapper.deleteShed(connection, oldShed.getShedId());
+                    shedIdToUse = null;
+                }
+                else if(oldShed != null && newShed != null)
+                {
+                    newShed.setShedId(oldShed.getShedId());
+                    shedMapper.updateShed(connection, newShed);
+                    shedIdToUse = oldShed.getShedId();
+                }
+
+                if(newShed != null)
+                {
+                    newShed.setShedId(shedIdToUse);
+                }
+                carport.setShed(newShed);
+
+                isUpdated = carportMapper.updateCarport(connection, carport);
 
                 isUpdated = materialLineMapper.deleteAllMaterialLinesByOrderId(connection, orderId);
 
@@ -260,12 +280,6 @@ public class OrderService implements IOrderService
     }
 
     @Override
-    public OrderDetail getOrderDetailByCustomerId(int customerId) throws DatabaseException
-    {
-        return null;
-    }
-
-    @Override
     public OrderDetail getOrderDetailByOrderId(int orderId) throws DatabaseException
     {
         Order order = orderMapper.getOrderById(orderId);
@@ -280,7 +294,12 @@ public class OrderService implements IOrderService
         Carport carport = carportMapper.getCarportById(order.getCarportId());
         List<MaterialLine> materialLines = materialLineMapper.getMaterialLinesByOrderId(orderId);
 
-        return buildOrderDetail(order, customer, seller, carport, materialLines);
+        List<MaterialLine> sortedMaterialLines = materialLines.stream()
+                .sorted(Comparator.comparing(line ->
+                        line.getMaterialVariant().getMaterial().getCategory()))
+                .collect(Collectors.toList());
+
+        return buildOrderDetail(order, customer, seller, carport, sortedMaterialLines);
     }
 
     @Override
@@ -294,13 +313,6 @@ public class OrderService implements IOrderService
     public List<OrderOverviewDTO> getAllOrdersByStatus(OrderStatus orderStatus) throws DatabaseException
     {
         return orderMapper.getAllOrderOverviewsByStatus(orderStatus);
-    }
-
-
-    @Override
-    public List<OrderOverviewDTO> getAllOrdersByUserId(int userId) throws DatabaseException
-    {
-        return orderMapper.getAllOrderOverviewsByUserId(userId);
     }
 
     @Override

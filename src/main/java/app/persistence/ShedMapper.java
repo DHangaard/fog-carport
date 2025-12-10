@@ -117,4 +117,23 @@ public class ShedMapper
             throw new DatabaseException("Fejl ved opdatering af skur: " + e.getMessage());
         }
     }
+
+    public boolean deleteShed(Connection connection, int shedId) throws DatabaseException
+    {
+        String sql = """
+                DELETE FROM shed
+                WHERE shed_id = ?
+                """;
+
+        try (PreparedStatement ps = connection.prepareStatement(sql))
+        {
+            ps.setInt(1, shedId);
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected == 1;
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl ved sletning af skur med id: " + shedId + e.getMessage());
+        }
+    }
 }
