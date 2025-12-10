@@ -176,12 +176,36 @@ public class OrderService implements IOrderService
             connection.setAutoCommit(false);
             try
             {
-                isUpdated = carportMapper.updateCarport(connection, carport);
+                Carport oldCarport = carportMapper.getCarportById(carport.getCarportId());
+                Shed oldShed = oldCarport.getShed();
+                Shed newShed = carport.getShed();
 
-                if(carport.getShed() != null)
+                Integer shedIdToUse = null;
+
+                if(oldShed == null && newShed != null)
                 {
-                    isUpdated = shedMapper.updateShed(connection, carport.getShed());
+                    Shed created = shedMapper.createShed(connection, newShed.getLength(), newShed.getWidth(), newShed.getShedPlacement());
+                    shedIdToUse = created.getShedId();
                 }
+                else if(oldShed != null && newShed == null)
+                {
+                    shedMapper.deleteShed(connection, oldShed.getShedId());
+                    shedIdToUse = null;
+                }
+                else if(oldShed != null && newShed != null)
+                {
+                    newShed.setShedId(oldShed.getShedId());
+                    shedMapper.updateShed(connection, newShed);
+                    shedIdToUse = oldShed.getShedId();
+                }
+                
+                if(newShed != null)
+                {
+                    newShed.setShedId(shedIdToUse);
+                }
+                carport.setShed(newShed);
+
+                isUpdated = carportMapper.updateCarport(connection, carport);
 
                 isUpdated = materialLineMapper.deleteAllMaterialLinesByOrderId(connection, orderId);
 

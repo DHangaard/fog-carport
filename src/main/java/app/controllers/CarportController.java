@@ -104,6 +104,12 @@ public class CarportController
             ctx.sessionAttribute("errorMessage", e.getMessage());
             ctx.redirect("/carport-request/details/" + orderId);
         }
+        catch (IllegalArgumentException e)
+        {
+            ctx.sessionAttribute("errorMessage", e.getMessage());
+            ctx.redirect("/carport-request/details/" + orderId);
+        }
+
 
     }
 
