@@ -2,6 +2,7 @@ package app.util;
 
 import app.entities.Carport;
 import app.entities.Shed;
+import app.enums.ShedPlacement;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,9 +11,10 @@ import java.util.List;
 public class PostPlacementCalculatorUtil
 {
     private static final double POST_FRONT_PLACEMENT_CM = 100.0;
-    private static final double POST_EDGE_INSET_CM = 30.0;
+    private static final double POST_BACK_EDGE_INSET_CM = 30.0;
     private static final double MAX_DISTANCE_BETWEEN_POSTS = 310.0;
     private static final double POST_WIDTH_CM = 10.0;
+    private static final double POST_SIDE_EDGE_INSET_CM = 35.00;
 
     public static List<Double> calculatePostPlacements(Carport carport)
     {
@@ -40,7 +42,7 @@ public class PostPlacementCalculatorUtil
         List<Double> postPlacements = new ArrayList<>();
 
         postPlacements.add(POST_FRONT_PLACEMENT_CM);
-        double backPostPlacement = carport.getLength() - POST_EDGE_INSET_CM;
+        double backPostPlacement = carport.getLength() - POST_BACK_EDGE_INSET_CM;
 
         Shed shed = carport.getShed();
         int totalPosts = PartCalculator.calculateNumberOfPostsWithOutShed(carport.getLength());
@@ -61,7 +63,7 @@ public class PostPlacementCalculatorUtil
                 double middleCenterPlacement = calculateCenterPostPlacement(carport);
                 postPlacements.add(middleCenterPlacement);
             }
-            double shedPostPlacement = carport.getLength() - (shed.getLength() + POST_EDGE_INSET_CM);
+            double shedPostPlacement = carport.getLength() - (shed.getLength() + POST_BACK_EDGE_INSET_CM);
             postPlacements.add(shedPostPlacement);
         }
 
@@ -69,6 +71,26 @@ public class PostPlacementCalculatorUtil
         Collections.sort(postPlacements);
 
         return postPlacements;
+    }
+
+    public static double calculatePostYPosition(Carport carport)
+    {
+        double postYPosition = 0.0;
+
+        if(carport.getShed() == null){ return postYPosition;}
+
+        ShedPlacement placement = carport.getShed().getShedPlacement();
+
+        switch (placement)
+        {
+            case LEFT -> postYPosition = calculateLeftShedYPositions(carport);
+
+            case FULL_WIDTH -> postYPosition = calculateShedMiddleYPosition(carport);
+
+            default -> postYPosition = postYPosition;
+        }
+
+        return postYPosition;
     }
 
     public static int calculateCenterPostPlacement(Carport carport)
@@ -112,6 +134,26 @@ public class PostPlacementCalculatorUtil
 
     public static int calculateShedPostPlacement(Carport carport)
     {
-        return (int) (carport.getLength() - (carport.getShed().getLength() + POST_EDGE_INSET_CM));
+        return (int) (carport.getLength() - (carport.getShed().getLength() + POST_BACK_EDGE_INSET_CM));
+    }
+
+    private static double calculateLeftShedYPositions(Carport carport)
+    {
+        double sides = 2;
+        double totalCarportPostInsetLength = POST_SIDE_EDGE_INSET_CM * sides;
+        double innerCarportLength = carport.getShed().getWidth() - totalCarportPostInsetLength;
+        double shedCenterYPosition = innerCarportLength / 2.0;
+
+        return shedCenterYPosition;
+    }
+
+    private static double calculateShedMiddleYPosition(Carport carport)
+    {
+        double sides = 2;
+        double totalCarportPostInsetLength = POST_SIDE_EDGE_INSET_CM * sides;
+        double innerCarportLength = carport.getWidth() - totalCarportPostInsetLength;
+        double shedCenterYPosition = (innerCarportLength / 2.0) - POST_WIDTH_CM;
+
+        return shedCenterYPosition;
     }
 }

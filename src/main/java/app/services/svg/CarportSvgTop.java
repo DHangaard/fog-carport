@@ -4,6 +4,9 @@ import app.dto.RafterCalculationDTO;
 import app.entities.Carport;
 import app.entities.Shed;
 import app.util.PartCalculator;
+import app.util.PostPlacementCalculatorUtil;
+
+import java.util.List;
 
 public class CarportSvgTop
 {
@@ -56,7 +59,8 @@ public class CarportSvgTop
         addRafters();
         addArrows();
         addArrowText();
-        addPost();
+        //addPost();
+        testAddPost();
         addMetalStrap();
         carportTopSvg.addSvg(carportInnerSvg);
     }
@@ -70,6 +74,19 @@ public class CarportSvgTop
     {
         carportInnerSvg.addRectangle(0, POST_EDGE_INSET_CM, RAFTER_WIDTH_CM, carport.getLength(), BASE_STYLE);
         carportInnerSvg.addRectangle(0,carport.getWidth() - POST_EDGE_INSET_CM, RAFTER_WIDTH_CM, carport.getLength(), BASE_STYLE);
+    }
+
+    private void testAddPost()
+    {
+        Shed shed = carport.getShed();
+        if(shed != null)
+        {
+            addShedPosts(shed);
+        }
+
+        List<Double> postXpositions = PostPlacementCalculatorUtil.calculatePostPlacements(carport);
+
+        postXpositions.forEach(postX -> addPostPair(postX));
     }
 
     private void addPost()
@@ -109,10 +126,10 @@ public class CarportSvgTop
         {
             case FULL_WIDTH ->
             {
-                double shedMiddleY = carport.getWidth() / 2;
+                double shedMiddleY = PostPlacementCalculatorUtil.calculatePostYPosition(carport);
+                double shedMiddlePosition = shedMiddleY + INNER_SVG_Y_START;
                 addPostPair(shedStartX);
-                addShedPostPair(shedStartX, shedMiddleY, shedEndX);
-
+                addShedPostPair(shedStartX, shedMiddlePosition, shedEndX);
             }
 
             case LEFT ->
