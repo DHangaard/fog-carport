@@ -162,6 +162,64 @@ public class OrderService implements IOrderService
     }
 
     @Override
+    public boolean updateCarportAndBillOfMaterials(int orderId, Carport carport) throws DatabaseException
+    {
+        if(carport == null)
+        {
+            return false;
+        }
+
+        boolean isUpdated = false;
+
+        try (Connection connection = connectionPool.getConnection())
+        {
+            connection.setAutoCommit(false);
+            try
+            {
+                isUpdated = carportMapper.updateCarport(connection, carport);
+
+                if(carport.getShed() != null)
+                {
+                    isUpdated = shedMapper.updateShed(connection, carport.getShed());
+                }
+
+                isUpdated = materialLineMapper.deleteAllMaterialLinesByOrderId(connection, orderId);
+
+                List<MaterialLine> bom = bomService.getBillOfMaterialByCarport(carport);
+                PricingDetails pricingDetails = bomService.calculateCarportPrice(bom);
+
+                isUpdated = orderMapper.updateOrder(orderId, pricingDetails.getCostPrice());
+
+                for(MaterialLine line : bom)
+                {
+                    materialLineMapper. createMaterialLine(
+                            connection,
+                            orderId,
+                            line.getMaterialVariant().getMaterialVariantId(),
+                            line.getQuantity()
+                    );
+                }
+                connection.commit();
+                return isUpdated;
+            }
+            catch (DatabaseException e)
+            {
+                connection.rollback();
+                throw new DatabaseException("Fejl ved opdatering af carport" + e.getMessage());
+            }
+            catch (MaterialNotFoundException e)
+            {
+                connection.rollback();
+                throw new DatabaseException("Fejl ved opdatering af carport" + e.getMessage());
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl ved opdatering af carport" + e.getMessage());
+        }
+    }
+
+    @Override
     public boolean updateOrderCostPrice(int orderId, double newCostPrice) throws DatabaseException
     {
         return orderMapper.updateOrder(orderId, newCostPrice);
@@ -340,5 +398,4 @@ public class OrderService implements IOrderService
                 order.getCustomerComment()
         );
     }
-
 }

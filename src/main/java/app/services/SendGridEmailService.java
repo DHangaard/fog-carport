@@ -2,6 +2,7 @@ package app.services;
 
 import app.dto.UserDTO;
 import app.entities.OrderDetail;
+import app.util.PriceFormatUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +12,7 @@ public class SendGridEmailService implements IEmailService
     private SendGridClient sendGridClient;
     private final String REQUEST_CONFIRMATION_TEMPLATE = "d-2f92a4eacaea449b99167a35094140c5";
     private final String OFFER_READY_TEMPLATE = "d-a16e0ee9ed34411ca0acee887bfdb22a";
-    private final String ORDER_CONFIRMATION_TEMPLATE = "d-ae86cc47271143398d6064a7e7de3d4f";
+    private final String ORDER_CONFIRMATION_TEMPLATE = "d-a0d8fc768a3044e4a41339c388cd464c";
 
     public SendGridEmailService()
     {
@@ -96,12 +97,13 @@ public class SendGridEmailService implements IEmailService
         {
             dynamicData.put("carportLength", orderDetail.getCarport().getLength());
             dynamicData.put("carportWidth", orderDetail.getCarport().getWidth());
+            dynamicData.put("roofType", orderDetail.getCarport().getRoofType().getDisplayName());
         }
 
         if (orderDetail.getPricingDetails() != null)
         {
-            dynamicData.put("pricingWithoutVat", orderDetail.getPricingDetails().getPriceWithoutVat());
-            dynamicData.put("totalPrice", orderDetail.getPricingDetails().getTotalPrice());
+            dynamicData.put("pricingWithoutVat", PriceFormatUtil.getFormattedPrice(orderDetail.getPricingDetails().getPriceWithoutVat()));
+            dynamicData.put("totalPrice", PriceFormatUtil.getFormattedPrice(orderDetail.getPricingDetails().getTotalPrice()));
         }
 
         return dynamicData;

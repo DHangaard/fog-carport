@@ -90,7 +90,7 @@ public class ShedMapper
         }
     }
 
-    public boolean updateShed(Shed shed) throws DatabaseException
+    public boolean updateShed(Connection connection, Shed shed) throws DatabaseException
     {
         String sql = """
                 UPDATE shed 
@@ -100,8 +100,7 @@ public class ShedMapper
                 WHERE shed_id = ?
             """;
 
-        try (Connection connection = connectionPool.getConnection();
-             PreparedStatement ps = connection.prepareStatement(sql))
+        try (PreparedStatement ps = connection.prepareStatement(sql))
         {
 
             ps.setInt(1, shed.getLength());

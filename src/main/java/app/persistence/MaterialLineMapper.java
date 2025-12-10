@@ -220,6 +220,25 @@ public class MaterialLineMapper
         }
     }
 
+    public boolean deleteAllMaterialLinesByOrderId(Connection connection, int orderId) throws DatabaseException
+    {
+        String sql = """
+                DELETE FROM material_line
+                WHERE order_id = ?
+                """;
+
+        try (PreparedStatement ps = connection.prepareStatement(sql))
+        {
+            ps.setInt(1, orderId);
+            int rowsDeleted = ps.executeUpdate();
+            return rowsDeleted >= 1;
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl ved sletning af materialelinjer for ordre: " + e.getMessage());
+        }
+    }
+
     private MaterialLine buildMaterialLineFromResultSet(ResultSet rs) throws SQLException
     {
         Material material = new Material(

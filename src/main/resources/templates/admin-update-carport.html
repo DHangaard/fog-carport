@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Fog - Holder i længden</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+    <link rel="icon" th:href="@{/images/logo.svg}">
+</head>
+<body>
+
+<div th:replace="~{fragments :: headerFragment}"></div>
+
+<main>
+
+    <div class="form-container">
+        <h1>Opdater carport mål</h1>
+        <p class="info-text">
+            Når du opdaterer dimensioner, genberegnes styklisten automatisk.
+        </p>
+
+    </div>
+
+    <div class="form-container">
+        <h2>Nuværende carport specifikationer</h2>
+        <div class="info-item">
+            <strong>Længde:</strong>
+            <span th:text="${carport.length} + ' cm'"></span>
+        </div>
+        <div class="info-item">
+            <strong>Bredde:</strong>
+            <span th:text="${carport.width} + ' cm'"></span>
+        </div>
+        <div class="info-item">
+            <strong>Tagtype:</strong>
+            <span th:text="${carport.roofType.displayName}"></span>
+        </div>
+        <div class="info-item" th:if="${carport.shed != null}">
+            <strong>Skur:</strong>
+            <span th:text="${carport.shed.length} + ' x ' + ${carport.shed.width} + ' cm'"></span>
+        </div>
+    </div>
+
+    <div class="form-container">
+        <h2>Opdater Carport Dimensioner</h2>
+
+        <div th:if="${successMessage}" class="message message-success">
+            <p th:text="${successMessage}"></p>
+        </div>
+
+        <div th:if="${errorMessage}" class="message message-error">
+            <p th:text="${errorMessage}"></p>
+        </div>
+
+        <form th:action="@{/requests/{id}/update-carport(id=${orderDetail.orderId})}" method="post" class="form">
+
+            <div class="form-field">
+                <label for="carportWidth">Carport bredde <span class="required-asterisk">*</span></label>
+                <select name="carportWidth" id="carportWidth" required>
+                    <option value="" disabled selected>Vælg bredde</option>
+
+                    <option th:each="cWidth : ${carportWidths}"
+                            th:value="${cWidth}"
+                            th:text="${cWidth + ' cm'}"
+                            th:selected="${cWidth == carport.width}">
+                    </option>
+                </select>
+            </div>
+
+            <div class="form-field">
+                <label for="carportLength">Carport længde <span class="required-asterisk">*</span></label>
+                <select name="carportLength" id="carportLength" required>
+                    <option value="" disabled selected>Vælg bredde</option>
+
+                    <option th:each="cLength : ${carportLengths}"
+                            th:value="${cLength}"
+                            th:text="${cLength + ' cm'}"
+                            th:selected="${cLength == carport.length}">
+                    </option>
+                </select>
+            </div>
+
+            <div class="form-field">
+                <label for="roofType">Carport trapeztag <span class="required-asterisk">*</span></label>
+                <select name="roofType" id="roofType" required>
+                    <option value="" disabled selected>Vælg tag</option>
+                    <option value="TRAPEZ_ROOF">Plasttrapez plader</option>
+                </select>
+            </div>
+
+            <div class="form-field">
+                <label for="shedWidth">Redskabsrum bredde <span class="required-asterisk">*</span></label>
+                <select name="shedWidth" id="shedWidth" required>
+                    <option value="" disabled>Vælg bredde</option>
+                    <option value="NONE"
+                            th:selected="${carport.shed == null}">
+                        Uden redskabsrum
+                    </option>
+                    <option th:each="sWidth : ${shedWidths}"
+                            th:value="${sWidth}"
+                            th:text="${sWidth + ' cm'}"
+                            th:selected="${carport.shed != null && sWidth == carport.shed.width}">
+                    </option>
+                </select>
+            </div>
+
+            <div class="form-field">
+                <label for="shedLength">Redskabsrum længde <span class="required-asterisk">*</span></label>
+                <select name="shedLength" id="shedLength" required>
+                    <option value="" disabled>Vælg længde</option>
+                    <option value="NONE"
+                            th:selected="${carport.shed == null}">
+                        Uden redskabsrum
+                    </option>
+                    <option th:each="sLength : ${shedLengths}"
+                            th:value="${sLength}"
+                            th:text="${sLength + ' cm'}"
+                            th:selected="${carport.shed != null && sLength == carport.shed.length}">
+                    </option>
+                </select>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Opdater carport dimensioner</button>
+
+                <a th:href="@{/carport-request/details/{id}(id=${orderDetail.orderId})}"
+                   class="btn btn-secondary">Annuller</a>
+            </div>
+        </form>
+
+        <div th:if="${successMessage}" class="message message-success">
+            <p th:text="${successMessage}"></p>
+        </div>
+
+        <div th:if="${errorMessage}" class="message message-error">
+            <p th:text="${errorMessage}"></p>
+        </div>
+
+    </div>
+
+</main>
+
+
+<div th:replace="~{fragments :: footerFragment}"></div>
+
+</body>
+</html>
