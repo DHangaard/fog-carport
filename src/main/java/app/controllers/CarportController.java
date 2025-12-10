@@ -107,7 +107,7 @@ public class CarportController
         catch (IllegalArgumentException e)
         {
             ctx.sessionAttribute("errorMessage", e.getMessage());
-            ctx.redirect("/carport-request/details/" + orderId);
+            ctx.redirect("/requests/" + orderId + "/update-carport");
         }
 
 
@@ -303,6 +303,14 @@ public class CarportController
         String shedLengthString = ctx.formParam("shedLength").trim();
 
         Shed shed = null;
+
+        boolean hasShedWidth = !shedWidthString.equals("NONE");
+        boolean hasShedLength = !shedLengthString.equals("NONE");
+
+        if (hasShedWidth != hasShedLength)
+        {
+            throw new IllegalArgumentException("Du skal vælge både bredde og længde for redskabsrum, eller vælge 'Uden redskabsrum' for begge");
+        }
 
         if(!shedLengthString.equals("NONE") && !shedWidthString.equals("NONE"))
         {
