@@ -198,7 +198,7 @@ public class OrderService implements IOrderService
                     shedMapper.updateShed(connection, newShed);
                     shedIdToUse = oldShed.getShedId();
                 }
-                
+
                 if(newShed != null)
                 {
                     newShed.setShedId(shedIdToUse);
