@@ -63,7 +63,7 @@ public class PostPlacementCalculatorUtil
                 double middleCenterPlacement = calculateCenterPostPlacement(carport);
                 postPlacements.add(middleCenterPlacement);
             }
-            double shedPostPlacement = carport.getLength() - (shed.getLength() + POST_BACK_EDGE_INSET_CM);
+            double shedPostPlacement = calculateShedStartPosition(carport);
             postPlacements.add(shedPostPlacement);
         }
 
@@ -137,23 +137,38 @@ public class PostPlacementCalculatorUtil
         return (int) (carport.getLength() - (carport.getShed().getLength() + POST_BACK_EDGE_INSET_CM));
     }
 
-    private static double calculateLeftShedYPositions(Carport carport)
+    private static double calculateRightShedYPositions(Carport carport)
     {
-        double sides = 2;
-        double totalCarportPostInsetLength = POST_SIDE_EDGE_INSET_CM * sides;
-        double innerCarportLength = carport.getShed().getWidth() - totalCarportPostInsetLength;
-        double shedCenterYPosition = innerCarportLength / 2.0;
+        double innerCarportLength = carport.getWidth() - calculateInnerCarportDimension(carport);
+        double shedCenterYPosition = innerCarportLength - carport.getShed().getWidth();
 
         return shedCenterYPosition;
     }
 
+    private static double calculateLeftShedYPositions(Carport carport)
+    {
+        return carport.getShed().getWidth() - POST_SIDE_EDGE_INSET_CM;
+    }
+
     private static double calculateShedMiddleYPosition(Carport carport)
+    {
+        double innerCarportLength = carport.getWidth() - calculateInnerCarportDimension(carport);
+        double shedCenterYPosition = (innerCarportLength / 2.0) - POST_WIDTH_CM;
+
+        return shedCenterYPosition;
+    }
+
+    private static double calculateInnerCarportDimension(Carport carport)
     {
         double sides = 2;
         double totalCarportPostInsetLength = POST_SIDE_EDGE_INSET_CM * sides;
         double innerCarportLength = carport.getWidth() - totalCarportPostInsetLength;
-        double shedCenterYPosition = (innerCarportLength / 2.0) - POST_WIDTH_CM;
 
-        return shedCenterYPosition;
+        return innerCarportLength;
+    }
+
+    public static double calculateShedStartPosition(Carport carport)
+    {
+        return carport.getLength() - (carport.getShed().getLength() + POST_BACK_EDGE_INSET_CM);
     }
 }
