@@ -98,7 +98,11 @@
                        th:value="${materialVariant.material.usage}" required>
             </div>
 
+            <div class="form-actions">
             <button type="submit" class="btn btn-primary">Opdater materiale</button>
+
+            <a th:href="@{/materials}" class="btn btn-secondary">Annuller</a>
+            </div>
         </form>
     </div>
 </main>
