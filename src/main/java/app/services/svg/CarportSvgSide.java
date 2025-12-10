@@ -22,6 +22,7 @@ public class CarportSvgSide
     private final double BEAM_HEIGHT_CM = 19.5;
     private final double WEATHER_BOARD_HEIGHT_CM = 15.0;
     private final double POST_WIDTH_CM = 10.0;
+    private final double POST_EDGE_INSET_CM = 30.00;
     private final double FACADE_CLADDING_BOARD_WIDTH = 10.0;
     private final double POST_HEIGHT_CM = 210;
     private final double POST_WITH_BEAM_CUTOUT_HEIGHT_CM = 210.0 - BEAM_HEIGHT_CM;
@@ -34,25 +35,15 @@ public class CarportSvgSide
 
     private double yPositionBottom;
     private double yPositionTop;
-    double arrowLeftXStart;
-    double arrowInnerLeftXStart;
-    double arrowRightXStart;
-    double arrowBottomY;
-    double arrowBottomXEnd;
-    double arrowYBottomMargin;
-    double arrowYTopMargin;
-
-    // Verify
-    private final double MAX_DISTANCE_BETWEEN_POSTS = 310.0;
-    private final int MIN_DISTANCE_BETWEEN_POSTS = 100;
-    private final double POST_EDGE_INSET_CM = 30.00;
-    private final double POST_FRONT_PLACEMENT_CM = 100.0;
+    private double arrowLeftXStart;
+    private double arrowInnerLeftXStart;
+    private double arrowRightXStart;
+    private double arrowBottomY;
+    private double arrowBottomXEnd;
+    private double arrowYBottomMargin;
+    private double arrowYTopMargin;
     private double POST_BACK_PLACEMENT_CM;
     private double postCenterPlacementCm;
-
-    private final double MAX_SPACING_CM = 55.0;
-
-
 
     public CarportSvgSide(Carport carport)
     {
@@ -73,10 +64,9 @@ public class CarportSvgSide
 
         carportSideSvg.addArrowDefs();
         addFrame();
-        //addPost();
-        testAddPost();
+        addPost();
         addPostArrows();
-        //addFacadeCladding();
+        addFacadeCladding();
         addRafters();
         addBeamAndWeatherBoard();
         addArrows();
@@ -113,7 +103,7 @@ public class CarportSvgSide
         }
     }
 
-    private void testAddPost()
+    private void addPost()
     {
         List<Double> postPlacements = PostPlacementCalculatorUtil.calculatePostPlacements(carport);
 
@@ -174,67 +164,6 @@ public class CarportSvgSide
         carportSideSvg.addText(lastMidX, arrowYBottomMargin + 20, 0, String.format("%.2f", lastDistanceInMeters));
     }
 
-    private void addPostAndPostArrows()
-    {
-        double tickLength = 20;
-        double tickLengthLeft = tickLength / 6.0;
-
-        //POST ARROWS First arrow
-        carportSideSvg.addLineWithArrows(INNER_SVG_X_START, arrowYBottomMargin, POST_FRONT_PLACEMENT_CM, arrowYBottomMargin);
-        carportSideSvg.addLine(INNER_SVG_X_START, arrowYBottomMargin - tickLength, INNER_SVG_X_START, arrowYBottomMargin + tickLengthLeft, BASE_STYLE);
-        carportSideSvg.addLine(POST_FRONT_PLACEMENT_CM, arrowYBottomMargin - tickLength, POST_FRONT_PLACEMENT_CM, arrowYBottomMargin + tickLengthLeft, BASE_STYLE);
-
-        //POST ARROWS Second arrow
-        // If (carport > ? ) 6 posts
-
-        // if shed != null
-        // Case 1: shed is equal to center post (back to front)
-        // Case 2: shed is shorter that center post (back to front)
-        // Case 3: shed is longer than center post (back to front)
-
-        if (carport.getShed() == null)
-        {
-
-        }
-
-        //POST ARROWS Last arrow
-        carportSideSvg.addLineWithArrows(POST_BACK_PLACEMENT_CM, arrowYBottomMargin, arrowBottomXEnd, arrowYBottomMargin);
-        carportSideSvg.addLine(POST_BACK_PLACEMENT_CM, arrowYBottomMargin - tickLength, POST_BACK_PLACEMENT_CM, arrowYBottomMargin + tickLengthLeft, BASE_STYLE);
-        carportSideSvg.addLine(arrowBottomXEnd, arrowYBottomMargin - tickLength, arrowBottomXEnd, arrowYBottomMargin + tickLengthLeft, BASE_STYLE);
-    }
-
-
-    // Is Carport with 2 or 3 posts (per side)
-    // Is Carport with shed
-        // Is shed full width
-            // Is shedpost placement further than center post (back to front)
-                // Arrow points to shed post first, then centerpost
-            // Or is shedpost equal to centerpost
-                // Arrow only points to centerpost
-            // Else shedpost is not further than centerpost
-                // Arrow points to centerpost first, then shedpost
-        // Else shed is half width (LEFT)
-            // Not handled - include in report
-
-    private void addPost()
-    {
-        int numberOfPostsPerRow = PartCalculator.calculateNumberOfPostsWithOutShed(carport.getLength());
-
-        carportInnerSvg.addRectangle(POST_FRONT_PLACEMENT_CM, yPositionBottom - POST_WITH_BEAM_CUTOUT_HEIGHT_CM, POST_WITH_BEAM_CUTOUT_HEIGHT_CM, POST_WIDTH_CM, BASE_STYLE);
-        carportInnerSvg.addRectangle(POST_BACK_PLACEMENT_CM, yPositionBottom - POST_WITH_BEAM_CUTOUT_HEIGHT_CM, POST_WITH_BEAM_CUTOUT_HEIGHT_CM, POST_WIDTH_CM, BASE_STYLE);
-
-        if (numberOfPostsPerRow == 3 && carport.getShed() == null)
-        {
-            carportInnerSvg.addRectangle(postCenterPlacementCm, yPositionBottom - POST_WITH_BEAM_CUTOUT_HEIGHT_CM, POST_WITH_BEAM_CUTOUT_HEIGHT_CM, POST_WIDTH_CM, BASE_STYLE);
-        }
-        else if (numberOfPostsPerRow > 3 && carport.getShed() != null)
-        {
-            double shedPostPlacement = PartCalculator.calculateShedPostPlacement(carport);
-            carportInnerSvg.addRectangle(postCenterPlacementCm, yPositionBottom - POST_WITH_BEAM_CUTOUT_HEIGHT_CM, POST_WITH_BEAM_CUTOUT_HEIGHT_CM, POST_WIDTH_CM, BASE_STYLE);
-            carportInnerSvg.addRectangle(shedPostPlacement, yPositionBottom - POST_WITH_BEAM_CUTOUT_HEIGHT_CM, POST_WITH_BEAM_CUTOUT_HEIGHT_CM, POST_WIDTH_CM, BASE_STYLE);
-        }
-    }
-
     private void addBeamAndWeatherBoard()
     {
         double weatherBoardX1 = 0.0;
@@ -254,7 +183,6 @@ public class CarportSvgSide
     private void addArrows()
     {
         double tickLength = 20;
-        double tickLengthLeft = tickLength / 6.0;
         double xStartOffSet = 4.5 / 2;
         double innerArrowTopY = INNER_SVG_Y_START + CARPORT_HEIGHT_OFFSET_TO_TOP_BEAM;
         double rightArrowTopY = INNER_SVG_Y_START + ROOF_DROP_CM;
@@ -290,13 +218,6 @@ public class CarportSvgSide
         //Left inner measure line
         carportSideSvg.addLine(arrowInnerLeftXStart - tickLength, innerArrowTopY, arrowInnerLeftXStart + tickLength, innerArrowTopY, BASE_STYLE);
 
-
-
-        // Bottom arrow
-        //carportSideSvg.addLineWithArrows(INNER_SVG_X_START, arrowYBottomMargin, arrowBottomXEnd, arrowYBottomMargin);
-        //carportSideSvg.addLine(INNER_SVG_X_START, arrowYBottomMargin - tickLength, INNER_SVG_X_START, arrowYBottomMargin + tickLengthLeft, BASE_STYLE);
-        //carportSideSvg.addLine(arrowBottomXEnd, arrowYBottomMargin - tickLength, arrowBottomXEnd, arrowYBottomMargin + tickLengthLeft, BASE_STYLE);
-
         // Right(End) arrow
         carportSideSvg.addLineWithArrows(arrowRightXStart, rightArrowTopY, arrowRightXStart, arrowBottomY);
         //Top measure line
@@ -310,7 +231,6 @@ public class CarportSvgSide
         int carportHeightToBeamBottom = 20;
         int innerArrowLength = CARPORT_TOP_HEIGHT_FRONT_CM - carportHeightToBeamBottom;
         double midY = (INNER_SVG_Y_START + arrowBottomY) / 2.0;
-        double midX = (INNER_SVG_X_START + arrowBottomXEnd) / 2.0;
         int textOffSet = 10;
 
         double carportHeightInMeters = CARPORT_TOP_HEIGHT_FRONT_CM / 100.0;
@@ -326,9 +246,6 @@ public class CarportSvgSide
 
         //Right arrow
         carportSideSvg.addText(arrowRightXStart - textOffSet, midY, -90, String.valueOf(carportEndHeightInMeters));
-
-        //Bottom arrow
-        //carportSideSvg.addText(midX, arrowYBottomMargin + 15, 0, String.valueOf(carportLengthInMeters));
     }
 
     private void addBeamOrWeatherBoard(double x1, double y1, double x2, double y2, double offset)

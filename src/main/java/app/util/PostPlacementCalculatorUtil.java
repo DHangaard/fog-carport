@@ -16,6 +16,27 @@ public class PostPlacementCalculatorUtil
 
     public static List<Double> calculatePostPlacements(Carport carport)
     {
+        // Is Carport with 2 or 3 posts (per side)
+        // Is Carport with shed
+        // Is shed full width
+        // Is shedpost placement further than center post (back to front)
+        // Arrow points to shed post first, then centerpost
+        // Or is shedpost equal to centerpost
+        // Arrow only points to centerpost
+        // Else shedpost is not further than centerpost
+        // Arrow points to centerpost first, then shedpost
+        // Else shed is half width (LEFT)
+        // Not handled - include in report
+
+        //POST ARROWS Second arrow
+        // If (carport > ? ) 6 posts
+
+        // if shed != null
+        // Case 1: shed is equal to center post (back to front)
+        // Case 2: shed is shorter that center post (back to front)
+        // Case 3: shed is longer than center post (back to front)
+
+
         List<Double> postPlacements = new ArrayList<>();
 
         postPlacements.add(POST_FRONT_PLACEMENT_CM);
