@@ -97,7 +97,7 @@ public class CarportMapper
         }
     }
 
-    public boolean updateCarport(Carport carport) throws DatabaseException
+    public boolean updateCarport(Connection connection, Carport carport) throws DatabaseException
     {
         String sql = """
                 UPDATE carport 
@@ -108,8 +108,7 @@ public class CarportMapper
                 WHERE carport_id = ?
                 """;
 
-        try (Connection connection = connectionPool.getConnection();
-             PreparedStatement ps = connection.prepareStatement(sql))
+        try (PreparedStatement ps = connection.prepareStatement(sql))
         {
 
             ps.setInt(1, carport.getLength());

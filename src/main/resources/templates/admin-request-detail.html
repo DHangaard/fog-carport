@@ -56,6 +56,11 @@
                         <strong>Skur:</strong>
                         <span th:text="${orderDetail.carport.shed.length} + ' x ' + ${orderDetail.carport.shed.width} + ' cm'"></span>
                     </div>
+
+                    <div class="info-item" th:if="${orderDetail.carport.shed != null}">
+                        <strong>Skur placering:</strong>
+                        <span th:text="${orderDetail.carport.shed.shedPlacement.displayName}"></span>
+                    </div>
                 </div>
 
                 <div class="info-content">
@@ -88,8 +93,8 @@
                         <span th:text="${orderDetail.customerComment}"></span>
                     </div>
                 </div>
-
             </div>
+            <a th:href="@{/requests/{id}/update-carport(id=${orderDetail.orderId})}" class="btn btn-secondary">Gå til opdatering af carport mål</a>
         </section>
 
         <section class="section">
@@ -105,7 +110,7 @@
                 </div>
             </div>
 
-            <a th:href="@{/show-carport-drawing/{id}(id=${orderDetail.orderId})}" class="btn btn-primary"
+            <a th:href="@{/show-carport-drawing/{id}(id=${orderDetail.orderId})}" class="btn btn-secondary"
                target="_blank" rel="noopener noreferrer">Se stor tegning her</a>
         </section>
 
@@ -124,6 +129,7 @@
                     <th>Højde</th>
                     <th>Enhed</th>
                     <th>Stk. per enhed</th>
+                    <th>Type</th>
                     <th>Handling</th>
                 </tr>
                 </thead>
@@ -147,6 +153,7 @@
                     <td th:text="${line.materialVariant.material.materialHeight != null ? line.materialVariant.material.materialHeight + ' mm' : '-'}"></td>
                     <td th:text="${line.materialVariant.material.unit}"></td>
                     <td th:text="${line.materialVariant.piecesPerUnit}"></td>
+                    <td th:text="${line.materialVariant.material.type.displayName}"></td>
                     <td>
                         <form th:action="@{/requests/{id}/delete-bom-line(id=${orderDetail.orderId})}" method="post" onsubmit="return confirm('Er du sikker på du vil slette denne? ')">
                             <input type="hidden" name="materialLineId" th:value="${line.materialLineId}">

@@ -136,6 +136,8 @@ public class MaterialController
 
     private void showCreateMaterialPage(Context ctx)
     {
+        if (!userIsAdmin(ctx)){return;}
+
         displayMessages(ctx);
         ctx.attribute("categories", MaterialCategory.values());
         ctx.attribute("types", MaterialType.values());
@@ -144,6 +146,8 @@ public class MaterialController
 
     private void showUpdateMaterialPage(Context ctx)
     {
+        if (!userIsAdmin(ctx)){return;}
+
         int materialVariantId = Integer.parseInt(ctx.pathParam("id"));
         displayMessages(ctx);
 

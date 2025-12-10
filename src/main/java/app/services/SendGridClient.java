@@ -14,7 +14,7 @@ import java.util.Map;
 public class SendGridClient
 {
     private final String apiKey;
-    private final String fromEmail = "johannes.fog.xl.byg@gmail.com";
+    private final String fromEmail = "info@fog.jensify.dk";
     private final String fromName = "Johannes Fog Byggemarked";
     private final String category = "carportapp";
 
