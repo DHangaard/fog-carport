@@ -43,7 +43,6 @@ public class CarportSvgSide
     private double arrowYBottomMargin;
     private double arrowYTopMargin;
     private double POST_BACK_PLACEMENT_CM;
-    private double postCenterPlacementCm;
 
     public CarportSvgSide(Carport carport)
     {
@@ -60,7 +59,6 @@ public class CarportSvgSide
         this.arrowYBottomMargin = CARPORT_TOP_HEIGHT_FRONT_CM + (INNER_SVG_Y_START * 1.5);
         this.arrowYTopMargin = INNER_SVG_Y_START * 0.75;
         this.POST_BACK_PLACEMENT_CM = carport.getLength() - POST_EDGE_INSET_CM;
-        this.postCenterPlacementCm = PartCalculator.calculateCenterPostPlacement(carport);
 
         carportSideSvg.addArrowDefs();
         addFrame();
@@ -109,7 +107,6 @@ public class CarportSvgSide
 
         for (Double xPosition : postPlacements)
         {
-            System.out.println(xPosition);
             carportInnerSvg.addRectangle(xPosition, yPositionBottom - POST_WITH_BEAM_CUTOUT_HEIGHT_CM, POST_WITH_BEAM_CUTOUT_HEIGHT_CM, POST_WIDTH_CM, BASE_STYLE);
         }
     }

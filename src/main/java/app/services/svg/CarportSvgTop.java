@@ -21,10 +21,8 @@ public class CarportSvgTop
     private final double RAFTER_WIDTH_CM =  4.5;
     private final double POST_WIDTH_CM = 10.0;
     private final double POST_HEIGHT_CM = 10.0;
-    private final double POST_START_POSITION_CM = 100.0;
     private final double POST_VERTICAL_OFFSET_CM = 2.5;
     private final double POST_OFFSET_END_POSITION_CM = 30.00;
-    private final double POST_SPACING_CM = 310;
     private final double MAX_SPACING_CM = 55.0;
     private final double POST_EDGE_INSET_CM = 35.00;
     private double yPositionBottom;
@@ -38,7 +36,6 @@ public class CarportSvgTop
     double arrowYBottomMargin;
     double arrowYTopMargin;
 
-
     public CarportSvgTop(Carport carport)
     {
         this.carport = carport;
@@ -46,7 +43,6 @@ public class CarportSvgTop
         this.carportInnerSvg = new Svg(INNER_SVG_X_START, INNER_SVG_Y_START, carport.getLength(), carport.getWidth(), getInnerViewBox(carport.getWidth(), carport.getLength()));
         this.yPositionBottom =  carport.getWidth() - POST_EDGE_INSET_CM - 2.5;
         this.yPositionTop = POST_EDGE_INSET_CM + RAFTER_WIDTH_CM;
-
         this.arrowLeftXStart = INNER_SVG_X_START / 2;
         this.arrowInnerLeftXStart = INNER_SVG_X_START * 0.75;
         this.arrowBottomY = carport.getWidth() + INNER_SVG_Y_START;
@@ -60,9 +56,7 @@ public class CarportSvgTop
         addRafters();
         addArrows();
         addArrowText();
-        //addPost();
-        //testAddPost();
-        testAddPostNew();
+        addPosts();
         addMetalStrap();
         carportTopSvg.addSvg(carportInnerSvg);
     }
@@ -76,151 +70,6 @@ public class CarportSvgTop
     {
         carportInnerSvg.addRectangle(0, POST_EDGE_INSET_CM, RAFTER_WIDTH_CM, carport.getLength(), BASE_STYLE);
         carportInnerSvg.addRectangle(0,carport.getWidth() - POST_EDGE_INSET_CM, RAFTER_WIDTH_CM, carport.getLength(), BASE_STYLE);
-    }
-
-    private void testAddPost()
-    {
-        List<Double> postXpositions = PostPlacementCalculatorUtil.calculatePostPlacements(carport);
-        postXpositions.forEach(postX -> addTopPostRow(postX));
-
-        Shed shed = carport.getShed();
-        if(shed != null)
-        {
-            addShedPostsAndShedFrame(shed);
-            if(shed.getShedPlacement() == ShedPlacement.FULL_WIDTH)
-            {
-                double shedPostPlacement = PostPlacementCalculatorUtil.calculateShedPostPlacement(carport);
-                postXpositions.remove(shedPostPlacement);
-
-                postXpositions.forEach(postX -> addBottomPostRow(postX));
-            }
-        }
-        else
-        {
-            postXpositions.forEach(postX -> addBottomPostRow(postX));
-        }
-    }
-
-    private void testAddPostNew()
-    {
-        List<Double> postXpositions = PostPlacementCalculatorUtil.calculatePostPlacements(carport);
-        Shed shed = carport.getShed();
-
-        if (shed == null)
-        {
-            postXpositions.forEach(xPos -> addTopPostRow(xPos));
-            postXpositions.forEach(xPos -> addBottomPostRow(xPos));
-        }
-        else if (shed. getShedPlacement() == ShedPlacement.FULL_WIDTH)
-        {
-            handleFullWidthShedPosts(postXpositions, shed);
-        }
-        else if (shed.getShedPlacement() == ShedPlacement.LEFT)
-        {
-            handleLeftShedPosts(postXpositions, shed);
-        }
-    }
-
-    private void handleFullWidthShedPosts(List<Double> postXpositions, Shed shed)
-    {
-        double shedStartX = PostPlacementCalculatorUtil.calculateShedStartPosition(carport);
-        double shedEndX = carport.getLength() - POST_OFFSET_END_POSITION_CM;
-        double shedMiddleY = PostPlacementCalculatorUtil.calculatePostYPosition(carport);
-        double shedMiddlePosition = shedMiddleY + INNER_SVG_Y_START;
-
-        postXpositions.forEach(xPos -> addTopPostRow(xPos));
-        addMiddleShedPostPair(shedStartX, shedMiddlePosition, shedEndX);
-        postXpositions.forEach(xPos -> addBottomPostRow(xPos));
-
-        double fullWidthShedHeight = carport.getWidth() - (2 * POST_EDGE_INSET_CM);
-
-        carportInnerSvg.addRectangle(shedStartX, POST_EDGE_INSET_CM, fullWidthShedHeight, shed.getLength() + POST_WIDTH_CM, "stroke-width:2px; stroke:#000000; fill:none; stroke-dasharray:6 4");
-    }
-
-    private void handleLeftShedPosts(List<Double> postXpositions, Shed shed)
-    {
-        double shedStartX = PostPlacementCalculatorUtil.calculateShedStartPosition(carport);
-        double shedEndX = carport.getLength() - POST_OFFSET_END_POSITION_CM;
-        double shedEndYPosition = PostPlacementCalculatorUtil.calculatePostYPosition(carport);
-
-        postXpositions.forEach(xPos -> addTopPostRow(xPos));
-
-        carportInnerSvg.addRectangle(shedStartX, shedEndYPosition, POST_HEIGHT_CM, POST_WIDTH_CM, BASE_STYLE);
-
-        postXpositions.stream()
-                .filter(xPos -> xPos >= shedStartX && xPos <= shedEndX)
-                .forEach(xPos -> carportInnerSvg.addRectangle(xPos, shedEndYPosition, POST_HEIGHT_CM, POST_WIDTH_CM, BASE_STYLE));
-
-
-        postXpositions.stream()
-                .filter(xPos -> Math.abs(xPos - shedStartX) > 1.0)
-                .forEach(xPos -> addBottomPostRow(xPos));
-
-        carportInnerSvg.addRectangle(shedStartX, POST_EDGE_INSET_CM, shed.getWidth(), shed.getLength() + POST_WIDTH_CM,"stroke-width:2px; stroke:#000000; fill:none; stroke-dasharray:6 4");
-    }
-
-    private void addShedPostsAndShedFrame(Shed shed)
-    {
-        double shedStartX = carport.getLength() - shed.getLength() - POST_OFFSET_END_POSITION_CM;
-        double shedEndX = carport.getLength() - POST_OFFSET_END_POSITION_CM;
-        double shedMiddleY = PostPlacementCalculatorUtil.calculatePostYPosition(carport);
-        double shedMiddlePosition = shedMiddleY + INNER_SVG_Y_START;
-
-        //addTopPostRow(shedStartX);
-        //addBottomPostRow(shedStartX);
-        addMiddleShedPostPair(shedStartX, shedMiddlePosition, shedEndX);
-
-        carportInnerSvg.addRectangle(shedStartX,POST_EDGE_INSET_CM, carport.getShed().getWidth(), carport.getShed().getLength(), "stroke-width: 1px; stroke:#ff00ff; fill: none");
-    }
-
-    private void addTopPostRow(double x)
-    {
-        carportInnerSvg.addRectangle(x, POST_EDGE_INSET_CM - POST_VERTICAL_OFFSET_CM, POST_HEIGHT_CM, POST_WIDTH_CM, BASE_STYLE);
-    }
-
-    private void addBottomPostRow(double x)
-    {
-        carportInnerSvg.addRectangle(x, yPositionBottom, POST_HEIGHT_CM, POST_WIDTH_CM, BASE_STYLE);
-    }
-
-    private void addMiddleShedPostPair(double shedStartX, double shedY, double shedEndX)
-    {
-        carportInnerSvg.addRectangle(shedStartX, shedY - POST_VERTICAL_OFFSET_CM, POST_HEIGHT_CM, POST_WIDTH_CM, BASE_STYLE);
-        carportInnerSvg.addRectangle(shedEndX, shedY, POST_HEIGHT_CM, POST_WIDTH_CM, BASE_STYLE);
-    }
-
-    private void addPost()
-    {
-        int totalNumberOfPost = PartCalculator.calculateNumberOfPostsWithOutShed(carport.getLength());
-        int numberOfPostsPerRow = totalNumberOfPost / 2;
-
-        double lastPostPosition = carport.getLength() - POST_OFFSET_END_POSITION_CM;
-
-        Shed shed = carport.getShed();
-        if(shed != null)
-        {
-            addShedPostsAndShedFrame(shed);
-        }
-
-        if(numberOfPostsPerRow == 2)
-        {
-            //addPostPair(POST_START_POSITION_CM);
-            //addPostPair(lastPostPosition);
-        }
-        else
-        {
-            double middlePostPosition = POST_START_POSITION_CM + POST_SPACING_CM;
-
-            //addPostPair(POST_START_POSITION_CM);
-            //addPostPair(middlePostPosition);
-            //addPostPair(lastPostPosition);
-        }
-    }
-
-    private void addPostPair(double x)
-    {
-        carportInnerSvg.addRectangle(x, POST_EDGE_INSET_CM - POST_VERTICAL_OFFSET_CM, POST_HEIGHT_CM, POST_WIDTH_CM, BASE_STYLE);
-        carportInnerSvg.addRectangle(x, yPositionBottom, POST_HEIGHT_CM, POST_WIDTH_CM, BASE_STYLE);
     }
 
     private void addRafters()
@@ -312,7 +161,8 @@ public class CarportSvgTop
 
     private void addArrowText()
     {
-        int innerMeasureArrowLength = (int)(carport.getWidth() - (2 * POST_EDGE_INSET_CM));
+        int sides = 2;
+        int innerMeasureArrowLength = (int)(carport.getWidth() - (sides * POST_EDGE_INSET_CM));
         int textOfSetFromArrow = 10;
         double arrowBottomTextCenter =  (INNER_SVG_X_START + arrowBottomXEnd) / 2;
 
@@ -324,6 +174,80 @@ public class CarportSvgTop
         carportTopSvg.addText(arrowBottomTextCenter, arrowYBottomMargin + (2 * textOfSetFromArrow), 0, String.valueOf(carportLengthInMeters));
 
         carportTopSvg.addText(arrowInnerLeftXStart - textOfSetFromArrow, arrowBottomY / 2, -90, String.valueOf(carportInnerMeasurementInMeters));
+    }
+
+    private void addPosts()
+    {
+        List<Double> postXpositions = PostPlacementCalculatorUtil.calculatePostPlacements(carport);
+        Shed shed = carport.getShed();
+
+        if (shed == null)
+        {
+            postXpositions.forEach(xPos -> addTopPostRow(xPos));
+            postXpositions.forEach(xPos -> addBottomPostRow(xPos));
+        }
+        else if (shed. getShedPlacement() == ShedPlacement.FULL_WIDTH)
+        {
+            handleFullWidthShedPosts(postXpositions, shed);
+        }
+        else if (shed.getShedPlacement() == ShedPlacement.LEFT)
+        {
+            handleLeftShedPosts(postXpositions, shed);
+        }
+    }
+
+    private void handleFullWidthShedPosts(List<Double> postXpositions, Shed shed)
+    {
+        double shedStartX = PostPlacementCalculatorUtil.calculateShedStartPosition(carport);
+        double shedEndX = carport.getLength() - POST_OFFSET_END_POSITION_CM;
+        double shedMiddleY = PostPlacementCalculatorUtil.calculatePostYPosition(carport);
+        double shedMiddlePosition = shedMiddleY + INNER_SVG_Y_START;
+
+        postXpositions.forEach(xPos -> addTopPostRow(xPos));
+        addMiddleShedPostPair(shedStartX, shedMiddlePosition, shedEndX);
+        postXpositions.forEach(xPos -> addBottomPostRow(xPos));
+
+        double fullWidthShedHeight = carport.getWidth() - (2 * POST_EDGE_INSET_CM);
+
+        carportInnerSvg.addRectangle(shedStartX, POST_EDGE_INSET_CM, fullWidthShedHeight, shed.getLength() + POST_WIDTH_CM, "stroke-width:2px; stroke:#000000; fill:none; stroke-dasharray:6 4");
+    }
+
+    private void handleLeftShedPosts(List<Double> postXpositions, Shed shed)
+    {
+        double shedStartX = PostPlacementCalculatorUtil.calculateShedStartPosition(carport);
+        double shedEndX = carport.getLength() - POST_OFFSET_END_POSITION_CM;
+        double shedEndYPosition = PostPlacementCalculatorUtil.calculatePostYPosition(carport);
+
+        postXpositions.forEach(xPos -> addTopPostRow(xPos));
+
+        carportInnerSvg.addRectangle(shedStartX, shedEndYPosition, POST_HEIGHT_CM, POST_WIDTH_CM, BASE_STYLE);
+
+        postXpositions.stream()
+                .filter(xPos -> xPos >= shedStartX && xPos <= shedEndX)
+                .forEach(xPos -> carportInnerSvg.addRectangle(xPos, shedEndYPosition, POST_HEIGHT_CM, POST_WIDTH_CM, BASE_STYLE));
+
+
+        postXpositions.stream()
+                .filter(xPos -> Math.abs(xPos - shedStartX) > 1.0)
+                .forEach(xPos -> addBottomPostRow(xPos));
+
+        carportInnerSvg.addRectangle(shedStartX, POST_EDGE_INSET_CM, shed.getWidth(), shed.getLength() + POST_WIDTH_CM,"stroke-width:2px; stroke:#000000; fill:none; stroke-dasharray:6 4");
+    }
+
+    private void addTopPostRow(double x)
+    {
+        carportInnerSvg.addRectangle(x, POST_EDGE_INSET_CM - POST_VERTICAL_OFFSET_CM, POST_HEIGHT_CM, POST_WIDTH_CM, BASE_STYLE);
+    }
+
+    private void addBottomPostRow(double x)
+    {
+        carportInnerSvg.addRectangle(x, yPositionBottom, POST_HEIGHT_CM, POST_WIDTH_CM, BASE_STYLE);
+    }
+
+    private void addMiddleShedPostPair(double shedStartX, double shedY, double shedEndX)
+    {
+        carportInnerSvg.addRectangle(shedStartX, shedY - POST_VERTICAL_OFFSET_CM, POST_HEIGHT_CM, POST_WIDTH_CM, BASE_STYLE);
+        carportInnerSvg.addRectangle(shedEndX, shedY, POST_HEIGHT_CM, POST_WIDTH_CM, BASE_STYLE);
     }
 
     private String getInnerViewBox(int width, int length)

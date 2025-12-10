@@ -1,14 +1,9 @@
 package app.util;
 
-import app.dto.BeamCalculationDTO;
 import app.dto.RafterCalculationDTO;
 import app.entities.Carport;
-import app.entities.Material;
-import app.entities.MaterialVariant;
 import app.entities.Shed;
 import app.enums.ShedPlacement;
-
-import java.util.List;
 
 public class PartCalculator
 {
@@ -91,7 +86,6 @@ public class PartCalculator
             return SHED_FULL_SIZE_POSTS;
         }
     }
-
 
     public static int calculateNumberOfRoofTileRows(int carportWidth, int roofVariantWidth)
     {
@@ -179,52 +173,5 @@ public class PartCalculator
         int totalBracketScrews = totalNumberOfFittingScrews + totalStripFixPointScrews;
 
         return (int) Math.ceil((double) totalBracketScrews / screwsPerPackage);
-    }
-
-
-    public static int calculateCenterPostPlacement(Carport carport)
-    {
-        final int MIN_DISTANCE_BETWEEN_POSTS = 100;
-        final double POST_FRONT_PLACEMENT_CM = 100.0;
-        int postWidth = 10;
-        double postCenterPlacementCm = POST_FRONT_PLACEMENT_CM + MAX_DISTANCE_BETWEEN_POSTS;
-
-        if(carport.getShed() == null)
-        {
-            return (int) postCenterPlacementCm;
-        }
-
-        double postShedPlacementCm = calculateShedPostPlacement(carport);
-        double spaceBetweenCenterAndShedPost = postShedPlacementCm - postCenterPlacementCm;
-        boolean isPostFurtherThanCenterPost = false;
-
-        if (spaceBetweenCenterAndShedPost < 0)
-        {
-            spaceBetweenCenterAndShedPost = Math.abs(spaceBetweenCenterAndShedPost);
-            isPostFurtherThanCenterPost = true;
-        }
-
-        if (spaceBetweenCenterAndShedPost == 0)
-        {
-            return (int) postCenterPlacementCm;
-        }
-        else if (spaceBetweenCenterAndShedPost < MIN_DISTANCE_BETWEEN_POSTS)
-        {
-            if (isPostFurtherThanCenterPost)
-            {
-                postCenterPlacementCm = postShedPlacementCm + MIN_DISTANCE_BETWEEN_POSTS + postWidth;
-            }
-            else
-            {
-                postCenterPlacementCm = postShedPlacementCm - MIN_DISTANCE_BETWEEN_POSTS;
-            }
-        }
-
-        return (int) postCenterPlacementCm;
-    }
-
-    public static int calculateShedPostPlacement(Carport carport)
-    {
-        return (int) (carport.getLength() - (carport.getShed().getLength() + POST_EDGE_INSET_CM));
     }
 }

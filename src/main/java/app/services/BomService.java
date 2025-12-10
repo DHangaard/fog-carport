@@ -6,6 +6,7 @@ import app.exceptions.DatabaseException;
 import app.exceptions.MaterialNotFoundException;
 import app.persistence.MaterialVariantMapper;
 import app.util.PartCalculator;
+import app.util.PostPlacementCalculatorUtil;
 
 import java.util.*;
 
@@ -172,7 +173,7 @@ public class BomService implements IBomService
         List<MaterialVariant> beamVariants = variantMapper.getAllVariantsByType(MaterialType.BEAM);
         final int NUMBER_OF_BEAM_ROWS = 2;
         final int MAX_VARIANT_lENGTH = getMaxVariantLength(beamVariants);
-        int distanceToCenterPost = PartCalculator.calculateCenterPostPlacement(carport);
+        int distanceToCenterPost = PostPlacementCalculatorUtil.calculateCenterPostPlacement(carport);
         int centerPostDefaultPlacement = 410;
         int postEdgeInsetCm = 30;
         int shedPostPlacement = 0;
