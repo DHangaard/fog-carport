@@ -3,6 +3,7 @@ package app.services.svg;
 import app.dto.RafterCalculationDTO;
 import app.entities.Carport;
 import app.entities.Shed;
+import app.enums.ShedPlacement;
 import app.util.PartCalculator;
 import app.util.PostPlacementCalculatorUtil;
 
@@ -78,15 +79,25 @@ public class CarportSvgTop
 
     private void testAddPost()
     {
+        List<Double> postXpositions = PostPlacementCalculatorUtil.calculatePostPlacements(carport);
+        postXpositions.forEach(postX -> addTopPostRow(postX));
+
         Shed shed = carport.getShed();
         if(shed != null)
         {
             addShedPostsAndShedFrame(shed);
+            if(shed.getShedPlacement() == ShedPlacement.FULL_WIDTH)
+            {
+                double shedPostPlacement = PostPlacementCalculatorUtil.calculateShedPostPlacement(carport);
+                postXpositions.remove(shedPostPlacement);
+
+                postXpositions.forEach(postX -> addBottomPostRow(postX));
+            }
         }
-
-        List<Double> postXpositions = PostPlacementCalculatorUtil.calculatePostPlacements(carport);
-
-        postXpositions.forEach(postX -> addPostPair(postX));
+        else
+        {
+            postXpositions.forEach(postX -> addBottomPostRow(postX));
+        }
     }
 
     private void addShedPostsAndShedFrame(Shed shed)
@@ -96,15 +107,20 @@ public class CarportSvgTop
         double shedMiddleY = PostPlacementCalculatorUtil.calculatePostYPosition(carport);
         double shedMiddlePosition = shedMiddleY + INNER_SVG_Y_START;
 
-        addPostPair(shedStartX);
+        //addTopPostRow(shedStartX);
+        //addBottomPostRow(shedStartX);
         addShedPostPair(shedStartX, shedMiddlePosition, shedEndX);
 
         carportInnerSvg.addRectangle(shedStartX,POST_EDGE_INSET_CM, carport.getShed().getWidth(), carport.getShed().getLength(), "stroke-width: 1px; stroke:#ff00ff; fill: none");
     }
 
-    private void addPostPair(double x)
+    private void addTopPostRow(double x)
     {
         carportInnerSvg.addRectangle(x, POST_EDGE_INSET_CM - POST_VERTICAL_OFFSET_CM, POST_HEIGHT_CM, POST_WIDTH_CM, BASE_STYLE);
+    }
+
+    private void addBottomPostRow(double x)
+    {
         carportInnerSvg.addRectangle(x, yPositionBottom, POST_HEIGHT_CM, POST_WIDTH_CM, BASE_STYLE);
     }
 
@@ -129,16 +145,16 @@ public class CarportSvgTop
 
         if(numberOfPostsPerRow == 2)
         {
-            addPostPair(POST_START_POSITION_CM);
-            addPostPair(lastPostPosition);
+            //addPostPair(POST_START_POSITION_CM);
+            //addPostPair(lastPostPosition);
         }
         else
         {
             double middlePostPosition = POST_START_POSITION_CM + POST_SPACING_CM;
 
-            addPostPair(POST_START_POSITION_CM);
-            addPostPair(middlePostPosition);
-            addPostPair(lastPostPosition);
+            //addPostPair(POST_START_POSITION_CM);
+            //addPostPair(middlePostPosition);
+            //addPostPair(lastPostPosition);
         }
     }
 
