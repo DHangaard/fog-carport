@@ -46,6 +46,23 @@ class BomServiceTest
     }
 
     @Test
+    void test360CmCarportGetsCorrectRoofPlate() throws MaterialNotFoundException, DatabaseException
+    {
+        Carport carport = new Carport(0, 360, 420, RoofType.TRAPEZ_ROOF, null);
+
+        List<MaterialLine> materialLines = bomService.getBillOfMaterialByCarport(carport);
+
+        List<MaterialLine> roofLines = materialLines.stream()
+                .filter(l -> l.getMaterialVariant().getMaterial().getType() == MaterialType.ROOF)
+                .collect(Collectors.toList());
+
+        int roofLengthExpected = 420;
+        assertNotNull(roofLines);
+        assertTrue(roofLines.size() == 1);
+        assertEquals(roofLengthExpected, roofLines.get(0).getMaterialVariant().getVariantLength());
+    }
+
+    @Test
     void test300CmCarportGetsCorrectRoofPlate() throws MaterialNotFoundException, DatabaseException
     {
         Carport carport = new Carport(0, 300, 420, RoofType.TRAPEZ_ROOF, null);
@@ -101,7 +118,68 @@ class BomServiceTest
     }
 
     @Test
-    void testBigCarportGetsCorrectRoofPlate() throws MaterialNotFoundException, DatabaseException
+    void test630cmCarportGetsCorrectRoofPlate() throws MaterialNotFoundException, DatabaseException
+    {
+        Carport carport = new Carport(0, 630, 420, RoofType.TRAPEZ_ROOF, null);
+
+        List<MaterialLine> materialLines = bomService.getBillOfMaterialByCarport(carport);
+
+        List<MaterialLine> roofLines = materialLines.stream()
+                .filter(l -> l.getMaterialVariant().getMaterial().getType() == MaterialType.ROOF)
+                .collect(Collectors.toList());
+
+        int firstRoofLengthExpected = 300;
+        int secondRoofLengthExpected = 420;
+
+        assertNotNull(roofLines);
+        assertTrue(roofLines.size() == 2);
+        assertEquals(firstRoofLengthExpected, roofLines.get(0).getMaterialVariant().getVariantLength());
+        assertEquals(secondRoofLengthExpected, roofLines.get(1).getMaterialVariant().getVariantLength());
+    }
+
+    @Test
+    void test660cmCarportGetsCorrectRoofPlate() throws MaterialNotFoundException, DatabaseException
+    {
+        Carport carport = new Carport(0, 660, 420, RoofType.TRAPEZ_ROOF, null);
+
+        List<MaterialLine> materialLines = bomService.getBillOfMaterialByCarport(carport);
+
+        List<MaterialLine> roofLines = materialLines.stream()
+                .filter(l -> l.getMaterialVariant().getMaterial().getType() == MaterialType.ROOF)
+                .collect(Collectors.toList());
+
+        int firstRoofLengthExpected = 300;
+        int secondRoofLengthExpected = 420;
+
+        assertNotNull(roofLines);
+        assertTrue(roofLines.size() == 2);
+        assertEquals(firstRoofLengthExpected, roofLines.get(0).getMaterialVariant().getVariantLength());
+        assertEquals(secondRoofLengthExpected, roofLines.get(1).getMaterialVariant().getVariantLength());
+    }
+
+    @Test
+    void test690cmCarportGetsCorrectRoofPlate() throws MaterialNotFoundException, DatabaseException
+    {
+        Carport carport = new Carport(0, 690, 420, RoofType.TRAPEZ_ROOF, null);
+
+        List<MaterialLine> materialLines = bomService.getBillOfMaterialByCarport(carport);
+
+        List<MaterialLine> roofLines = materialLines.stream()
+                .filter(l -> l.getMaterialVariant().getMaterial().getType() == MaterialType.ROOF)
+                .collect(Collectors.toList());
+
+        int firstRoofLengthExpected = 300;
+        int secondRoofLengthExpected = 480;
+
+        assertNotNull(roofLines);
+        assertTrue(roofLines.size() == 2);
+        assertEquals(firstRoofLengthExpected, roofLines.get(0).getMaterialVariant().getVariantLength());
+        assertEquals(secondRoofLengthExpected, roofLines.get(1).getMaterialVariant().getVariantLength());
+    }
+
+
+    @Test
+    void test780CmCarportGetsCorrectRoofPlate() throws MaterialNotFoundException, DatabaseException
     {
         Carport carport = new Carport(0, 780, 420, RoofType.TRAPEZ_ROOF, null);
 
