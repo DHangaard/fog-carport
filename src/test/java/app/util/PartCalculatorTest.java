@@ -11,67 +11,112 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class PartCalculatorTest
 {
+    final double MAX_ACCEPTABLE_SPACING = 56.0;
+    final double MIN_ACCEPTABLE_SPACING = 48.0;
 
     @Test
-    void calculatePost()
+    void testCalculateCarportPosts780CmLongWithShed()
     {
         Shed shedFullWidth = new Shed(0,530,400,ShedPlacement.FULL_WIDTH);
         int numberOfPostWith780 = PartCalculator.calculateNumberOfPostsWithShed(780, shedFullWidth);
         assertEquals(11, numberOfPostWith780);
+    }
 
+    @Test
+    void testCalculateCarportPosts750CmLongWithShed()
+    {
         Shed shedLeft = new Shed(0, 240, 400, ShedPlacement.LEFT);
-        int numberOfPostWith750 = PartCalculator. calculateNumberOfPostsWithShed(750,  shedLeft);
+        int numberOfPostWith750 = PartCalculator.calculateNumberOfPostsWithShed(750, shedLeft);
         assertEquals(10, numberOfPostWith750);
+    }
 
+    @Test
+    void testCalculateCarportPosts780CmLong()
+    {
         int numberOfPostWith780NoShed = PartCalculator.calculateNumberOfPostsWithOutShed(780);
         assertEquals(6, numberOfPostWith780NoShed);
+    }
 
+    @Test
+    void testCalculateCarportPosts750CmLong()
+    {
         int numberOfPostWith750NoShed = PartCalculator.calculateNumberOfPostsWithOutShed(750);
         assertEquals(6, numberOfPostWith750NoShed);
+    }
 
-        int numberOfPostWith600WithShed = PartCalculator.calculateNumberOfPostsWithShed(600,  shedFullWidth);
+    @Test
+    void testCalculateCarportPosts600CmLong()
+    {
+        Shed shedFullWidth = new Shed(0,530,400,ShedPlacement.FULL_WIDTH);
+        int numberOfPostWith600WithShed = PartCalculator.calculateNumberOfPostsWithShed(600, shedFullWidth);
         assertEquals(9, numberOfPostWith600WithShed);
+    }
 
+    @Test
+    void testCalculateCarportPosts300CmLong()
+    {
         int numberOfPostWith300NoShed = PartCalculator.calculateNumberOfPostsWithOutShed(300);
         assertEquals(4, numberOfPostWith300NoShed);
     }
 
-    @Test
-    void calculateRafters()
-    {
-        final double MAX_ACCEPTABLE_SPACING = 56.0;
-        final double MIN_ACCEPTABLE_SPACING = 48.0;
 
+    @Test
+    void calculateRaftersWith780CmLongCarport()
+    {
         RafterCalculationDTO rafters780 = PartCalculator.calculateRafters(780, 4.5);
         assertEquals(15, rafters780.numberOfRafters());
         assertTrue(rafters780.spacing() <= MAX_ACCEPTABLE_SPACING);
         assertTrue(rafters780.spacing() >= MIN_ACCEPTABLE_SPACING);
+    }
 
+    @Test
+    void calculateRaftersWith750CmLongCarport()
+    {
         RafterCalculationDTO rafters750 = PartCalculator.calculateRafters(750, 4.5);
         assertEquals(15, rafters750.numberOfRafters());
         assertTrue(rafters750.spacing() <= MAX_ACCEPTABLE_SPACING);
         assertTrue(rafters750.spacing() >= MIN_ACCEPTABLE_SPACING);
+    }
 
+    @Test
+    void calculateRaftersWith720CmLongCarport()
+    {
         RafterCalculationDTO rafters720 = PartCalculator.calculateRafters(720, 4.5);
         assertEquals(14, rafters720.numberOfRafters());
         assertTrue(rafters720.spacing() <= MAX_ACCEPTABLE_SPACING);
         assertTrue(rafters720.spacing() >= MIN_ACCEPTABLE_SPACING);
+    }
 
+    @Test
+    void calculateRaftersWith600CmLongCarport()
+    {
         RafterCalculationDTO rafters600 = PartCalculator.calculateRafters(600, 4.5);
         assertEquals(12, rafters600.numberOfRafters());
         assertTrue(rafters600.spacing() <= MAX_ACCEPTABLE_SPACING);
         assertTrue(rafters600.spacing() >= MIN_ACCEPTABLE_SPACING);
+    }
 
+    @Test
+    void calculateRaftersWith480CmLongCarport()
+    {
         RafterCalculationDTO rafters480 = PartCalculator.calculateRafters(480, 4.5);
         assertEquals(10, rafters480.numberOfRafters());
         assertTrue(rafters480.spacing() <= MAX_ACCEPTABLE_SPACING);
         assertTrue(rafters480.spacing() >= MIN_ACCEPTABLE_SPACING);
+    }
 
+    @Test
+    void calculateRaftersWith360CmLongCarport()
+    {
         RafterCalculationDTO rafters360 = PartCalculator.calculateRafters(360, 4.5);
         assertEquals(8, rafters360.numberOfRafters());
         assertTrue(rafters360.spacing() <= MAX_ACCEPTABLE_SPACING);
         assertTrue(rafters360.spacing() >= MIN_ACCEPTABLE_SPACING);
+    }
 
+    @Test
+    void calculateRaftersWith300CmLongCarport()
+    {
         RafterCalculationDTO rafters300 = PartCalculator.calculateRafters(300, 4.5);
         assertEquals(7, rafters300.numberOfRafters());
         assertTrue(rafters300.spacing() <= MAX_ACCEPTABLE_SPACING);
@@ -79,26 +124,50 @@ class PartCalculatorTest
     }
 
     @Test
-    void testNumberOfRoofTileRows()
+    void testNumberOfRoofTileRowsWithCarportWidth420()
     {
         int numberOfRoofTilesWith420Width = PartCalculator.calculateNumberOfRoofTileRows(420, 109);
         assertEquals(5, numberOfRoofTilesWith420Width);
+    }
 
+    @Test
+    void testNumberOfRoofTileRowsWithCarportWidth450()
+    {
         int numberOfRoofTilesWith450Width = PartCalculator.calculateNumberOfRoofTileRows(450, 109);
         assertEquals(5, numberOfRoofTilesWith450Width);
+    }
 
+    @Test
+    void testNumberOfRoofTileRowsWithCarportWidth480()
+    {
         int numberOfRoofTilesWith480Width = PartCalculator.calculateNumberOfRoofTileRows(480, 109);
         assertEquals(5, numberOfRoofTilesWith480Width);
+    }
 
+    @Test
+    void testNumberOfRoofTileRowsWithCarportWidth510()
+    {
         int numberOfRoofTilesWith510Width = PartCalculator.calculateNumberOfRoofTileRows(510, 109);
         assertEquals(6, numberOfRoofTilesWith510Width);
+    }
 
+    @Test
+    void testNumberOfRoofTileRowsWithCarportWidth540()
+    {
         int numberOfRoofTilesWith540Width = PartCalculator.calculateNumberOfRoofTileRows(540, 109);
         assertEquals(6, numberOfRoofTilesWith540Width);
+    }
 
+    @Test
+    void testNumberOfRoofTileRowsWithCarportWidth570()
+    {
         int numberOfRoofTilesWith570Width = PartCalculator.calculateNumberOfRoofTileRows(570, 109);
         assertEquals(6, numberOfRoofTilesWith570Width);
+    }
 
+    @Test
+    void testNumberOfRoofTileRowsWithCarportWidth600()
+    {
         int numberOfRoofTilesWith600Width = PartCalculator.calculateNumberOfRoofTileRows(600, 109);
         assertEquals(6, numberOfRoofTilesWith600Width);
     }
@@ -119,7 +188,7 @@ class PartCalculatorTest
     }
 
     @Test
-    void testNumberOfStripRoolsNeeded()
+    void testNumberOfStripRollsNeeded()
     {
         int stripRoolLengthInMeter = 1000;
 
