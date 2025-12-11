@@ -70,7 +70,7 @@ public class PartCalculator
 
     private static int getShedPosts(Shed shed)
     {
-        if (shed.getShedPlacement() == ShedPlacement.LEFT || shed.getShedPlacement() == ShedPlacement.RIGHT)
+        if (shed.getShedPlacement() == ShedPlacement.LEFT)
         {
             if (shed.getLength() > MAX_DISTANCE_BETWEEN_POSTS)
             {

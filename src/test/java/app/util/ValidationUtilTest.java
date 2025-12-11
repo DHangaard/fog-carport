@@ -30,6 +30,7 @@ class ValidationUtilTest {
         assertEquals("Ikke gyldig email format", exception.getMessage());
     }
 
+    @Test
     void testInvalidEmailFormat()
     {
         Exception exception = assertThrows(IllegalArgumentException.class,
