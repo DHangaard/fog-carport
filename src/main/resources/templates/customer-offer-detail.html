@@ -2,7 +2,7 @@
 <html lang="da" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
-    <title>Fog - Ordre detaljer</title>
+    <title>Fog - Kunde tilbud</title>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link rel="stylesheet" th:href="@{/css/styles.css}"/>
     <link rel="icon" th:href="@{/images/logo.svg}">
@@ -26,7 +26,7 @@
                 <div th:if="${session.currentUser.role.name() != 'SALESREP'}">
                     <p class="bold-text">Kære <span th:text="${offer.customer.firstName}">NAVN</span>,</p>
                     <p>Tak fordi du har valgt at indhente et tilbud hos Fog.
-                        Vi sætter pris på din tillid til vores kvalitetsløsninger og arbejde “med omtanke”.<br>
+                        Vi sætter pris på din tillid til vores kvalitetsløsninger og arbejde der “holder i længden”.<br>
                         Har du behov for opsætning, kan en entreprenør rekvireres gennem din sælger.
                         Spørgsmål til tilbuddet kan rettes direkte til din sælger, hvis kontaktoplysninger fremgår herunder.
                     </p>

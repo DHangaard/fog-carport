@@ -15,7 +15,6 @@ import java.util.Map;
 
 public interface IOrderService
 {
-    public boolean saveOrderRequest(Carport carport, UserDTO userDTO) throws DatabaseException;
     public Order createPendingOrder(CreateOrderRequestDTO createOrderRequestDTO) throws DatabaseException;
     public Order getOrderById(int orderId) throws DatabaseException;
     public boolean updateOrder(Order order) throws DatabaseException;
@@ -24,10 +23,8 @@ public interface IOrderService
     public boolean deleteOrder(int orderId) throws DatabaseException;
     public boolean confirmAndSendOffer(Order order) throws DatabaseException;
     public int getTotalNumberOfOrdersByStatus(OrderStatus orderStatus) throws DatabaseException;
-    public OrderDetail getOrderDetailByCustomerId(int customerId) throws DatabaseException;
     public OrderDetail getOrderDetailByOrderId(int orderId) throws DatabaseException;
     public List<OrderOverviewDTO> getAllOrdersByStatus(OrderStatus orderStatus) throws DatabaseException;
-    public List<OrderOverviewDTO> getAllOrdersByUserId(int userId) throws DatabaseException;
     public List<OrderOverviewDTO> getAllOrdersByUserIdAndStatus(int userId, OrderStatus orderStatus) throws DatabaseException;
     public Map<OrderStatus, List<OrderOverviewDTO>> getOrderOverViewsByStatus(List<OrderStatus> orderStatuses) throws DatabaseException;
     public CustomerOfferDTO getCustomerOfferByOrderId(int orderId) throws DatabaseException;

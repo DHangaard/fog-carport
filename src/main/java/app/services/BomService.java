@@ -6,6 +6,7 @@ import app.exceptions.DatabaseException;
 import app.exceptions.MaterialNotFoundException;
 import app.persistence.MaterialVariantMapper;
 import app.util.PartCalculator;
+import app.util.PostPlacementCalculatorUtil;
 
 import java.util.*;
 
@@ -87,7 +88,7 @@ public class BomService implements IBomService
 
         if (carport.getShed() != null)
         {
-            numberOfPosts = PartCalculator.calculateNumberOfPostsWithShed(carport.getLength(), carport.getShed().getShedPlacement());
+            numberOfPosts = PartCalculator.calculateNumberOfPostsWithShed(carport.getLength(), carport.getShed());
         }
         else
         {
@@ -166,26 +167,51 @@ public class BomService implements IBomService
         return roofVariantsNeeded;
     }
 
+    // TODO test beam placement is correct - alternatively move beam joint to shedPostPlacement
     private List<MaterialLine> calculateNumberOfBeams(Carport carport) throws DatabaseException, MaterialNotFoundException
     {
         List<MaterialLine> beamsNeeded = new ArrayList<>();
         List<MaterialVariant> beamVariants = variantMapper.getAllVariantsByType(MaterialType.BEAM);
         final int NUMBER_OF_BEAM_ROWS = 2;
         final int MAX_VARIANT_lENGTH = getMaxVariantLength(beamVariants);
+        int distanceToCenterPost = PostPlacementCalculatorUtil.calculateCenterPostPlacement(carport);
+        int centerPostDefaultPlacement = 410;
+        int postEdgeInsetCm = 30;
+        int shedPostPlacement = 0;
+
+        if(carport.getShed() != null)
+        {
+            shedPostPlacement = carport.getShed().getLength() + postEdgeInsetCm;
+        }
+
+        if (distanceToCenterPost < centerPostDefaultPlacement)
+        {
+            distanceToCenterPost = shedPostPlacement;
+        }
 
         if (carport.getLength() > MAX_VARIANT_lENGTH) // When longer than max variant, the carport will have 6 posts
         {
-            final int DISTANCE_TO_CENTER_POST = 420;
-
-            MaterialVariant beamVariant = findOptimalVariantLength(beamVariants, DISTANCE_TO_CENTER_POST);
+            MaterialVariant beamVariant = findOptimalVariantLength(beamVariants, distanceToCenterPost);
             beamsNeeded.add(new MaterialLine(beamVariant, NUMBER_OF_BEAM_ROWS));
 
-            int remainingPerSide = carport.getLength() - DISTANCE_TO_CENTER_POST;
+            int remainingPerSide = carport.getLength() - distanceToCenterPost;
             int remainingTotal = remainingPerSide * NUMBER_OF_BEAM_ROWS;
-            int remainingBeams = (int) Math.ceil(NUMBER_OF_BEAM_ROWS / 2);
+            int remainingBeams;
+            MaterialVariant remainingVariant;
 
-            MaterialVariant remainingVariant = findOptimalVariantLength(beamVariants, remainingTotal);
+            if (remainingTotal > MAX_VARIANT_lENGTH)
+            {
+                remainingBeams = (int) Math.ceil(NUMBER_OF_BEAM_ROWS);
+                remainingVariant = findOptimalVariantLength(beamVariants, remainingPerSide);
+            }
+            else
+            {
+                remainingBeams = (int) Math.ceil(NUMBER_OF_BEAM_ROWS / 2);
+                remainingVariant = findOptimalVariantLength(beamVariants, remainingTotal);
+            }
+
             beamsNeeded.add(new MaterialLine(remainingVariant, remainingBeams));
+
         }
         else
         {

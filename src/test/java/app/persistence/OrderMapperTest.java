@@ -1,6 +1,5 @@
 package app.persistence;
 
-import app.dto.OrderOverviewDTO;
 import app.entities.Order;
 import app.entities.PricingDetails;
 import app.enums.OrderStatus;

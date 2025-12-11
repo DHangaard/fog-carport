@@ -181,14 +181,20 @@ class CarportMapperTest
     }
 
     @Test
-    void testUpdateCarportWithoutChangingShed() throws DatabaseException
+    void testUpdateCarportWithoutChangingShed() throws DatabaseException, SQLException
     {
         Carport carport = carportMapper.getCarportById(1);
         carport.setLength(650);
         carport.setWidth(800);
         carport.setRoofType(RoofType.FLAT);
 
-        boolean updated = carportMapper.updateCarport(carport);
+        Connection connection = connectionPool.getConnection();
+        connection.setAutoCommit(false);
+
+        boolean updated = carportMapper.updateCarport(connection, carport);
+
+        connection.commit();
+        connection.close();
 
         assertTrue(updated);
 
@@ -208,14 +214,20 @@ class CarportMapperTest
         Connection connection = connectionPool.getConnection();
         connection.setAutoCommit(false);
 
-        Shed newShed = shedMapper.createShed(connection, 200, 400, ShedPlacement.RIGHT);
+        Shed newShed = shedMapper.createShed(connection, 200, 400, ShedPlacement.LEFT);
 
         connection.commit();
         connection.close();
 
         carport.setShed(newShed);
 
-        boolean updated = carportMapper.updateCarport(carport);
+        Connection newConnection = connectionPool.getConnection();
+        newConnection.setAutoCommit(false);
+
+        boolean updated = carportMapper.updateCarport(newConnection, carport);
+
+        newConnection.commit();
+        newConnection.close();
 
         assertTrue(updated);
 
@@ -223,27 +235,40 @@ class CarportMapperTest
         assertNotNull(updatedCarport.getShed());
         assertEquals(200, updatedCarport.getShed().getLength());
         assertEquals(400, updatedCarport.getShed().getWidth());
-        assertEquals(ShedPlacement.RIGHT, updatedCarport.getShed().getShedPlacement());
+        assertEquals(ShedPlacement.LEFT, updatedCarport.getShed().getShedPlacement());
     }
 
     @Test
-    void updateCarportRemoveShed() throws DatabaseException
+    void updateCarportRemoveShed() throws DatabaseException, SQLException
     {
         Carport carport = carportMapper.getCarportById(1);
         carport.setShed(null);
 
-        boolean updated = carportMapper.updateCarport(carport);
+        Connection connection = connectionPool.getConnection();
+        connection.setAutoCommit(false);
+
+        boolean updated = carportMapper.updateCarport(connection, carport);
+
+        connection.commit();
+        connection.close();
+
         assertTrue(updated);
         Carport updatedCarport = carportMapper.getCarportById(1);
         assertNull(updatedCarport.getShed());
     }
 
     @Test
-    void testUpdateCarportNotFound() throws DatabaseException
+    void testUpdateCarportNotFound() throws DatabaseException, SQLException
     {
         Carport carport = new Carport(999, 600, 500, RoofType.FLAT, null);
 
-        boolean updated = carportMapper.updateCarport(carport);
+        Connection connection = connectionPool.getConnection();
+        connection.setAutoCommit(false);
+
+        boolean updated = carportMapper.updateCarport(connection, carport);
+
+        connection.commit();
+        connection.close();
 
         assertFalse(updated);
     }
