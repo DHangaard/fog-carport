@@ -142,26 +142,18 @@ public class BomService implements IBomService
 
         if (variantMaxLength <= carportLengthWithOverhang)
         {
-            int tolerance = 100;
-            MaterialVariant roofVariant = findOptimalVariantLength(roofVariants, variantMaxLength);
+            MaterialVariant firstPlate = findOptimalVariantLength(roofVariants, variantMaxLength);
 
-            if (roofVariant.getVariantLength() == carport.getLength() || roofVariant.getVariantLength() < carport.getLength() + tolerance)
-            {
-                roofVariant = findOptimalVariantLength(roofVariants, variantMaxLength/2);
-            }
+            int remainingLength = carportLengthWithOverhang - (variantMaxLength - OVERLAY);
 
-            int totalRoofLengthCoverage = carport.getLength() + OVERHANG + OVERLAY;
+            MaterialVariant secondPlate = findOptimalVariantLength(roofVariants, remainingLength);
 
-            int remainingLength = totalRoofLengthCoverage - roofVariant.getVariantLength();
-
-            MaterialVariant remainingVariant = findOptimalVariantLength(roofVariants, remainingLength);
-
-            roofVariantsNeeded.add(new MaterialLine(roofVariant, numberOfRoofTileRows));
-            roofVariantsNeeded.add(new MaterialLine(remainingVariant, numberOfRoofTileRows));
+            roofVariantsNeeded.add(new MaterialLine(firstPlate, numberOfRoofTileRows));
+            roofVariantsNeeded.add(new MaterialLine(secondPlate, numberOfRoofTileRows));
         }
         else
         {
-            MaterialVariant roofVariant = findOptimalVariantLength(roofVariants, carport.getLength());
+            MaterialVariant roofVariant = findOptimalVariantLength(roofVariants, carportLengthWithOverhang);
             roofVariantsNeeded.add(new MaterialLine(roofVariant, numberOfRoofTileRows));
         }
         return roofVariantsNeeded;

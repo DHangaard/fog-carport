@@ -43,7 +43,7 @@ class BomServiceTest
                 .findFirst()
                 .orElseThrow();
 
-        int roofLengthExpected = 420;
+        int roofLengthExpected = 360;
         assertEquals(roofLengthExpected, roofLine.getMaterialVariant().getVariantLength());
     }
 
@@ -75,12 +75,12 @@ class BomServiceTest
                 .collect(Collectors.toList());
 
         int firstRoofLengthExpected = 600;
-        int secondRoofLengthExpected = 300;
+        int secondRoofLengthExpected = 240;
 
         assertNotNull(roofLines);
         assertTrue(roofLines.size() == 2);
-        assertEquals(firstRoofLengthExpected, roofLines.get(1).getMaterialVariant().getVariantLength());
-        assertEquals(secondRoofLengthExpected, roofLines.get(0).getMaterialVariant().getVariantLength());
+        assertEquals(firstRoofLengthExpected, roofLines.get(0).getMaterialVariant().getVariantLength());
+        assertEquals(secondRoofLengthExpected, roofLines.get(1).getMaterialVariant().getVariantLength());
     }
 
 }
