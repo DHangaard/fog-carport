@@ -137,14 +137,21 @@ public class BomService implements IBomService
         int variantMaxLength = getMaxVariantLength(roofVariants);
         final int OVERHANG = 20;
         final int OVERLAY = 20;
+        final int TOLERANCE = 100;
 
         int carportLengthWithOverhang = carport.getLength() + OVERHANG;
 
         if (variantMaxLength <= carportLengthWithOverhang)
         {
+
             MaterialVariant firstPlate = findOptimalVariantLength(roofVariants, variantMaxLength);
 
-            int remainingLength = carportLengthWithOverhang - (variantMaxLength - OVERLAY);
+            if (firstPlate.getVariantLength() == carport.getLength() || firstPlate.getVariantLength() < carport.getLength() + TOLERANCE)
+            {
+                firstPlate = findOptimalVariantLength(roofVariants, variantMaxLength/2);
+            }
+
+            int remainingLength = carportLengthWithOverhang - (firstPlate.getVariantLength() - OVERLAY);
 
             MaterialVariant secondPlate = findOptimalVariantLength(roofVariants, remainingLength);
 
