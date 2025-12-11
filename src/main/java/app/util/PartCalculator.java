@@ -1,25 +1,24 @@
 package app.util;
 
-import app.dto.BeamCalculationDTO;
 import app.dto.RafterCalculationDTO;
 import app.entities.Carport;
-import app.entities.Material;
-import app.entities.MaterialVariant;
+import app.entities.Shed;
 import app.enums.ShedPlacement;
-
-import java.util.List;
 
 public class PartCalculator
 {
     private static final int SHED_FULL_SIZE_POSTS = 5;
-    private static final int SHED_NOT_FULL_SIZE_POSTS = 4;
+    private static final int SHED_NOT_FULL_SIZE_POSTS_SMALL = 4;
+    private static final int SHED_NOT_FULL_SIZE_POSTS_LARGE = 5;
     private static final int MAX_SPACING_CM = 60;
     private static final int RAFTER_START_END = 2;
+    private static final double MAX_DISTANCE_BETWEEN_POSTS = 310.0;
+    private static final double POST_EDGE_INSET_CM = 30.00;
 
-    public static int calculateNumberOfPostsWithShed(int length, ShedPlacement shedPlacement)
+    public static int calculateNumberOfPostsWithShed(int length, Shed shed)
     {
         int totalPosts = calculateNumberOfPostsWithOutShed(length);
-        totalPosts += getShedPosts(shedPlacement);
+        totalPosts += getShedPosts(shed);
 
         return totalPosts;
     }
@@ -69,9 +68,23 @@ public class PartCalculator
         return  (length - (2 * rafterWidth)) / (totalNumberOfRafters - 1);
     }
 
-    private static int getShedPosts(ShedPlacement shedPlacement)
+    private static int getShedPosts(Shed shed)
     {
-        return shedPlacement == ShedPlacement.FULL_WIDTH ? SHED_FULL_SIZE_POSTS : SHED_NOT_FULL_SIZE_POSTS;
+        if (shed.getShedPlacement() == ShedPlacement.LEFT)
+        {
+            if (shed.getLength() > MAX_DISTANCE_BETWEEN_POSTS)
+            {
+                return SHED_NOT_FULL_SIZE_POSTS_LARGE;
+            }
+            else
+            {
+                return SHED_NOT_FULL_SIZE_POSTS_SMALL;
+            }
+        }
+        else
+        {
+            return SHED_FULL_SIZE_POSTS;
+        }
     }
 
     public static int calculateNumberOfRoofTileRows(int carportWidth, int roofVariantWidth)
@@ -125,7 +138,7 @@ public class PartCalculator
     {
         boolean hasShed = carport.getShed() != null;
         int postsWithoutBeam = 3;
-        int numberOfPosts = hasShed ? calculateNumberOfPostsWithShed(carport.getLength(), carport.getShed().getShedPlacement()) - postsWithoutBeam
+        int numberOfPosts = hasShed ? calculateNumberOfPostsWithShed(carport.getLength(), carport.getShed()) - postsWithoutBeam
                 : calculateNumberOfPostsWithOutShed(carport.getLength());
 
         boolean isSingleBeamPerRow = beamMaxVariantLength >= carport.getLength();
