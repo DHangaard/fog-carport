@@ -1,0 +1,14 @@
+# This is an example of the application properties file for fog-carport project
+
+# Application settings
+app.name=fog-carport
+server.port=8080
+
+# Database configuration
+db.user=DB_USER
+db.password=DB_PASSWORD
+db.url=jdbc:postgresql://localhost:5432/carport?currentSchema=public
+db.dbname=carport
+
+# Test
+test=This is a test property

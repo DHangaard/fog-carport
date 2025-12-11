@@ -3,6 +3,7 @@ package app.services.svg;
 import app.dto.RafterCalculationDTO;
 import app.entities.Carport;
 import app.enums.ShedPlacement;
+import app.util.AppProperties;
 import app.util.PartCalculator;
 import app.util.PostPlacementCalculatorUtil;
 
@@ -14,24 +15,24 @@ public class CarportSvgSide
     private Svg carportSideSvg;
     private Svg carportInnerSvg;
     private final String VIEW_BOX = "0 0 1000 400";
-    private final String WIDTH_SIZE = "100%";
-    private final String BASE_STYLE = "stroke-width: 1px; stroke:#000000; fill: #ffffff";
-    private final int CARPORT_TOP_HEIGHT_FRONT_CM = 230;
-    private final int CARPORT_TOP_HEIGHT_REAR_CM = 220;
-    private final double CARPORT_HEIGHT_OFFSET_TO_TOP_BEAM = 20;
-    private final double BEAM_HEIGHT_CM = 19.5;
-    private final double WEATHER_BOARD_HEIGHT_CM = 15.0;
-    private final double POST_WIDTH_CM = 10.0;
-    private final double POST_EDGE_INSET_CM = 30.00;
-    private final double FACADE_CLADDING_BOARD_WIDTH = 10.0;
-    private final double POST_HEIGHT_CM = 210;
-    private final double POST_WITH_BEAM_CUTOUT_HEIGHT_CM = 210.0 - BEAM_HEIGHT_CM;
-    private final double SPACE_BETWEEN_WEATHERBOARD_AND_BEAM_CM = 3.0;
-    private final double RAFTER_WIDTH_CM = 4.5;
-    private final double RAFTER_TOP_OFFSET_CM = 22.0;
-    private final double ROOF_DROP_CM = 10.0;
-    private final int INNER_SVG_X_START = 150;
-    private final int INNER_SVG_Y_START = 50;
+    private final String WIDTH_SIZE = AppProperties.getRequired("width.size");
+    private final String BASE_STYLE = AppProperties.getRequired("base.style");
+    private final int CARPORT_TOP_HEIGHT_FRONT_CM = AppProperties.getRequiredInt("carport.front.height.cm");
+    private final int CARPORT_TOP_HEIGHT_REAR_CM = AppProperties.getRequiredInt("carport.rear.height.cm");
+    private final double CARPORT_HEIGHT_OFFSET_TO_TOP_BEAM = AppProperties.getRequiredDouble("carport.height.offset.to.top.beam.cm");
+    private final double BEAM_HEIGHT_CM = AppProperties.getRequiredDouble("beam.height.cm");
+    private final double WEATHER_BOARD_HEIGHT_CM = AppProperties.getRequiredDouble("wheater.board.height.cm");
+    private final double POST_WIDTH_CM = AppProperties.getRequiredDouble("post.width.cm");
+    private final double POST_EDGE_INSET_CM = AppProperties.getRequiredDouble("carport.end.post.inset.cm");
+    private final double FACADE_CLADDING_BOARD_WIDTH = AppProperties.getRequiredDouble("cladding.board.width.cm");
+    private final double POST_HEIGHT_CM = AppProperties.getRequiredDouble("carport.side.post.height.cm");
+    private final double POST_WITH_BEAM_CUTOUT_HEIGHT_CM = POST_HEIGHT_CM - BEAM_HEIGHT_CM;
+    private final double SPACE_BETWEEN_WEATHERBOARD_AND_BEAM_CM = AppProperties.getRequiredDouble("carport.spacing.weathertop.cm");
+    private final double RAFTER_WIDTH_CM = AppProperties.getRequiredDouble("rafter.width.cm");
+    private final double RAFTER_TOP_OFFSET_CM = AppProperties.getRequiredDouble("carport.rafter.offset.cm");
+    private final double ROOF_DROP_CM = AppProperties.getRequiredDouble("carport.roof.drop.cm");
+    private final int INNER_SVG_X_START = AppProperties.getRequiredInt("inner.svg.x.start");
+    private final int INNER_SVG_Y_START = AppProperties.getRequiredInt("inner.svg.y.start");
 
     private double yPositionBottom;
     private double yPositionTop;
@@ -48,7 +49,7 @@ public class CarportSvgSide
     {
         this.carport = carport;
         this.carportSideSvg = new Svg(0, 0, WIDTH_SIZE, VIEW_BOX);
-        this.carportInnerSvg = new Svg(INNER_SVG_X_START, INNER_SVG_Y_START, carport.getLength(), CARPORT_TOP_HEIGHT_FRONT_CM, getInnerViewBox(carport.getWidth(), carport.getLength()));
+        this.carportInnerSvg = new Svg(INNER_SVG_X_START, INNER_SVG_Y_START, carport.getLength(), CARPORT_TOP_HEIGHT_FRONT_CM, getInnerViewBox(carport.getLength()));
         this.yPositionBottom = CARPORT_TOP_HEIGHT_FRONT_CM;
         this.yPositionTop = 0;
         this.arrowBottomY = CARPORT_TOP_HEIGHT_FRONT_CM + INNER_SVG_Y_START;
@@ -265,9 +266,9 @@ public class CarportSvgSide
 
         final double bottomBoardWidth = FACADE_CLADDING_BOARD_WIDTH;
         final double topBoardWidth = 5.0;
-        final double carportEndOffSet = 30.0;
 
-        double totalShedLengthWithEndOffSet = carport.getShed().getLength() + carportEndOffSet;
+
+        double totalShedLengthWithEndOffSet = carport.getShed().getLength() + POST_EDGE_INSET_CM;
         double facadeCladdingStartX = carport.getLength() - totalShedLengthWithEndOffSet;
         double facadeCladdingEndX = POST_BACK_PLACEMENT_CM;
         double maxHeight = POST_WITH_BEAM_CUTOUT_HEIGHT_CM;
@@ -307,7 +308,7 @@ public class CarportSvgSide
         }
     }
 
-    private String getInnerViewBox(int height, int length)
+    private String getInnerViewBox(int length)
     {
         String heightString = String.valueOf(CARPORT_TOP_HEIGHT_FRONT_CM);
         String lengthString = String.valueOf(length);
