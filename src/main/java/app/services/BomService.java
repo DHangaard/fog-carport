@@ -29,7 +29,7 @@ public class BomService implements IBomService
         MaterialLine postMaterialLine = calculateNumberOfPosts(carport);
         MaterialLine rafterMaterialLine = calculateNumberOfRafters(carport);
         MaterialLine roofPlateScrewLine = calculateRoofPlateScrews(carport);
-        MaterialLine stripRoolLine = calculateNumberOfStripRolls(carport);
+        MaterialLine stripRollLine = calculateNumberOfStripRolls(carport);
         MaterialLine bracketScrewLine = calculateBracketScrews(carport);
 
         List<MaterialLine> beamMaterialLines = calculateNumberOfBeams(carport);
@@ -40,7 +40,7 @@ public class BomService implements IBomService
         billOfMaterial.add(rafterMaterialLine);
         billOfMaterial.add(postMaterialLine);
         billOfMaterial.add(roofPlateScrewLine);
-        billOfMaterial.add(stripRoolLine);
+        billOfMaterial.add(stripRollLine);
         billOfMaterial.add(bracketScrewLine);
 
         beamMaterialLines.stream()
@@ -352,5 +352,4 @@ public class BomService implements IBomService
                 .max()
                 .orElseThrow(() -> new MaterialNotFoundException("Ingen materialer fundet"));
     }
-
 }
