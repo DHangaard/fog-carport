@@ -1,0 +1,37 @@
+@startuml
+|Kunde|
+|Hjemmeside|
+|Sælger|
+|Carport System|
+|Fog Mail System|
+|Lager System|
+
+|Kunde|
+start
+:Besøger hjemmesiden;
+
+|Hjemmeside|
+:Carport formular med skræddersyede mål;
+:Modtager kundeinput;
+:Modtager kundeinformation;
+:Sender forespørgsel på carport;
+
+|Fog Mail System|
+partition mail #LightSkyBlue {
+partition fil #LightGreen {
+:Forespørgsel;
+}
+}
+
+|Sælger|
+:Håndterer forespørgsel;
+:Kontakter kunde;
+
+|Carport System|
+:Carportmål indtastes manuelt;
+:Beregner styklisten;
+:Genererer .svg tegning;
+
+stop
+note right: Fortsætter på side 2 (A)
+@enduml

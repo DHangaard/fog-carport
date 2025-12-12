@@ -1,0 +1,35 @@
+@startuml
+|Kunde|
+|Hjemmeside|
+|Sælger|
+|Carport System|
+|Fog Mail System|
+|Lager System|
+
+|Carport System|
+start
+note right: Fortsættelse fra side 1 (A)
+
+:Beregner pris ud fra materialer;
+if (Er Prissætning Korrekt?) then (Ja)
+else (Nej)
+    |Lager System|
+    :Opdater pris på materiale variant;
+endif
+
+|Sælger|
+:Bestemmer dækningsgrad på tilbud;
+
+|Carport System|
+:Genererer tilbud;
+
+|Fog Mail System|
+partition fil #LightGreen {
+:Tilbud;
+}
+
+
+|Kunde|
+stop
+note right: Fortsætter på side 3 (B)
+@enduml
