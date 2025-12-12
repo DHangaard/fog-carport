@@ -1,52 +1,82 @@
 @startuml
 |Kunde|
-start
-:Åbner hjemmeside;
-:Indtaster mål på carport;
-:Sender forespørgsel;
-
-|Carport Shop|
-:Modtager kundeinput;
-:Sender forespørgsel til sælger;
-
+|Hjemmeside|
 |Sælger|
-:Åbner forespørgsel;
-:Kontakter kunde ved behov;
-:Indtaster carportmål manuelt i system;
-
-|Stykliste Beregner|
-:Modtager mål fra sælger;
-:Beregner styklisten;
-:Sender uddateret styklisten til sælger;
-
-|Sælger|
-:Udarbejder tilbud manuelt;
-
-|FogMail System|
-:Modtager tilbud;
-:Sender tilbud til kunde;
-
-|Kunde|
-:Modtager tilbud;
-:Accepterer tilbud;
-
-|Sælger|
-:Modtager accept;
-
+|Carport System|
+|Fog Mail System|
 |Lager System|
-:Renskriver styklisten til nuværende lagerstatus;
-
-|Sælger|
-:Opretter ordre manuelt;
-
-|FogMail System|
-:Sender ordrebekræftelse;
 
 |Kunde|
-:Modtager ordrebekræftelse;
-stop
-@enduml
+start
+:Besøger hjemmesiden;
 
-stop
+|Hjemmeside|
+:Carport formular med skræddersyede mål;
+:Modtager kundeinput;
+:Modtager kundeinformation;
+:Sender forespørgsel på carport;
 
+|Fog Mail System|
+partition mail #LightSkyBlue {
+partition fil #LightGreen {
+:Forespørgsel;
+}
+}
+
+|Sælger|
+:Håndterer forespørgsel;
+:Kontakter kunde;
+
+|Carport System|
+:Carportmål indtastes manuelt;
+:Beregner styklisten;
+:Genererer .svg tegning;
+:Beregner pris ud fra materialer;
+if (Er Prissætning Korrekt?) then (Ja)
+else (Nej)
+    |Lager System|
+    :Opdater pris på materiale variant;
+endif
+
+|Sælger|
+:Bestemmer dækningsgrad på tilbud;
+
+|Carport System|
+:Genererer tilbud;
+
+|Fog Mail System|
+partition fil #LightGreen {
+:Tilbud;
+}
+
+
+|Kunde|
+partition mail #LightSkyBlue {
+partition fil #LightGreen {
+:Tilbud;
+:Tegning;
+}
+}
+if (Accepter?) then (Nej)
+  stop
+else (Ja)
+endif
+
+|Sælger|
+:Opretter ordre;
+
+|Fog Mail System|
+partition fil #LightGreen {
+:Ordre;
+}
+
+|Kunde|
+partition mail #LightSkyBlue {
+partition fil #LightGreen {
+:Ordre;
+:Tegning;
+:Stykliste;
+}
+}
+stop
 @enduml
