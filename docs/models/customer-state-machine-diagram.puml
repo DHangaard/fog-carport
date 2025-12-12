@@ -23,7 +23,7 @@ Login --> CreateUser : No account? Create one
 CreateUser --> Login : Registration successful
 
 Login --> CarportFormular : Login successful
-Login --> MyPage : Go to my page (already logged in)
+Login --> Index : Go to index (already logged in)
 Index --> MyPage : Go to my page (logged in)
 
 CarportFormular --> ContactFormular : Submit dimensions
