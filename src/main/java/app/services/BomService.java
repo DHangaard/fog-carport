@@ -30,7 +30,7 @@ public class BomService implements IBomService
         MaterialLine postMaterialLine = calculateNumberOfPosts(carport);
         MaterialLine rafterMaterialLine = calculateNumberOfRafters(carport);
         MaterialLine roofPlateScrewLine = calculateRoofPlateScrews(carport);
-        MaterialLine stripRoolLine = calculateNumberOfStripRolls(carport);
+        MaterialLine stripRollLine = calculateNumberOfStripRolls(carport);
         MaterialLine bracketScrewLine = calculateBracketScrews(carport);
 
         List<MaterialLine> beamMaterialLines = calculateNumberOfBeams(carport);
@@ -41,7 +41,7 @@ public class BomService implements IBomService
         billOfMaterial.add(rafterMaterialLine);
         billOfMaterial.add(postMaterialLine);
         billOfMaterial.add(roofPlateScrewLine);
-        billOfMaterial.add(stripRoolLine);
+        billOfMaterial.add(stripRollLine);
         billOfMaterial.add(bracketScrewLine);
 
         beamMaterialLines.stream()
@@ -138,30 +138,30 @@ public class BomService implements IBomService
         int variantMaxLength = getMaxVariantLength(roofVariants);
         final int OVERHANG = 20;
         final int OVERLAY = 20;
+        final int TOLERANCE = 100;
 
         int carportLengthWithOverhang = carport.getLength() + OVERHANG;
 
         if (variantMaxLength <= carportLengthWithOverhang)
         {
-            int tolerance = 100;
-            MaterialVariant roofVariant = findOptimalVariantLength(roofVariants, variantMaxLength);
 
-            if (roofVariant.getVariantLength() == carport.getLength() || roofVariant.getVariantLength() < carport.getLength() + tolerance)
+            MaterialVariant firstPlate = findOptimalVariantLength(roofVariants, variantMaxLength);
+
+            if (firstPlate.getVariantLength() == carport.getLength() || firstPlate.getVariantLength() < carport.getLength() + TOLERANCE)
             {
-                roofVariant = findOptimalVariantLength(roofVariants, variantMaxLength/2);
+                firstPlate = findOptimalVariantLength(roofVariants, variantMaxLength/2);
             }
 
-            int totalRoofLengthCoverage = carport.getLength() + OVERHANG + OVERLAY;
-            int remainingLength = totalRoofLengthCoverage - roofVariant.getVariantLength();
+            int remainingLength = carportLengthWithOverhang - (firstPlate.getVariantLength() - OVERLAY);
 
-            MaterialVariant remainingVariant = findOptimalVariantLength(roofVariants, remainingLength);
+            MaterialVariant secondPlate = findOptimalVariantLength(roofVariants, remainingLength);
 
-            roofVariantsNeeded.add(new MaterialLine(roofVariant, numberOfRoofTileRows));
-            roofVariantsNeeded.add(new MaterialLine(remainingVariant, numberOfRoofTileRows));
+            roofVariantsNeeded.add(new MaterialLine(firstPlate, numberOfRoofTileRows));
+            roofVariantsNeeded.add(new MaterialLine(secondPlate, numberOfRoofTileRows));
         }
         else
         {
-            MaterialVariant roofVariant = findOptimalVariantLength(roofVariants, carport.getLength());
+            MaterialVariant roofVariant = findOptimalVariantLength(roofVariants, carportLengthWithOverhang);
             roofVariantsNeeded.add(new MaterialLine(roofVariant, numberOfRoofTileRows));
         }
         return roofVariantsNeeded;
@@ -353,5 +353,4 @@ public class BomService implements IBomService
                 .max()
                 .orElseThrow(() -> new MaterialNotFoundException("Ingen materialer fundet"));
     }
-
 }
