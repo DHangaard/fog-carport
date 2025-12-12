@@ -4,7 +4,6 @@ import app.exceptions.PropertyException;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Optional;
 import java.util.Properties;
 
 public class AppProperties
@@ -29,13 +28,6 @@ public class AppProperties
         }
     }
 
-    // Wrap property value in Optional, can be empty if key not found - NOT USED
-    public static Optional<String> get(String key)
-    {
-        return Optional.ofNullable(PROPERTIES.getProperty(key));
-    }
-
-    // Returns the value for the key or throws PropertyException if the key is not found (fail-fast).
     public static String getRequired(String key)
     {
         String property = getTrimmedProperty(key);
