@@ -10,11 +10,11 @@ import java.util.List;
 
 public class PostPlacementCalculatorUtil
 {
-    private static final double POST_FRONT_PLACEMENT_CM = 100.0;
-    private static final double POST_BACK_EDGE_INSET_CM = 30.0;
-    private static final double MAX_DISTANCE_BETWEEN_POSTS = 310.0;
-    private static final double POST_WIDTH_CM = 10.0;
-    private static final double POST_SIDE_EDGE_INSET_CM = 35.00;
+    private static final double POST_FRONT_PLACEMENT_CM = AppProperties.getRequiredDouble("carport.post.front.placement.cm");
+    private static final double POST_BACK_EDGE_INSET_CM = AppProperties.getRequiredDouble("carport.end.post.inset.cm");
+    private static final double MAX_DISTANCE_BETWEEN_POSTS = AppProperties.getRequiredDouble("carport.max.distance.between.posts.cm");
+    private static final double POST_WIDTH_CM = AppProperties.getRequiredDouble("post.width.cm");
+    private static final double POST_SIDE_EDGE_INSET_CM = AppProperties.getRequiredDouble("carport.post.edge.inset.cm");
 
     public static List<Double> calculatePostPlacements(Carport carport)
     {

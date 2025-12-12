@@ -4,6 +4,7 @@ import app.dto.RafterCalculationDTO;
 import app.entities.Carport;
 import app.entities.Shed;
 import app.enums.ShedPlacement;
+import app.util.AppProperties;
 import app.util.PartCalculator;
 import app.util.PostPlacementCalculatorUtil;
 
@@ -15,20 +16,20 @@ public class CarportSvgTop
     private Svg carportTopSvg;
     private Svg carportInnerSvg;
     private final String VIEW_BOX = "0 0 1000 750";
-    private final String WIDTH_SIZE = "100%";
-    private final String BASE_STYLE = "stroke-width: 1px; stroke:#000000; fill: #ffffff";
+    private final String WIDTH_SIZE = AppProperties.getRequired("width.size");
+    private final String BASE_STYLE = AppProperties.getRequired("base.style");
     private final String DASHARRAY_STYLE = "stroke:#000000; stroke-dasharray: 5 5";
-    private final double RAFTER_WIDTH_CM =  4.5;
-    private final double POST_WIDTH_CM = 10.0;
-    private final double POST_HEIGHT_CM = 10.0;
-    private final double POST_VERTICAL_OFFSET_CM = 2.5;
-    private final double POST_OFFSET_END_POSITION_CM = 30.00;
-    private final double MAX_SPACING_CM = 55.0;
-    private final double POST_EDGE_INSET_CM = 35.00;
+    private final double RAFTER_WIDTH_CM =  AppProperties.getRequiredDouble("rafter.width.cm");
+    private final double POST_WIDTH_CM = AppProperties.getRequiredDouble("post.width.cm");
+    private final double POST_HEIGHT_CM = AppProperties.getRequiredDouble("post.height.cm");
+    private final double POST_VERTICAL_OFFSET_CM = AppProperties.getRequiredDouble("carport.post.vertical.offset.cm");
+    private final double POST_OFFSET_END_POSITION_CM = AppProperties.getRequiredDouble("carport.end.post.inset.cm");
+    private final double METAL_STRAP_START_OFFSET = AppProperties.getRequiredDouble("carport.metal.strap.start.offset.cm");
+    private final double POST_EDGE_INSET_CM = AppProperties.getRequiredDouble("carport.post.edge.inset.cm");
+    private final int INNER_SVG_X_START = AppProperties.getRequiredInt("inner.svg.x.start");
+    private final int INNER_SVG_Y_START = AppProperties.getRequiredInt("inner.svg.y.start");
     private double yPositionBottom;
     private double yPositionTop;
-    private final int INNER_SVG_X_START = 150;
-    private final int INNER_SVG_Y_START = 50;
     double arrowLeftXStart;
     double arrowInnerLeftXStart;
     double arrowBottomY;
@@ -102,7 +103,7 @@ public class CarportSvgTop
         else
         {
             double shedLengthWithPostOffSet = carport.getShed().getLength() + POST_OFFSET_END_POSITION_CM;
-            xMetalStrapStart = MAX_SPACING_CM + RAFTER_WIDTH_CM;
+            xMetalStrapStart = METAL_STRAP_START_OFFSET + RAFTER_WIDTH_CM;
             xMetalStrapEnd = (carport.getLength() - shedLengthWithPostOffSet) + POST_WIDTH_CM;
         }
 
@@ -144,7 +145,6 @@ public class CarportSvgTop
         carportTopSvg.addLine(arrowLeftXStart - tickLengthLeft, INNER_SVG_Y_START, arrowInnerLeftXStart + tickLength, INNER_SVG_Y_START, BASE_STYLE);
         //Left arrow bottom measure line
         carportTopSvg.addLine(arrowLeftXStart - tickLengthLeft, arrowBottomY, arrowInnerLeftXStart + tickLength, arrowBottomY, BASE_STYLE);
-
 
         //Left inner arrow
         carportTopSvg.addLineWithArrows(arrowInnerLeftXStart, INNER_SVG_Y_START + POST_EDGE_INSET_CM, arrowInnerLeftXStart, arrowBottomY - POST_EDGE_INSET_CM);

@@ -7,12 +7,13 @@ import app.exceptions.DatabaseException;
 import app.persistence.CarportMapper;
 import app.services.svg.CarportSvgSide;
 import app.services.svg.CarportSvgTop;
+import app.util.AppProperties;
 import app.util.ValidationUtil;
 
 public class CarportService implements ICarportService
 {
     private CarportMapper carportMapper;
-    private static final int SHED_SIDE_MARGIN = 35;
+    private static final int SHED_SIDE_MARGIN = AppProperties.getRequiredInt("carport.post.edge.inset.cm");
 
     public CarportService(CarportMapper carportMapper)
     {

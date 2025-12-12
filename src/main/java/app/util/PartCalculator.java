@@ -10,10 +10,12 @@ public class PartCalculator
     private static final int SHED_FULL_SIZE_POSTS = 5;
     private static final int SHED_NOT_FULL_SIZE_POSTS_SMALL = 4;
     private static final int SHED_NOT_FULL_SIZE_POSTS_LARGE = 5;
-    private static final int MAX_SPACING_CM = 60;
     private static final int RAFTER_START_END = 2;
-    private static final double MAX_DISTANCE_BETWEEN_POSTS = 310.0;
-    private static final double POST_EDGE_INSET_CM = 30.00;
+    private static final int ROOF_PLATE_OVERLAY = AppProperties.getRequiredInt("roof.overlay.cm");
+    private static final int MAX_SPACING_CM = AppProperties.getRequiredInt("carport.max.rafter.spacing.cm");
+    private static final double MAX_DISTANCE_BETWEEN_POSTS = AppProperties.getRequiredDouble("carport.max.distance.between.posts.cm");
+    private static final double RAFTER_WIDTH_CM = AppProperties.getRequiredDouble("rafter.width.cm");
+    private static final int POST_EDGE_INSET_CM = AppProperties.getRequiredInt("carport.post.edge.inset.cm");
 
     public static int calculateNumberOfPostsWithShed(int length, Shed shed)
     {
@@ -25,7 +27,7 @@ public class PartCalculator
 
     public static int calculateNumberOfPostsWithOutShed(int length)
     {
-        final double ROOF_LENGTH_PER_POST_CM = 310.0;
+        final double ROOF_LENGTH_PER_POST_CM = MAX_DISTANCE_BETWEEN_POSTS;
         final int ROWS = 2;
         final int MINIMUM_POSTS_PER_ROW = 2;
 
@@ -89,8 +91,8 @@ public class PartCalculator
 
     public static int calculateNumberOfRoofTileRows(int carportWidth, int roofVariantWidth)
     {
-        final int OVERLAY = 9;
-        int roofVariantWidthWithOverlay = roofVariantWidth - OVERLAY;
+
+        int roofVariantWidthWithOverlay = roofVariantWidth - ROOF_PLATE_OVERLAY;
 
         return (int) Math.ceil(((double)carportWidth / roofVariantWidthWithOverlay));
     }
@@ -110,8 +112,8 @@ public class PartCalculator
 
     public static int calculateNumberOfperforatedStripRools(Carport carport, int stripRoolLength)
     {
-        int edgeInsetInCm = 35;
-        double rafterWidth = 4.5;
+        int edgeInsetInCm = POST_EDGE_INSET_CM;
+        double rafterWidth = RAFTER_WIDTH_CM;
         double stripRoolLengthInMeter = stripRoolLength / 100.0;
 
         double rafterSpacing = getRafterSpacing(carport.getLength(), rafterWidth);

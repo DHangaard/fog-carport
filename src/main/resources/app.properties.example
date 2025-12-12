@@ -1,0 +1,46 @@
+# This is an example of the application properties file for fog-carport project
+
+#Pricing rules
+coverage.percentage=40.0
+
+#Svg rules
+width.size=100%
+base.style=stroke-width: 1px; stroke:#000000; fill: #ffffff
+inner.svg.x.start=150
+inner.svg.y.start=50
+
+#Carport rules
+carport.front.height.cm=230
+carport.rear.height.cm=220
+carport.side.post.height.cm=210
+carport.roof.drop.cm=10
+carport.spacing.weathertop.cm=3
+carport.rafter.offset.cm=22
+carport.height.offset.to.top.beam.cm=20
+carport.end.post.inset.cm=30
+carport.post.edge.inset.cm=35
+carport.post.vertical.offset.cm=2.5
+carport.metal.strap.start.offset.cm=55
+carport.max.rafter.spacing.cm=60
+carport.max.distance.between.posts.cm=310
+carport.post.front.placement.cm=100
+
+#Post dimensions
+post.height.cm=10
+post.width.cm=10
+post.standard.length.cm=300
+
+#Rafter and beam dimensions
+beam.height.cm=19.5
+rafter.width.cm=4.5
+
+#Cladding board dimensions
+cladding.board.width.cm=10
+
+#Wheather board dimensions
+wheater.board.height.cm=15
+
+#Roofplate rules
+roof.overlay.cm=9
+
+

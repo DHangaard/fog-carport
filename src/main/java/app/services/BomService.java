@@ -5,6 +5,7 @@ import app.enums.MaterialType;
 import app.exceptions.DatabaseException;
 import app.exceptions.MaterialNotFoundException;
 import app.persistence.MaterialVariantMapper;
+import app.util.AppProperties;
 import app.util.PartCalculator;
 import app.util.PostPlacementCalculatorUtil;
 
@@ -13,8 +14,8 @@ import java.util.*;
 public class BomService implements IBomService
 {
     private MaterialVariantMapper variantMapper;
-    private final int STANDARD_POST_SIZE = 300;
-    private final double COVERAGE_PERCENTAGE = 40.0;
+    private final int STANDARD_POST_LENGTH = AppProperties.getRequiredInt("post.standard.length.cm");
+    private final double COVERAGE_PERCENTAGE = AppProperties.getRequiredDouble("coverage.percentage");
 
     public BomService(MaterialVariantMapper variantMapper)
     {
@@ -98,7 +99,7 @@ public class BomService implements IBomService
         List<MaterialVariant> posts = variantMapper.getAllVariantsByType(MaterialType.POST);
 
         MaterialVariant postVariant = posts.stream()
-                .filter(materialVariant -> materialVariant.getVariantLength() == STANDARD_POST_SIZE)
+                .filter(materialVariant -> materialVariant.getVariantLength() == STANDARD_POST_LENGTH)
                 .findFirst()
                 .orElseThrow(() -> new MaterialNotFoundException("Kunne ikke finde stolpe"));
 
