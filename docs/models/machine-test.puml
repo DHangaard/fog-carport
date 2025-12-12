@@ -1,0 +1,15 @@
+@startuml
+'https://plantuml.com/state-diagram
+
+Login : /login (login.html)
+CreateUser : /create-user (create-user.html)
+Index : / (index.html)
+Basket : /basket (basket.html)
+CheckoutDelivery : /checkout/delivery (checkout-delivery.html)
+CheckoutDetails : /checkout/details (checkout-details.html)
+CheckoutPayment : /checkout/payment (checkout-payment.html)
+OrderComplete : /order/complete (order-complete.html)
+
+Index --> Login : Choose to login
+
+@enduml
