@@ -9,7 +9,8 @@
 |Carport System|
 start
 note right: Fortsættelse fra side 1 (A)
-
+:Beregner styklisten;
+:Genererer .svg tegning;
 :Beregner pris ud fra materialer;
 if (Er Prissætning Korrekt?) then (Ja)
 else (Nej)
