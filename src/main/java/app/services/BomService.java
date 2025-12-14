@@ -336,6 +336,11 @@ public class BomService implements IBomService
         return  new MaterialLine(bracketScrewVariant, bracketScrewPackages);
     }
 
+    private List<MaterialVariant> calculateUnderFasciaBoards(Carport carport)
+    {
+        List<MaterialVariant> underFaciaBoards = variantMapper.getAllVariantsByType()
+    }
+
     private MaterialVariant findOptimalVariantLength(List<MaterialVariant> variants, int length) throws MaterialNotFoundException
     {
         return variants.stream()
