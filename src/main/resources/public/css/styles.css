@@ -1287,8 +1287,6 @@ footer {
     margin: 0.5rem 0 1rem 0;
 }
 
-
-
 /* Order detail view */
 .hero-p-and-order-info {
     display: flex;
@@ -1554,11 +1552,60 @@ footer {
         font-size:  var(--text-size-large);
     }
 
-    .orders-table th,
-    .orders-table td {
-        padding: 0.25rem;
-        font-size: 1rem;
+    .orders-view {
+        width: 100%;
+        padding: 0.5rem;
     }
+
+    .orders-table table,
+    .orders-table thead,
+    .orders-table tbody {
+        display: block;
+        width: 58%;
+    }
+
+    .orders-table tr {
+        display: block;
+    }
+
+    .orders-table td {
+        width: auto;
+    }
+
+    .orders-table thead {
+        display: none;
+    }
+
+    .orders-table tr {
+        padding: 0.75rem;
+        margin-bottom: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: var(--radius-md);
+        background: #fff;
+    }
+
+    .orders-table td {
+        display: grid;
+        grid-template-columns: 140px 1fr;
+        gap: 0.5rem;
+        padding: 0.4rem 0;
+    }
+
+    .orders-table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: var(--color-text-header);
+    }
+
+    .table-actions {
+        justify-content: flex-start;
+        padding-left: 0;
+    }
+
+    .table-actions a {
+        margin-left: 0;
+    }
+
 
     .btn {
         padding: 0.75rem 1rem;
