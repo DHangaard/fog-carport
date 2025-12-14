@@ -31,6 +31,12 @@
     --text-size-small: 0.875rem;
     --text-size-large: 1.125rem;
 
+
+    /* Mobile header sizes */
+    --text-size-header-default: 2rem;
+    --text-size-header-medium: 1.75rem;
+    --text-size-header-small: 1.5rem;
+
     /* Text weight */
     --text-weight-bold: 700;
 
@@ -1335,8 +1341,149 @@ footer {
         padding: 1.5rem;
     }
 
+    .hero-grid {
+        grid-template-columns: 1fr;
+        padding: 2rem 1rem;
+        min-height: auto;
+    }
+
+    .hero-image {
+        height: 400px;
+    }
+
+    .hero-text h1{
+        font-size: var(--text-size-header-default);
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+        padding: 2rem 1rem;
+    }
+
+    .info-left {
+        padding-right: 0;
+    }
+
+    .info-left h2 {
+        font-size: var(--text-size-header-medium);
+    }
+
+    .info-right {
+        gap: 2rem;
+    }
+
+    .info-image, .info-video {
+        height: 400px;
+    }
+
+    .carport-cards {
+        flex-direction: column;
+        gap: 2rem;
+        align-items: center;
+    }
+
+    .link-card {
+        width: 100%;
+        max-width:  400px;
+    }
+
+    .form-container {
+        padding: 2rem;
+        margin-top: var(--spacing-lg);
+    }
+
+    .form-container h1 {
+        font-size:  1.5rem;
+    }
+
+    .calculator-container {
+        grid-template-columns: 1fr;
+    }
+
+    .price-overview-grid {
+        flex-direction: column;
+    }
+
+    .drawing-grid {
+        flex-direction: column;
+    }
+
+    .info {
+        flex-direction: column;
+    }
+
+    .hero-p-and-order-info {
+        flex-direction:  column;
+        align-items: flex-start;
+    }
+
+    .order-info-box {
+        border-left: none;
+        border-top: 2px solid var(--color-outline-blue);
+        padding-left: 0;
+        padding-top: var(--spacing-lg);
+        width: 100%;
+    }
+
+    .orders-table {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .orders-table table {
+        min-width: 600px;
+    }
+
+    .search-row {
+        flex-direction: column;
+    }
+
+    .search-row .form-group {
+        flex: 1 1 100%;
+    }
+
+    .search-actions {
+        flex-direction: column;
+    }
+
+    .search-actions .btn {
+        width: 100%;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .form-actions .btn-primary,
+    .form-actions .btn-secondary,
+    .form-actions .btn {
+        width: 100%;
+        min-width: auto;
+    }
+
+    .carport-svg-topview,
+    .carport-svg-sideview {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .drawing-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .order-number {
+        font-size: 1.5rem;
+    }
+
     main {
         padding: 2rem 1rem;
+    }
+
+    .content,
+    .content-contact {
+        padding: 1rem;
     }
 
     .footer-contact a {
@@ -1360,11 +1507,104 @@ footer {
         height: 24px;
     }
 
+    .hero-text h1 {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    .hero-logo img {
+        width: 40%;
+    }
+
+    .hero-image {
+        height:  300px;
+    }
+
+    .info-left h2 {
+        font-size: 22px;
+    }
+
+    .info-image,
+    .info-video {
+        height: 250px;
+    }
+
     .form-container {
         padding: 1.25rem;
     }
 
     .form-container h1 {
-        font-size: 1.5rem;
+        font-size: var(--text-size-header-medium);
+    }
+
+    .form-field label {
+        font-size: var(--text-size-large);
+    }
+
+    .form-field h4 {
+        font-size: var(--text-size-large);
+    }
+
+    .link-card {
+        padding: 1.5rem;
+        width: 100%;
+    }
+
+    .link-card h5 {
+        font-size:  var(--text-size-large);
+    }
+
+    .orders-table th,
+    .orders-table td {
+        padding: 0.25rem;
+        font-size: 1rem;
+    }
+
+    .btn {
+        padding: 0.75rem 1rem;
+        font-size: 0.875rem;
+    }
+
+    .price-summary-box {
+        padding: var(--spacing-md);
+    }
+
+    .price-row label,
+    .price-display {
+        font-size: 1rem;
+    }
+
+    .section h2 {
+        font-size: var(--text-size-header-small);
+    }
+
+    . section h3 {
+        font-size: var(--text-size-large);
+    }
+
+    .order-number {
+        font-size: var(--text-size-large);
+    }
+
+    .carport-logo {
+        max-width: 120px;
+    }
+
+    main {
+        padding: 1.5rem 0.75rem;
+    }
+
+    .content h1,
+    .content-contact h1 {
+        font-size:  var(--text-size-header-small);
+    }
+
+    .info-item {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .info-item strong {
+        min-width: auto;
     }
 }
