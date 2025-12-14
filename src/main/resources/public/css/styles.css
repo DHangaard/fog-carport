@@ -1561,15 +1561,28 @@ footer {
     .orders-table thead,
     .orders-table tbody {
         display: block;
-        width: 58%;
+        width: 100%;
     }
+
+    .orders-table {
+        overflow-x: hidden;
+    }
+
+    .order-section tr {
+        width: 83%;
+    }
+
 
     .orders-table tr {
         display: block;
+        padding: 1rem;
+        margin-bottom: 1.25rem;
     }
 
     .orders-table td {
         width: auto;
+        padding: 0.6rem 0;
+        row-gap: 0.75rem;
     }
 
     .orders-table thead {
@@ -1595,6 +1608,20 @@ footer {
         content: attr(data-label);
         font-weight: 600;
         color: var(--color-text-header);
+    }
+
+    .orders-table--compact table,
+    .orders-table--compact tbody {
+        max-width: 420px;
+        margin-left: 0;
+    }
+
+    .orders-table--compact tr {
+        padding: 0.75rem;
+    }
+
+    .orders-table--compact td {
+        grid-template-columns: 110px 1fr;
     }
 
     .table-actions {

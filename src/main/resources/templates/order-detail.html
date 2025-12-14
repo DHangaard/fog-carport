@@ -150,15 +150,15 @@
                 </thead>
                 <tbody>
                 <tr th:each="line : ${orderDetail.materialLines}">
-                    <td th:text="${line.quantity}"></td>
-                    <td th:text="${line.materialVariant.materialVariantId}"></td>
-                    <td th:text="${line.materialVariant.material.description}"></td>
-                    <td th:text="${line.materialVariant.material.usage}"></td>
-                    <td th:text="${line.materialVariant.variantLength != null ? line.materialVariant.variantLength + ' cm' : '-'}"></td>
-                    <td th:text="${line.materialVariant.material.materialWidth != null ? line.materialVariant.material.materialWidth + ' mm' : '-'}"></td>
-                    <td th:text="${line.materialVariant.material.materialHeight != null ? line.materialVariant.material.materialHeight + ' mm' : '-'}"></td>
-                    <td th:text="${line.materialVariant.material.unit}"></td>
-                    <td th:text="${line.materialVariant.piecesPerUnit}"></td>
+                    <td data-label="Antal" th:text="${line.quantity}"></td>
+                    <td data-label="Vare nr" th:text="${line.materialVariant.materialVariantId}"></td>
+                    <td data-label="Vare beskrivelse" th:text="${line.materialVariant.material.description}"></td>
+                    <td data-label="Hjælpe tekst" th:text="${line.materialVariant.material.usage}"></td>
+                    <td data-label="Længde" th:text="${line.materialVariant.variantLength != null ? line.materialVariant.variantLength + ' cm' : '-'}"></td>
+                    <td data-label="Bredde" th:text="${line.materialVariant.material.materialWidth != null ? line.materialVariant.material.materialWidth + ' mm' : '-'}"></td>
+                    <td data-label="Højde" th:text="${line.materialVariant.material.materialHeight != null ? line.materialVariant.material.materialHeight + ' mm' : '-'}"></td>
+                    <td data-label="Enhed" th:text="${line.materialVariant.material.unit}"></td>
+                    <td data-label="Stk. per enhed" th:text="${line.materialVariant.piecesPerUnit}"></td>
                 </tr>
                 </tbody>
             </table>

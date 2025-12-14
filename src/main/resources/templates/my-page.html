@@ -21,8 +21,11 @@
         <div th:if="${errorMessage}" class="message message-error">
             <p th:text="${errorMessage}"></p>
         </div>
+
+        <section class="order-section">
+
         <h2>Afventer sælger</h2>
-        <div th:if="${pendingOrders != null and !pendingOrders.isEmpty()}" class="orders-table customer-pending-orders">
+        <div th:if="${pendingOrders != null and !pendingOrders.isEmpty()}" class="orders-table customer-pending-orders orders-table--compact">
             <table>
                 <thead>
                 <tr>
@@ -43,9 +46,12 @@
         <p th:if="${pendingOrders == null or pendingOrders.isEmpty()}">
             Ingen forespørgsler
         </p>
+        </section>
 
+
+        <section class="order-section">
         <h2>Afventer godkendelse</h2>
-        <div th:if="${readyOrders != null and !readyOrders.isEmpty()}" class="orders-table">
+        <div th:if="${readyOrders != null and !readyOrders.isEmpty()}" class="orders-table orders-table--compact">
             <table>
                 <thead>
                 <tr>
@@ -76,9 +82,11 @@
         <p th:if="${readyOrders == null or readyOrders.isEmpty()}">
             Ingen tilbud
         </p>
+        </section>
 
+        <section class="order-section">
         <h2>Ordrer</h2>
-        <div th:if="${paidOrders != null and !paidOrders.isEmpty()}" class="orders-table">
+        <div th:if="${paidOrders != null and !paidOrders.isEmpty()}" class="orders-table orders-table--compact">
             <table>
                 <thead>
                 <tr>
@@ -109,7 +117,7 @@
         <p th:if="${paidOrders == null or paidOrders.isEmpty()}">
             Ingen ordrer
         </p>
-
+        </section>
     </div>
 </main>
 
