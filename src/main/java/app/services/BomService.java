@@ -362,15 +362,15 @@ public class BomService implements IBomService
         MaterialLine frontAndBackEndsLine = calculateBoards(boardsVariants,
                 carport.getWidth(),
                 maxVariantLength,
-                BOARDS_PER_SIDE_OR_ENDS);
-
+                BOARDS_PER_SIDE_OR_ENDS
+        );
         underFasciaBoards.add(frontAndBackEndsLine);
 
         MaterialLine sidesLine = calculateBoards(boardsVariants,
                 carport.getLength(),
                 maxVariantLength,
-                BOARDS_PER_SIDE_OR_ENDS);
-
+                BOARDS_PER_SIDE_OR_ENDS
+        );
         underFasciaBoards.add(sidesLine);
 
         return underFasciaBoards;
@@ -388,7 +388,6 @@ public class BomService implements IBomService
                 maxVariantLength,
                 ONLY_FRONT_END
         );
-
         overFasciaBoards.add(frontLine);
 
         MaterialLine sidesLine = calculateBoards(
@@ -397,7 +396,6 @@ public class BomService implements IBomService
                 maxVariantLength,
                 BOARDS_PER_SIDE_OR_ENDS
         );
-
         overFasciaBoards.add(sidesLine);
 
         return overFasciaBoards;
