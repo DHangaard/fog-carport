@@ -29,11 +29,6 @@ coverage/margin
 total price
 }
 
-class Roof
-{
-roofType
-}
-
 class Measurements
 {
 length
@@ -44,12 +39,10 @@ class BillOfMaterials
 {
 }
 
-class MaterialType
+class MaterialCategory
 {
-wood
-metal
-plastic
-roofing
+wood & roofing
+fittings & fasteners
 }
 
 class Material
@@ -70,29 +63,20 @@ requestDate
 inquiryStatus
 }
 
-class OfferStatus
+class Offer
 {
+description
+date created
 accepted
 rejected
 expired
 }
 
-class OrderStatus
-{
-paid
-cancelled
-}
-
-class Offer
-{
-description
-expirationDate
-createdDate
-}
-
 class Order
 {
 orderDateTime
+paid
+cancelled
 }
 
 class Carport
@@ -101,20 +85,19 @@ class Carport
 
 class CarportDrawing
 {
-top2DModel
-side2DModel
+top view
+side view
 }
 
 class Notification
 {
-type
-status
-message
-timestamp
+inquiry received e-mail
+offer sent e-mail
+order confirmation e-mail
 }
 
-Account <|-- Customer
-Account <|-- Seller
+Account <|- Customer
+Account <|- Seller
 
 Customer "1" -- "0..*" Inquiry : places
 Inquiry "1" -- "1" Carport : contains
@@ -122,27 +105,25 @@ Inquiry "1" -- "0..1" Offer : generates
 Seller "1" -- "0..*" Offer : handles/edits
 Seller "1" -- "0..*" MaterialCatalog : manages
 
-Customer "1" -- "0..*" Notification : receives
-Inquiry "1" -- "0..*" Notification : triggers
-Offer "1" -- "0..*" Notification : triggers
+Customer "1..*" -- "0..*" Notification : receives
+Inquiry "1" -- "1" Notification : triggers
+Offer "1" -- "1" Notification : triggers
+Order "1" -- "1" Notification : triggers
 
 Offer "0..*" -- "1" Customer : sent to
 Offer "1" -- "0..1" Order : becomes (if accepted)
 Offer "1" -- "1" Price
 Offer "1" -- "1" CarportDrawing
-Offer "1" -- "1" OfferStatus
 
 Order "0..*" -- "1" Customer : belongs to
-Order "1" -- "1" OrderStatus
 Order "1" -- "1" BillOfMaterials : includes
 
 Carport "1" -- "1" Measurements
 Carport "1" -- "0..1" Shed
-Carport "1" -- "1" Roof
+Carport "0..*" -- "*" Material : uses
 Shed "0..1" -- "1" Measurements
-Shed "0..1" - "1" Material : uses
-Roof "1" -- "1" Material : uses
-Material "1" -- "1" MaterialType : is type of
+Shed "0..1" -- "*" Material : uses
+Material "1" -- "1" MaterialCategory : is type of
 Material "0..*" -- "1" MaterialCatalog : contains
 
 BillOfMaterials "1" -- "1..*" Material : contains

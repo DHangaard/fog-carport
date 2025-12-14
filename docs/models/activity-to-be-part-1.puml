@@ -1,0 +1,34 @@
+@startuml
+|Kunde|
+|Fog Web Applikation|
+|Sælger|
+
+|Kunde|
+start
+repeat
+  if (Har konto?) then (Ja)
+    :Log ind;
+  else (Nej)
+    :Opret bruger;
+    :Log ind;
+  endif
+repeat while (Logget ind?) is (Nej) not (Ja)
+:Indtast mål på carport / vælg specifikationer;
+:Valider input samt kunde kontaktinformation;
+:Send forespørgsel;
+
+|Fog Web Applikation|
+partition fil #LightGreen {
+:Forespørgsel;
+}
+:Send bekræftelse til kunde;
+
+|Kunde|
+partition mail #LightSkyBlue {
+:Bekræftelse for modtagelse af forespørgsel;
+}
+
+|Fog Web Applikation|
+stop
+note right: Fortsætter på side 2 (A)
+@enduml
