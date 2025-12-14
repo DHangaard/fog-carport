@@ -19,20 +19,4 @@ public class OrderDetail
     private String customerComment;
     private PricingDetails pricingDetails;
     private OrderStatus orderStatus;
-
-    public void addMaterialLine(MaterialLine materialLine)
-    {
-        if(materialLine != null)
-        {
-            materialLines.add(materialLine);
-        }
-    }
-
-    public void removeMaterialLine(MaterialLine materialLine)
-    {
-        if(materialLine != null)
-        {
-            materialLines.remove(materialLine);
-        }
-    }
 }
