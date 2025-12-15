@@ -22,8 +22,6 @@ public class Carport
         this.shed = shed;
         this.hasShed = shed == null;
     }
-
-;
 }
 
 

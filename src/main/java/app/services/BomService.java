@@ -14,6 +14,9 @@ import java.util.*;
 public class BomService implements IBomService
 {
     private MaterialVariantMapper variantMapper;
+    private static final int BUFFER_TOLERANCE_CM = 30;
+    private static final int BOARDS_PER_SIDE_OR_ENDS = 2;
+    private static final int ONLY_FRONT_END = 1;
     private final int STANDARD_POST_LENGTH = AppProperties.getRequiredInt("post.standard.length.cm");
     private final double COVERAGE_PERCENTAGE = AppProperties.getRequiredDouble("coverage.percentage");
 
@@ -37,6 +40,9 @@ public class BomService implements IBomService
         List<MaterialLine> roofMaterialLines = calculateRoofTiles(carport);
         List<MaterialLine> fittingMaterialLines = getFittingsForCarport(PartCalculator.calculateNumberOfRafters(carport.getLength()));
         List<MaterialLine> boltsAndWashers = calculateNumberOfCarriageBoltsAndWashers(carport);
+        List<MaterialLine> underFasciaBoards = calculateUnderFasciaBoards(carport);
+        List<MaterialLine> overFasciaBoards = calculateOverFasciaBoards(carport);
+        List<MaterialLine> waterBoards = calculateWaterBoards(carport);
 
         billOfMaterial.add(rafterMaterialLine);
         billOfMaterial.add(postMaterialLine);
@@ -57,6 +63,18 @@ public class BomService implements IBomService
                 .forEach(materialLine -> billOfMaterial.add(materialLine));
 
         boltsAndWashers.stream()
+                .filter(materialLine -> materialLine != null)
+                .forEach(materialLine -> billOfMaterial.add(materialLine));
+
+        underFasciaBoards.stream()
+                .filter(materialLine -> materialLine != null)
+                .forEach(materialLine -> billOfMaterial.add(materialLine));
+
+        overFasciaBoards.stream()
+                .filter(materialLine -> materialLine != null)
+                .forEach(materialLine -> billOfMaterial.add(materialLine));
+
+        waterBoards.stream()
                 .filter(materialLine -> materialLine != null)
                 .forEach(materialLine -> billOfMaterial.add(materialLine));
 
@@ -167,7 +185,6 @@ public class BomService implements IBomService
         return roofVariantsNeeded;
     }
 
-    // TODO test beam placement is correct - alternatively move beam joint to shedPostPlacement
     private List<MaterialLine> calculateNumberOfBeams(Carport carport) throws DatabaseException, MaterialNotFoundException
     {
         List<MaterialLine> beamsNeeded = new ArrayList<>();
@@ -333,7 +350,98 @@ public class BomService implements IBomService
 
         int bracketScrewPackages = PartCalculator.calculateNumberOfBracketScrewsNeeded(carport, bracketScrewVariant.getPiecesPerUnit());
 
-        return  new MaterialLine(bracketScrewVariant, bracketScrewPackages);
+        return new MaterialLine(bracketScrewVariant, bracketScrewPackages);
+    }
+
+    private List<MaterialLine> calculateUnderFasciaBoards(Carport carport) throws DatabaseException, MaterialNotFoundException
+    {
+        List<MaterialLine> underFasciaBoards = new ArrayList<>();
+        List<MaterialVariant> boardsVariants = variantMapper.getAllVariantsByType(MaterialType.UNDER_FASCIA_BOARD);
+        int maxVariantLength = getMaxVariantLength(boardsVariants);
+
+        MaterialLine frontAndBackEndsLine = calculateBoards(boardsVariants,
+                carport.getWidth(),
+                maxVariantLength,
+                BOARDS_PER_SIDE_OR_ENDS
+        );
+        underFasciaBoards.add(frontAndBackEndsLine);
+
+        MaterialLine sidesLine = calculateBoards(boardsVariants,
+                carport.getLength(),
+                maxVariantLength,
+                BOARDS_PER_SIDE_OR_ENDS
+        );
+        underFasciaBoards.add(sidesLine);
+
+        return underFasciaBoards;
+    }
+
+    private List<MaterialLine> calculateOverFasciaBoards(Carport carport) throws DatabaseException, MaterialNotFoundException
+    {
+        List<MaterialLine> overFasciaBoards = new ArrayList<>();
+        List<MaterialVariant> boardVariants = variantMapper.getAllVariantsByType(MaterialType.OVER_FASCIA_BOARD);
+        int maxVariantLength = getMaxVariantLength(boardVariants);
+
+        MaterialLine frontLine = calculateBoards(
+                boardVariants,
+                carport.getWidth(),
+                maxVariantLength,
+                ONLY_FRONT_END
+        );
+        overFasciaBoards.add(frontLine);
+
+        MaterialLine sidesLine = calculateBoards(
+                boardVariants,
+                carport.getLength(),
+                maxVariantLength,
+                BOARDS_PER_SIDE_OR_ENDS
+        );
+        overFasciaBoards.add(sidesLine);
+
+        return overFasciaBoards;
+    }
+
+    private List<MaterialLine> calculateWaterBoards(Carport carport) throws DatabaseException, MaterialNotFoundException
+    {
+        List<MaterialLine> waterBoards = new ArrayList<>();
+        List<MaterialVariant> boardVariants = variantMapper.getAllVariantsByType(MaterialType.WATER_BOARD);
+        int maxVariantLength = getMaxVariantLength(boardVariants);
+
+        MaterialLine frontLine = calculateBoards(
+                boardVariants,
+                carport.getWidth(),
+                maxVariantLength,
+                ONLY_FRONT_END
+        );
+        waterBoards.add(frontLine);
+
+        MaterialLine sidesLine = calculateBoards(
+                boardVariants,
+                carport.getLength(),
+                maxVariantLength,
+                BOARDS_PER_SIDE_OR_ENDS
+        );
+        waterBoards.add(sidesLine);
+
+        return waterBoards;
+    }
+
+    private MaterialLine calculateBoards(List<MaterialVariant> variants, int carportDimensionInCm, int maxVariantLength, int numberOfSidesOrEnds) throws MaterialNotFoundException
+    {
+        int dimensionToCover = carportDimensionInCm + BUFFER_TOLERANCE_CM;
+
+        if (dimensionToCover <= maxVariantLength)
+        {
+            MaterialVariant singleBoardVariant = findOptimalVariantLength(variants, dimensionToCover);
+            return new MaterialLine(singleBoardVariant, numberOfSidesOrEnds);
+        }
+        else
+        {
+            int halfDimension = (carportDimensionInCm / 2) + BUFFER_TOLERANCE_CM;
+            MaterialVariant splitBoardVariant = findOptimalVariantLength(variants, halfDimension);
+
+            return new MaterialLine(splitBoardVariant, numberOfSidesOrEnds * 2);
+        }
     }
 
     private MaterialVariant findOptimalVariantLength(List<MaterialVariant> variants, int length) throws MaterialNotFoundException

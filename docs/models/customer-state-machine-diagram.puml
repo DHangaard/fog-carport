@@ -1,0 +1,42 @@
+@startuml
+'https://plantuml.com/state-diagram
+
+Login : /login (login.html)
+CreateUser : /create-user (create-user.html)
+Index : / (index.html)
+ChooseCarport : /carporte (build-carport.html)
+CarportFormular : /carport-formular (request-offer-carport.html)
+ContactFormular : /request-offer-contact (request-offer-contact.html)
+RequestConfirmation : /checkout/payment (request-confirmation.html)
+MyPage : /my-page(my-page.html)
+CarportOrderDetail : /carport/details/view/{id} (order-detail.html)
+CarportOffer : /customer-offer/details/{id} (customer-offer-detail.html)
+CarportDrawing : /show-carport-drawing/{id} (carport-drawing.html)
+
+[*] --> Index : Guest arrives
+
+Index --> Login : Choose to login
+Index --> ChooseCarport : View carport options
+ChooseCarport --> Login : Must login to continue
+
+Login --> CreateUser : No account? Create one
+CreateUser --> Login : Registration successful
+
+Login --> CarportFormular : Login successful
+Login --> Index : Go to index (already logged in)
+Index --> MyPage : Go to my page (logged in)
+
+CarportFormular --> ContactFormular : Submit dimensions
+ContactFormular --> RequestConfirmation : Confirm contact info
+RequestConfirmation --> Index : Request submitted
+
+MyPage --> CarportOffer : View received offer
+MyPage --> CarportOrderDetail : View order details
+
+CarportOffer --> MyPage : Accept offer
+CarportOffer --> MyPage : Reject offer
+
+CarportOffer --> CarportDrawing : Open drawing (new window)
+CarportOrderDetail --> CarportDrawing : Open drawing (new window)
+
+@enduml

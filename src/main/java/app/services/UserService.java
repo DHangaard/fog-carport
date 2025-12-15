@@ -26,12 +26,12 @@ public class UserService implements IUserService
     @Override
     public UserDTO registerUser(CreateUserRequestDTO createUserRequestDTO) throws DatabaseException
     {
-        ValidationUtil.validateName(createUserRequestDTO.firstName(), "Fornavn");
-        ValidationUtil.validateName(createUserRequestDTO.lastName(), "Efternavn");
-        ValidationUtil.validateEmail(createUserRequestDTO.email());
+        String firstName = ValidationUtil.validateName(createUserRequestDTO.firstName(), "Fornavn");
+        String lastName = ValidationUtil.validateName(createUserRequestDTO.lastName(), "Efternavn");
+        String email = ValidationUtil.validateEmail(createUserRequestDTO.email());
         ValidationUtil.validatePassword(createUserRequestDTO.password1());
-        ValidationUtil.validatePhoneNumber(createUserRequestDTO.phoneNumber());
-        ValidationUtil.validateStreet(createUserRequestDTO.street());
+        String phone = ValidationUtil.validatePhoneNumber(createUserRequestDTO.phoneNumber());
+        String street = ValidationUtil.validateStreet(createUserRequestDTO.street());
         ValidationUtil.validateZipCode(createUserRequestDTO.zipCode());
 
         if(!createUserRequestDTO.password1().equals(createUserRequestDTO.password2()))
@@ -45,15 +45,14 @@ public class UserService implements IUserService
         }
 
         String hashedPassword = PasswordUtil.hashPassword(createUserRequestDTO.password1());
-        String cleanPhone = createUserRequestDTO.phoneNumber().replaceAll("[\\s-]", "");
 
         User user = userMapper.createUser(
-                createUserRequestDTO.firstName(),
-                createUserRequestDTO.lastName(),
-                createUserRequestDTO.email(),
+                firstName,
+                lastName,
+                email,
                 hashedPassword,
-                cleanPhone,
-                createUserRequestDTO.street(),
+                phone,
+                street,
                 createUserRequestDTO.zipCode()
         );
 

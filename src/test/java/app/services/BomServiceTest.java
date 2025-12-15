@@ -50,7 +50,6 @@ class BomServiceTest
 
     }
 
-
     @Test
     void test240CmWidthCarportGetsCorrectRafters() throws MaterialNotFoundException, DatabaseException
     {
@@ -398,5 +397,223 @@ class BomServiceTest
         assertTrue(roofLines.size() == 2);
         assertEquals(firstRoofLengthExpected, roofLines.get(0).getMaterialVariant().getVariantLength());
         assertEquals(secondRoofLengthExpected, roofLines.get(1).getMaterialVariant().getVariantLength());
+    }
+
+    @Test
+    void test420x240CarportGetsCorrectUnderFasciaBoards() throws MaterialNotFoundException, DatabaseException
+    {
+        Carport carport = new Carport(0, 420, 240, RoofType.TRAPEZ_ROOF, null);
+
+        List<MaterialLine> materialLines = bomService.getBillOfMaterialByCarport(carport);
+
+        List<MaterialLine> underFasciaBoardLines = materialLines.stream()
+                .filter(l -> l.getMaterialVariant().getMaterial().getType() == MaterialType.UNDER_FASCIA_BOARD)
+                .collect(Collectors.toList());
+
+        int expectedWidthLength = 300;
+        int expectedLengthLength = 480;
+
+        assertNotNull(underFasciaBoardLines);
+        assertEquals(2, underFasciaBoardLines.size());
+
+        assertEquals(2, underFasciaBoardLines.get(0).getQuantity());
+        assertEquals(expectedWidthLength, underFasciaBoardLines.get(0).getMaterialVariant().getVariantLength());
+
+        assertEquals(2, underFasciaBoardLines.get(1).getQuantity());
+        assertEquals(expectedLengthLength, underFasciaBoardLines.get(1).getMaterialVariant().getVariantLength());
+    }
+
+    @Test
+    void test600x420CarportGetsCorrectUnderFasciaBoards() throws MaterialNotFoundException, DatabaseException
+    {
+        Carport carport = new Carport(0, 600, 420, RoofType.TRAPEZ_ROOF, null);
+
+        List<MaterialLine> materialLines = bomService.getBillOfMaterialByCarport(carport);
+
+        List<MaterialLine> underFasciaBoardLines = materialLines.stream()
+                .filter(l -> l.getMaterialVariant().getMaterial().getType() == MaterialType.UNDER_FASCIA_BOARD)
+                .collect(Collectors.toList());
+
+        int expectedWidthLength = 480;
+        int expectedLengthLength = 360;
+
+        assertNotNull(underFasciaBoardLines);
+        assertEquals(2, underFasciaBoardLines.size());
+
+        assertEquals(2, underFasciaBoardLines.get(0).getQuantity());
+        assertEquals(expectedWidthLength, underFasciaBoardLines.get(0).getMaterialVariant().getVariantLength());
+
+        assertEquals(4, underFasciaBoardLines.get(1).getQuantity());
+        assertEquals(expectedLengthLength, underFasciaBoardLines.get(1).getMaterialVariant().getVariantLength());
+    }
+
+    @Test
+    void test780x600CarportGetsCorrectUnderFasciaBoards() throws MaterialNotFoundException, DatabaseException
+    {
+        Carport carport = new Carport(0, 780, 600, RoofType.TRAPEZ_ROOF, null);
+
+        List<MaterialLine> materialLines = bomService.getBillOfMaterialByCarport(carport);
+
+        List<MaterialLine> underFasciaBoardLines = materialLines.stream()
+                .filter(l -> l.getMaterialVariant().getMaterial().getType() == MaterialType.UNDER_FASCIA_BOARD)
+                .collect(Collectors.toList());
+
+        int expectedWidthLength = 360;
+        int expectedLengthLength = 420;
+
+        assertNotNull(underFasciaBoardLines);
+        assertEquals(2, underFasciaBoardLines.size());
+
+        assertEquals(4, underFasciaBoardLines.get(0).getQuantity());
+        assertEquals(expectedWidthLength, underFasciaBoardLines.get(0).getMaterialVariant().getVariantLength());
+
+        assertEquals(4, underFasciaBoardLines.get(1).getQuantity());
+        assertEquals(expectedLengthLength, underFasciaBoardLines.get(1).getMaterialVariant().getVariantLength());
+    }
+
+
+    @Test
+    void test420x240CarportGetsCorrectOverFasciaBoards() throws MaterialNotFoundException, DatabaseException
+    {
+        Carport carport = new Carport(0, 420, 240, RoofType.TRAPEZ_ROOF, null);
+
+        List<MaterialLine> materialLines = bomService.getBillOfMaterialByCarport(carport);
+
+        List<MaterialLine> overFasciaBoardLines = materialLines.stream()
+                .filter(l -> l.getMaterialVariant().getMaterial().getType() == MaterialType.OVER_FASCIA_BOARD)
+                .collect(Collectors.toList());
+
+        int expectedWidthLength = 300;
+        int expectedLengthLength = 480;
+
+        assertNotNull(overFasciaBoardLines);
+        assertEquals(2, overFasciaBoardLines.size());
+
+        assertEquals(1, overFasciaBoardLines.get(0).getQuantity());
+        assertEquals(expectedWidthLength, overFasciaBoardLines.get(0).getMaterialVariant().getVariantLength());
+
+        assertEquals(2, overFasciaBoardLines.get(1).getQuantity());
+        assertEquals(expectedLengthLength, overFasciaBoardLines.get(1).getMaterialVariant().getVariantLength());
+    }
+
+    @Test
+    void test600x420CarportGetsCorrectOverFasciaBoards() throws MaterialNotFoundException, DatabaseException
+    {
+        Carport carport = new Carport(0, 600, 420, RoofType.TRAPEZ_ROOF, null);
+
+        List<MaterialLine> materialLines = bomService.getBillOfMaterialByCarport(carport);
+
+        List<MaterialLine> overFasciaBoardLines = materialLines.stream()
+                .filter(l -> l.getMaterialVariant().getMaterial().getType() == MaterialType.OVER_FASCIA_BOARD)
+                .collect(Collectors.toList());
+
+        int expectedWidthLength = 480;
+        int expectedLengthLength = 360;
+
+        assertNotNull(overFasciaBoardLines);
+        assertEquals(2, overFasciaBoardLines.size());
+
+        assertEquals(1, overFasciaBoardLines.get(0).getQuantity());
+        assertEquals(expectedWidthLength, overFasciaBoardLines.get(0).getMaterialVariant().getVariantLength());
+
+        assertEquals(4, overFasciaBoardLines.get(1).getQuantity());
+        assertEquals(expectedLengthLength, overFasciaBoardLines.get(1).getMaterialVariant().getVariantLength());
+    }
+
+    @Test
+    void test780x600CarportGetsCorrectOverFasciaBoards() throws MaterialNotFoundException, DatabaseException
+    {
+        Carport carport = new Carport(0, 780, 600, RoofType.TRAPEZ_ROOF, null);
+
+        List<MaterialLine> materialLines = bomService.getBillOfMaterialByCarport(carport);
+
+        List<MaterialLine> overFasciaBoardLines = materialLines.stream()
+                .filter(l -> l.getMaterialVariant().getMaterial().getType() == MaterialType.OVER_FASCIA_BOARD)
+                .collect(Collectors.toList());
+
+        int expectedWidthLength = 360;
+        int expectedLengthLength = 420;
+
+        assertNotNull(overFasciaBoardLines);
+        assertEquals(2, overFasciaBoardLines.size());
+
+        assertEquals(2, overFasciaBoardLines.get(0).getQuantity());
+        assertEquals(expectedWidthLength, overFasciaBoardLines.get(0).getMaterialVariant().getVariantLength());
+
+        assertEquals(4, overFasciaBoardLines.get(1).getQuantity());
+        assertEquals(expectedLengthLength, overFasciaBoardLines.get(1).getMaterialVariant().getVariantLength());
+    }
+
+
+    @Test
+    void test420x240CarportGetsCorrectWaterBoards() throws MaterialNotFoundException, DatabaseException
+    {
+        Carport carport = new Carport(0, 420, 240, RoofType.TRAPEZ_ROOF, null);
+
+        List<MaterialLine> materialLines = bomService.getBillOfMaterialByCarport(carport);
+
+        List<MaterialLine> waterBoardLines = materialLines.stream()
+                .filter(l -> l.getMaterialVariant().getMaterial().getType() == MaterialType.WATER_BOARD)
+                .collect(Collectors.toList());
+
+        int expectedWidthLength = 300;
+        int expectedLengthLength = 480;
+
+        assertNotNull(waterBoardLines);
+        assertEquals(2, waterBoardLines.size());
+
+        assertEquals(1, waterBoardLines.get(0).getQuantity());
+        assertEquals(expectedWidthLength, waterBoardLines.get(0).getMaterialVariant().getVariantLength());
+
+        assertEquals(2, waterBoardLines.get(1).getQuantity());
+        assertEquals(expectedLengthLength, waterBoardLines.get(1).getMaterialVariant().getVariantLength());
+    }
+
+    @Test
+    void test540x420CarportGetsCorrectWaterBoards() throws MaterialNotFoundException, DatabaseException
+    {
+        Carport carport = new Carport(0, 540, 420, RoofType.TRAPEZ_ROOF, null);
+
+        List<MaterialLine> materialLines = bomService.getBillOfMaterialByCarport(carport);
+
+        List<MaterialLine> waterBoardLines = materialLines.stream()
+                .filter(l -> l.getMaterialVariant().getMaterial().getType() == MaterialType.WATER_BOARD)
+                .collect(Collectors.toList());
+
+        int expectedWidthLength = 480;
+        int expectedLengthLength = 300;
+
+        assertNotNull(waterBoardLines);
+        assertEquals(2, waterBoardLines.size());
+
+        assertEquals(1, waterBoardLines.get(0).getQuantity());
+        assertEquals(expectedWidthLength, waterBoardLines.get(0).getMaterialVariant().getVariantLength());
+
+        assertEquals(4, waterBoardLines.get(1).getQuantity());
+        assertEquals(expectedLengthLength, waterBoardLines.get(1).getMaterialVariant().getVariantLength());
+    }
+
+    @Test
+    void test780x600CarportGetsCorrectWaterBoards() throws MaterialNotFoundException, DatabaseException
+    {
+        Carport carport = new Carport(0, 780, 600, RoofType.TRAPEZ_ROOF, null);
+
+        List<MaterialLine> materialLines = bomService.getBillOfMaterialByCarport(carport);
+
+        List<MaterialLine> waterBoardLines = materialLines.stream()
+                .filter(l -> l.getMaterialVariant().getMaterial().getType() == MaterialType.WATER_BOARD)
+                .collect(Collectors.toList());
+
+        int expectedWidthLength = 360;
+        int expectedLengthLength = 420;
+
+        assertNotNull(waterBoardLines);
+        assertEquals(2, waterBoardLines.size());
+
+        assertEquals(2, waterBoardLines.get(0).getQuantity());
+        assertEquals(expectedWidthLength, waterBoardLines.get(0).getMaterialVariant().getVariantLength());
+
+        assertEquals(4, waterBoardLines.get(1).getQuantity());
+        assertEquals(expectedLengthLength, waterBoardLines.get(1).getMaterialVariant().getVariantLength());
     }
 }

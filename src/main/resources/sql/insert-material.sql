@@ -108,6 +108,41 @@ INSERT INTO material_variant (material_id, variant_length, unit_price, pieces_pe
 INSERT INTO material_variant (material_id, variant_length, unit_price, pieces_per_unit) VALUES
     ((SELECT material_id FROM material WHERE name = 'firkantskiver'), 1, 12.57, 1);
 
+-- Understernbrædder (Under fascia boards) - 25x200 mm
+INSERT INTO material (name, category, type, material_width, material_height, unit, usage) VALUES
+    ('trykimp. Brædt', 'WOOD_AND_ROOFING', 'UNDER_FASCIA_BOARD', 25, 200, 'stk', 'Understernbrædder til for & bag ende og sider');
+
+-- Oversternbrædder (Over fascia boards) - 25x125 mm
+INSERT INTO material (name, category, type, material_width, material_height, unit, usage) VALUES
+    ('trykimp. Brædt', 'WOOD_AND_ROOFING', 'OVER_FASCIA_BOARD', 25, 125, 'stk', 'Oversternbrædder til forenden og sider');
+
+-- Vandbrædder (Water boards) - 19x100 mm
+INSERT INTO material (name, category, type, material_width, material_height, unit, usage) VALUES
+    ('trykimp. Brædt', 'WOOD_AND_ROOFING', 'WATER_BOARD', 19, 100, 'stk', 'Vandbrædt på stern i forende og sider');
+
+INSERT INTO material_variant (material_id, variant_length, unit_price, pieces_per_unit) VALUES
+                                                                                            ((SELECT material_id FROM material WHERE type = 'UNDER_FASCIA_BOARD' AND material_width = 25 AND material_height = 200), 300, 117.48, 1),
+                                                                                            ((SELECT material_id FROM material WHERE type = 'UNDER_FASCIA_BOARD' AND material_width = 25 AND material_height = 200), 360, 140.80, 1),
+                                                                                            ((SELECT material_id FROM material WHERE type = 'UNDER_FASCIA_BOARD' AND material_width = 25 AND material_height = 200), 420, 164.47, 1),
+                                                                                            ((SELECT material_id FROM material WHERE type = 'UNDER_FASCIA_BOARD' AND material_width = 25 AND material_height = 200), 480, 187.96, 1),
+                                                                                            ((SELECT material_id FROM material WHERE type = 'UNDER_FASCIA_BOARD' AND material_width = 25 AND material_height = 200), 540, 211.46, 1),
+                                                                                            ((SELECT material_id FROM material WHERE type = 'UNDER_FASCIA_BOARD' AND material_width = 25 AND material_height = 200), 600, 268.56, 1);
+
+INSERT INTO material_variant (material_id, variant_length, unit_price, pieces_per_unit) VALUES
+                                                                                            ((SELECT material_id FROM material WHERE type = 'OVER_FASCIA_BOARD' AND material_width = 25 AND material_height = 125), 300, 83.88, 1),
+                                                                                            ((SELECT material_id FROM material WHERE type = 'OVER_FASCIA_BOARD' AND material_width = 25 AND material_height = 125), 360, 97.49, 1),
+                                                                                            ((SELECT material_id FROM material WHERE type = 'OVER_FASCIA_BOARD' AND material_width = 25 AND material_height = 125), 420, 117.43, 1),
+                                                                                            ((SELECT material_id FROM material WHERE type = 'OVER_FASCIA_BOARD' AND material_width = 25 AND material_height = 125), 480, 134.20, 1),
+                                                                                            ((SELECT material_id FROM material WHERE type = 'OVER_FASCIA_BOARD' AND material_width = 25 AND material_height = 125), 540, 150.93, 1),
+                                                                                            ((SELECT material_id FROM material WHERE type = 'OVER_FASCIA_BOARD' AND material_width = 25 AND material_height = 125), 600, 128.56, 1);
+
+INSERT INTO material_variant (material_id, variant_length, unit_price, pieces_per_unit) VALUES
+                                                                                            ((SELECT material_id FROM material WHERE type = 'WATER_BOARD' AND material_width = 19 AND material_height = 100), 300, 43.08, 1),
+                                                                                            ((SELECT material_id FROM material WHERE type = 'WATER_BOARD' AND material_width = 19 AND material_height = 100), 360, 51.68, 1),
+                                                                                            ((SELECT material_id FROM material WHERE type = 'WATER_BOARD' AND material_width = 19 AND material_height = 100), 420, 60.29, 1),
+                                                                                            ((SELECT material_id FROM material WHERE type = 'WATER_BOARD' AND material_width = 19 AND material_height = 100), 480, 68.92, 1),
+                                                                                            ((SELECT material_id FROM material WHERE type = 'WATER_BOARD' AND material_width = 19 AND material_height = 100), 540, 77.54, 1);
+
 COMMIT;
 
 
