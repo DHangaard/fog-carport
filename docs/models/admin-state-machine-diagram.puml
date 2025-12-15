@@ -5,13 +5,13 @@ Index : / (index.html)
 CarportOffers: /offers (admin-offers.html)
 CarportOrders: /orders (admin-orders.html)
 CarportRequests : /carport-requests (admin-request.html)
-CarportRequestDetail : /carport-request/details/{id} (admin-request-detail)
-UpdateCarport : /requests/{id}/update-carport (admin-update-carport)
+CarportRequestDetail : /carport-request/details/{id} (admin-request-detail.html)
+UpdateCarport : /requests/{id}/update-carport (admin-update-carport.html)
 CarportOrderDetail : /carport/details/view/{id} (order-detail.html)
 CarportDrawing : /show-carport-drawing/{id} (carport-drawing.html)
 Materials : /materials (materials.html)
-UpdateMaterial : /materials/{id}/update-material (material-update)
-CreateMaterial : /materials/create (material-create)
+UpdateMaterial : /materials/{id}/update-material (material-update.html)
+CreateMaterial : /materials/create (material-create.html)
 
 [*] --> Index : Seller/admin arrives
 
@@ -32,7 +32,6 @@ CarportRequestDetail --> CarportRequestDetail : Update quantity in material line
 
 CarportOffers --> CarportOrderDetail : View accepted offer (order)
 CarportOffers --> CarportOffers : View active / rejected / expired offers
-CarportOffers --> CarportDrawing : View drawing (new window)
 
 CarportOrders --> CarportOrderDetail : View specific order
 CarportOrderDetail --> CarportDrawing : View drawing (new window)
@@ -44,6 +43,6 @@ UpdateMaterial --> Materials : Cancel
 Materials --> CreateMaterial : Create new material
 CreateMaterial --> Materials : Save new material
 CreateMaterial --> Materials : Cancel
-Materials --> Materials : Delete material
+Materials --> Materials : Delete / search materials
 
 @enduml
