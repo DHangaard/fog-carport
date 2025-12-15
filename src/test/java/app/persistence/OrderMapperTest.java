@@ -405,6 +405,36 @@ class OrderMapperTest
     }
 
     @Test
+    void testOrderBecomesExpiredAfterValidityPeriod() throws DatabaseException, SQLException
+    {
+        Order order = orderMapper.getOrderById(2);
+        assertEquals(OrderStatus.READY, order.getOrderStatus());
+
+        Connection connection = connectionPool.getConnection();
+        connection.setAutoCommit(false);
+
+        try (Statement stmt = connection.createStatement())
+        {
+            stmt.execute(
+                    "UPDATE test.orders " +
+                            "SET created_at = CURRENT_TIMESTAMP - INTERVAL '20 days', " +
+                            "offer_valid_days = 14 " +
+                            "WHERE order_id = 2"
+            );
+        }
+
+        connection.commit();
+        connection.close();
+
+        int updatedRows = orderMapper.updateOrderStatusIfExpired();
+
+        assertTrue(updatedRows > 0);
+
+        Order expiredOrder = orderMapper.getOrderById(2);
+        assertEquals(OrderStatus.EXPIRED, expiredOrder.getOrderStatus());
+    }
+
+    @Test
     void testCompleteOrderWorkflow() throws DatabaseException, SQLException
     {
         Connection connection = connectionPool.getConnection();
