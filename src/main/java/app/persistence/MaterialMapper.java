@@ -148,10 +148,10 @@ public class MaterialMapper
         {
             ps.setString(1, materialType.name());
             ResultSet rs = ps.executeQuery();
-                while (rs.next())
-                {
-                    materials.add(buildMaterialFromResultSet(rs));
-                }
+            while (rs.next())
+            {
+                materials.add(buildMaterialFromResultSet(rs));
+            }
             return materials;
         }
         catch (SQLException e)
@@ -176,10 +176,10 @@ public class MaterialMapper
         {
             ps.setString(1, materialCategory.name());
             ResultSet rs = ps.executeQuery();
-                while (rs.next())
-                {
-                    materials.add(buildMaterialFromResultSet(rs));
-                }
+            while (rs.next())
+            {
+                materials.add(buildMaterialFromResultSet(rs));
+            }
 
             return materials;
         }

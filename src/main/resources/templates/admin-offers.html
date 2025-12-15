@@ -12,32 +12,6 @@
 <div th:replace="~{fragments :: headerFragment}"></div>
 
 <main>
-    <!-- Sales links (conditional)
-<div class="order-search">
-    <h2>Søg efter forespørgsel</h2>
-
-    <form method="get" th:action="@{/orders/search}">
-        <div class="search-form">
-            <select name="searchType" required>
-                <option value="">Vælg søgetype</option>
-                <option value="id" th:selected="${searchType == 'id'}">Ordre ID</option>
-                <option value="name" th:selected="${searchType == 'name'}">Kundenavn</option>
-                <option value="email" th:selected="${searchType == 'email'}">Kundeemail</option>
-            </select>
-
-            <input type="text"
-                   name="searchQuery"
-                   th:value="${searchQuery}"
-                   placeholder="Indtast søgeord..."
-                   required>
-
-            <button class="search-button" type="submit">Søg</button>
-            <a th:href="@{/orders}" class="reset-button">Nulstil</a>
-        </div>
-    </form>
-</div>
- -->
-
     <div class="orders-view">
         <div th:if="${successMessage}" class="message message-success">
             <p th:text="${successMessage}"></p>
@@ -48,7 +22,6 @@
         </div>
 
         <h1>Tilbud Oversigt</h1>
-
 
         <section class="order-section">
             <h2>Afventer kunde accept<span class="badge-secondary" th:if="${offersToAccept != null}" th:text="${offersToAccept.size()}"></span></h2>
