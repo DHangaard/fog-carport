@@ -1,5 +1,7 @@
 @startuml
 
+left to right direction
+
 Login : /login (login.html)
 Index : / (index.html)
 CarportOffers: /offers (admin-offers.html)
@@ -17,7 +19,7 @@ CreateMaterial : /materials/create (material-create.html)
 
 Index --> Login : Seller logs in
 Login --> Index : Login successful
-Index --> CarportRequests : View carport requests (logged in)
+Index -> CarportRequests : View carport requests (logged in)
 Index --> CarportOffers : View offers (logged in)
 Index --> CarportOrders : View orders (logged in)
 Index --> Materials : View materials (logged in)
@@ -34,7 +36,7 @@ CarportOffers --> CarportOrderDetail : View accepted offer (order)
 CarportOffers --> CarportOffers : View active / rejected / expired offers
 
 CarportOrders --> CarportOrderDetail : View specific order
-CarportOrderDetail --> CarportDrawing : View drawing (new window)
+CarportOrderDetail -> CarportDrawing : View drawing (new window)
 CarportOrders --> CarportOrders : View paid / cancelled orders
 
 Materials --> UpdateMaterial : Edit material
