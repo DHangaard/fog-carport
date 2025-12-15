@@ -5,31 +5,38 @@ import app.entities.Shed;
 public class ValidationUtil
 {
 
-    public static void validateEmail(String email)
+    public static String validateEmail(String email)
     {
         if (email == null || email.trim().isEmpty())
         {
             throw new IllegalArgumentException("Email kan ikke være tom");
         }
 
+
         if (!email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"))
         {
             throw new IllegalArgumentException("Ikke gyldig email format");
         }
+
+        return email.trim();
     }
 
-    public static void validatePhoneNumber(String phone)
+    public static String validatePhoneNumber(String phone)
     {
         if (phone == null || phone.trim().isEmpty())
         {
             throw new IllegalArgumentException("Telefonnummer kan ikke være tomt");
         }
 
+        phone = phone.trim();
+
         String cleanPhone = phone.replaceAll("[\\s-]", "");
 
         if (!cleanPhone.matches("^\\d{8}$")) {
             throw new IllegalArgumentException("Telefonnummer skal være 8 cifre");
         }
+
+        return cleanPhone;
     }
 
     public static void validateZipCode(int zipCode)
@@ -58,7 +65,7 @@ public class ValidationUtil
         }
     }
 
-    public static void validateName(String name, String fieldName)
+    public static String validateName(String name, String fieldName)
     {
         if (name == null || name.trim().isEmpty())
         {
@@ -69,9 +76,11 @@ public class ValidationUtil
         {
             throw new IllegalArgumentException(fieldName + " skal være mindst 2 tegn");
         }
+
+        return name.trim();
     }
 
-    public static void validateStreet(String street)
+    public static String validateStreet(String street)
     {
         if (street == null || street.trim().isEmpty()) {
             throw new IllegalArgumentException("Gade kan ikke være tom");
@@ -86,6 +95,8 @@ public class ValidationUtil
         {
             throw new IllegalArgumentException("Gade skal indeholde bogstaver");
         }
+
+        return street.trim();
     }
 
     public static void validateQuantity(int quantity)
