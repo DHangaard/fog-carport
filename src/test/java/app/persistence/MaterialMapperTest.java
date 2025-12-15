@@ -120,38 +120,42 @@ class MaterialMapperTest
     @Test
     void testConnection() throws SQLException
     {
-        assertNotNull(connectionPool.getConnection());
+        try (Connection connection = connectionPool.getConnection())
+        {
+            assertNotNull(connection);
+        }
     }
 
     @Test
     void testCreateMaterial() throws DatabaseException, SQLException
     {
-        Connection connection = connectionPool.getConnection();
-        connection.setAutoCommit(false);
+        try(Connection connection = connectionPool.getConnection())
+        {
+            connection.setAutoCommit(false);
 
-        Material material = materialMapper.createMaterial(
-                connection,
-                "Testmateriale",
-                MaterialCategory.WOOD_AND_ROOFING,
-                MaterialType.POST,
-                100,
-                100,
-                "stk",
-                "Test beskrivelse"
-        );
+            Material material = materialMapper.createMaterial(
+                    connection,
+                    "Testmateriale",
+                    MaterialCategory.WOOD_AND_ROOFING,
+                    MaterialType.POST,
+                    100,
+                    100,
+                    "stk",
+                    "Test beskrivelse"
+            );
 
-        connection.commit();
-        connection.close();
+            connection.commit();
 
-        assertNotNull(material);
-        assertEquals(7, material.getMaterialId());
-        assertEquals("Testmateriale", material.getName());
-        assertEquals(MaterialCategory.WOOD_AND_ROOFING, material.getCategory());
-        assertEquals(MaterialType.POST, material.getType());
-        assertEquals(100, material.getMaterialWidth());
-        assertEquals(100, material.getMaterialHeight());
-        assertEquals("stk", material.getUnit());
-        assertEquals("Test beskrivelse", material.getUsage());
+            assertNotNull(material);
+            assertEquals(7, material.getMaterialId());
+            assertEquals("Testmateriale", material.getName());
+            assertEquals(MaterialCategory.WOOD_AND_ROOFING, material.getCategory());
+            assertEquals(MaterialType.POST, material.getType());
+            assertEquals(100, material.getMaterialWidth());
+            assertEquals(100, material.getMaterialHeight());
+            assertEquals("stk", material.getUnit());
+            assertEquals("Test beskrivelse", material.getUsage());
+        }
     }
 
     @Test
@@ -215,18 +219,20 @@ class MaterialMapperTest
     @Test
     void testUpdateMaterial() throws DatabaseException, SQLException
     {
-        Connection connection = connectionPool.getConnection();
-        connection.setAutoCommit(false);
-
         Material material = materialMapper.getMaterialById(1);
         material.setUsage("Opdateret beskrivelse");
         material.setMaterialWidth(100);
 
-        boolean updated = materialMapper.updateMaterial(connection, material);
-        connection.commit();
-        connection.close();
+        try (Connection connection = connectionPool.getConnection())
+        {
+            connection.setAutoCommit(false);
 
-        assertTrue(updated);
+            boolean updated = materialMapper.updateMaterial(connection, material);
+
+            connection.commit();
+
+            assertTrue(updated);
+        }
 
         Material updatedMaterial = materialMapper.getMaterialById(1);
         assertEquals("Opdateret beskrivelse", updatedMaterial.getUsage());
@@ -236,9 +242,6 @@ class MaterialMapperTest
     @Test
     void testUpdateMaterialNotFound() throws DatabaseException, SQLException
     {
-        Connection connection = connectionPool.getConnection();
-        connection.setAutoCommit(false);
-
         Material fakeMaterial = new Material(
                 999,
                 "Fake",
@@ -250,11 +253,14 @@ class MaterialMapperTest
                 "Test"
         );
 
-        boolean updated = materialMapper.updateMaterial(connection, fakeMaterial);
-        connection.commit();
-        connection.close();
+        try (Connection connection = connectionPool.getConnection())
+        {
+            connection.setAutoCommit(false);
+            boolean updated = materialMapper.updateMaterial(connection, fakeMaterial);
 
-        assertFalse(updated);
+            connection.commit();
+            assertFalse(updated);
+        }
     }
 
     @Test
@@ -294,26 +300,26 @@ class MaterialMapperTest
     @Test
     void testCreateMaterialWithNullableDimensions() throws DatabaseException, SQLException
     {
-        Connection connection = connectionPool.getConnection();
-        connection.setAutoCommit(false);
+        try (Connection connection = connectionPool.getConnection())
+        {
+            connection.setAutoCommit(false);
 
-        Material material = materialMapper.createMaterial(
-                connection,
-                "Skruer",
-                MaterialCategory.FITTINGS_AND_FASTENERS,
-                MaterialType.FASTENER,
-                null,
-                null,
-                "pakke",
-                "Forskellige skruer"
-        );
+            Material material = materialMapper.createMaterial(
+                    connection,
+                    "Skruer",
+                    MaterialCategory.FITTINGS_AND_FASTENERS,
+                    MaterialType.FASTENER,
+                    null,
+                    null,
+                    "pakke",
+                    "Forskellige skruer"
+            );
 
-        connection.commit();
-        connection.close();
+            connection.commit();
 
-        assertNotNull(material);
-        assertNull(material.getMaterialWidth());
-        assertNull(material.getMaterialHeight());
+            assertNotNull(material);
+            assertNull(material.getMaterialWidth());
+            assertNull(material.getMaterialHeight());
+        }
     }
-
 }
