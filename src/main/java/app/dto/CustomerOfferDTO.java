@@ -2,7 +2,6 @@ package app.dto;
 
 import app.entities.Carport;
 import app.entities.OrderTimeLine;
-import app.entities.User;
 import app.enums.OrderStatus;
 
 public record CustomerOfferDTO(

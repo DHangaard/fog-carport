@@ -10,7 +10,10 @@ public enum MaterialType
     FASTENER("Skrue"),
     FITTING("Beslag"),
     METAL_STRAP("Hulbånd"),
-    WASHER("Spændeskive");
+    WASHER("Spændeskive"),
+    UNDER_FASCIA_BOARD("Under stern"),
+    OVER_FASCIA_BOARD("Over stern"),
+    WATER_BOARD("Vandbrædt");
 
     private final String displayCategory;
 

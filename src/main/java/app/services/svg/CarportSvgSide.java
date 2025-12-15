@@ -2,7 +2,6 @@ package app.services.svg;
 
 import app.dto.RafterCalculationDTO;
 import app.entities.Carport;
-import app.enums.ShedPlacement;
 import app.util.AppProperties;
 import app.util.PartCalculator;
 import app.util.PostPlacementCalculatorUtil;

@@ -2,7 +2,6 @@ package app.entities;
 
 import app.enums.MaterialCategory;
 import app.enums.MaterialType;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
