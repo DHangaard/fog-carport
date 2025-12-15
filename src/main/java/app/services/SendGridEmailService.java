@@ -93,6 +93,16 @@ public class SendGridEmailService implements IEmailService
 
         dynamicData.put("orderId", orderDetail.getOrderId());
 
+        if (orderDetail.getOrderTimeLine() != null)
+        {
+            dynamicData.put("orderDate", orderDetail.getOrderTimeLine().getCreatedAtFormatted());
+        }
+
+        if (orderDetail.getOrderTimeLine() != null)
+        {
+            dynamicData.put("orderStatus", orderDetail.getOrderStatus().getDisplayName());
+        }
+
         if (orderDetail.getCarport() != null)
         {
             dynamicData.put("carportLength", orderDetail.getCarport().getLength());
@@ -104,6 +114,14 @@ public class SendGridEmailService implements IEmailService
         {
             dynamicData.put("pricingWithoutVat", PriceFormatUtil.getFormattedPrice(orderDetail.getPricingDetails().getPriceWithoutVat()));
             dynamicData.put("totalPrice", PriceFormatUtil.getFormattedPrice(orderDetail.getPricingDetails().getTotalPrice()));
+        }
+
+        if (orderDetail.getSeller() != null)
+        {
+            dynamicData.put("sellerFirstName", orderDetail.getSeller().getFirstName());
+            dynamicData.put("sellerLastName", orderDetail.getSeller().getLastName());
+            dynamicData.put("sellerPhoneNumber",orderDetail.getSeller().getPhoneNumber());
+            dynamicData.put("sellerEmail", orderDetail.getSeller().getEmail());
         }
 
         return dynamicData;
