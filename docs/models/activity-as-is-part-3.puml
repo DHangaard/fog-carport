@@ -1,0 +1,40 @@
+@startuml
+|Kunde|
+|Hjemmeside|
+|Sælger|
+|Carport System|
+|Fog Mail System|
+|Lager System|
+
+|Kunde|
+start
+note right: Fortsættelse fra side 2 (B)
+partition mail #LightSkyBlue {
+partition fil #LightGreen {
+:Tilbud;
+:Tegning;
+}
+}
+if (Accepter?) then (Nej)
+  stop
+else (Ja)
+endif
+
+|Sælger|
+:Opretter ordre;
+
+|Fog Mail System|
+partition fil #LightGreen {
+:Ordre;
+}
+
+|Kunde|
+partition mail #LightSkyBlue {
+partition fil #LightGreen {
+:Ordre;
+:Tegning;
+:Stykliste;
+}
+}
+stop
+@enduml

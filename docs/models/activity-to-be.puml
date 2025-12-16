@@ -1,5 +1,9 @@
 @startuml
 |Kunde|
+|Fog Web Applikation|
+|Sælger|
+
+|Kunde|
 start
 repeat
   if (Har konto?) then (Ja)
@@ -65,7 +69,6 @@ else (Ja)
   :Tegning;
   }
 endif
-|Kunde|
 stop
 @enduml
 

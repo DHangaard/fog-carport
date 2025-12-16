@@ -192,8 +192,8 @@ class BomServiceTest
         List<MaterialVariant> rafterVariants = variantMapper.getAllVariantsByType(MaterialType.RAFTER);
 
         List<MaterialLine> materialLines = new ArrayList<>();
-        materialLines.add(new MaterialLine(postVariants.get(0),4)); //Price 177.48 x 4
-        materialLines.add(new MaterialLine(rafterVariants.get(0),4)); //Price 127.08 x 4
+        materialLines.add(new MaterialLine(postVariants.get(0),4)); // Price 177.48 x 4
+        materialLines.add(new MaterialLine(rafterVariants.get(0),4)); // Price 127.08 x 4
 
         double expectedCostPrice = 1218.24;
         double coveragePercentage = 40.0;

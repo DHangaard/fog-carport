@@ -1,0 +1,28 @@
+@startuml
+|Kunde|
+|Fog Web Applikation|
+|Sælger|
+
+|Fog Web Applikation|
+start
+note right: Fortsættelse fra side 1 (A)
+repeat :Beregn carport
+:Generer stykliste;
+:Generer .svg tegning;
+:Generer tilbud;
+
+|Sælger|
+partition fil #LightGreen {
+:Tilbud;
+}
+:Håndter / valider tilbud;
+backward :Ret specifikationer;
+repeat while (Valid?) is (nej) not (ja)
+:Fremlæg tilbud for kunde;
+:Tilføj eventuel rabat;
+
+|Kunde|
+stop
+note right: Fortsætter på side 3 (B)
+@enduml
+
