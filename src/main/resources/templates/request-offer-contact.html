@@ -11,78 +11,76 @@
 
 <div th:replace="~{fragments :: headerFragment}"></div>
 
-    <main>
-        <div class="content-contact">
-            <h1>Valider kontaktoplysninger</h1>
+<main>
+    <div class="content-contact">
+        <h1>Valider kontaktoplysninger</h1>
+    </div>
 
+    <div class="form-container">
+        <h2>Kontaktoplysninger</h2>
+
+        <div th:if="${successMessage}" class="message message-success">
+            <p th:text="${successMessage}"></p>
         </div>
 
-        <div class="form-container">
-            <h2>Kontaktoplysninger</h2>
-
-            <div th:if="${successMessage}" class="message message-success">
-                <p th:text="${successMessage}"></p>
-            </div>
-
-            <div th:if="${errorMessage}" class="message message-error">
-                <p th:text="${errorMessage}"></p>
-            </div>
-
-            <p>
-                Bekræft venligst at vi har de rigtige informationer til din forespørgsel.
-            </p>
-
-            <form th:action="@{/confirm-request}" method="post" class="form">
-
-                <div class="form-field">
-                    <label for="firstName">Fornavn</label>
-                    <input class="form-input" type="text" name="firstName" id="firstName"
-                           th:value="${user != null} ? ${user.firstName} : ''" required>
-                </div>
-
-                <div class="form-field">
-                    <label for="lastName">Efternavn</label>
-                    <input class="form-input" type="text" name="lastName" id="lastName"
-                           th:value="${user != null} ? ${user.lastName} : ''" required>
-                </div>
-
-                <div class="form-field">
-                    <label for="phoneNumber">Telefonnummer</label>
-                    <input class="form-input" type="text" id="phoneNumber" name="phoneNumber"
-                           th:value="${user != null} ? ${user.phoneNumber} : ''" required>
-                </div>
-
-                <div class="form-field">
-                    <label for="email">Email</label>
-                    <input class="form-input" type="email" name="email" id="email"
-                           th:value="${user != null} ? ${user.email} : ''" required>
-                </div>
-
-                <div class="form-field">
-                    <label for="street">Adresse</label>
-                        <input class="form-input" type="text" name="street" id="street"
-                               th:value="${user != null} ? ${user.street} : ''" required>
-                </div>
-
-                <div class="form-field">
-                    <label for="city">By</label>
-                    <input class="form-input" type="text" name="city" id="city"
-                           th:value="${user != null} ? ${user.city} : ''" required>
-                </div>
-
-                <div class="form-field">
-                    <label for="zipCode">Postnummer</label>
-                    <input class="form-input" type="text" name="zipCode" id="zipCode"
-                           th:value="${user != null} ? ${user.zipCode} : ''" required>
-                </div>
-
-                <button type="submit" class="btn btn-primary">Bestil tilbud</button>
-            </form>
+        <div th:if="${errorMessage}" class="message message-error">
+            <p th:text="${errorMessage}"></p>
         </div>
-    </main>
+
+        <p>
+            Bekræft venligst at vi har de rigtige informationer til din forespørgsel.
+        </p>
+
+        <form th:action="@{/confirm-request}" method="post" class="form">
+
+            <div class="form-field">
+                <label for="firstName">Fornavn</label>
+                <input class="form-input" type="text" name="firstName" id="firstName"
+                       th:value="${user != null} ? ${user.firstName} : ''" required>
+            </div>
+
+            <div class="form-field">
+                <label for="lastName">Efternavn</label>
+                <input class="form-input" type="text" name="lastName" id="lastName"
+                       th:value="${user != null} ? ${user.lastName} : ''" required>
+            </div>
+
+            <div class="form-field">
+                <label for="phoneNumber">Telefonnummer</label>
+                <input class="form-input" type="text" id="phoneNumber" name="phoneNumber"
+                       th:value="${user != null} ? ${user.phoneNumber} : ''" required>
+            </div>
+
+            <div class="form-field">
+                <label for="email">Email</label>
+                <input class="form-input" type="email" name="email" id="email"
+                       th:value="${user != null} ? ${user.email} : ''" required>
+            </div>
+
+            <div class="form-field">
+                <label for="street">Adresse</label>
+                <input class="form-input" type="text" name="street" id="street"
+                       th:value="${user != null} ? ${user.street} : ''" required>
+            </div>
+
+            <div class="form-field">
+                <label for="city">By</label>
+                <input class="form-input" type="text" name="city" id="city"
+                       th:value="${user != null} ? ${user.city} : ''" required>
+            </div>
+
+            <div class="form-field">
+                <label for="zipCode">Postnummer</label>
+                <input class="form-input" type="text" name="zipCode" id="zipCode"
+                       th:value="${user != null} ? ${user.zipCode} : ''" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Bestil tilbud</button>
+        </form>
+    </div>
+</main>
 
 <div th:replace="~{fragments :: footerFragment}"></div>
-
 
 </body>
 </html>

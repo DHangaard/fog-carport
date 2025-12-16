@@ -42,7 +42,6 @@ public class CustomerController
         app.post("/customer-offer/{id}/reject", ctx -> rejectCarportOffer(ctx));
     }
 
-
     private void showCustomerPage(Context ctx)
     {
         if (!requireLogin(ctx))

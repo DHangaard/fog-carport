@@ -109,8 +109,6 @@ public class CarportController
             ctx.sessionAttribute("errorMessage", e.getMessage());
             ctx.redirect("/requests/" + orderId + "/update-carport");
         }
-
-
     }
 
     private void showRequestOfferContact(Context ctx)

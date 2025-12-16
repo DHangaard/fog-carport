@@ -381,17 +381,17 @@ public class OrderService implements IOrderService
 
     UserDTO buildAndGetUserDTO(User user)
     {
-       return new UserDTO(
-               user.getUserId(),
-               user.getFirstName(),
-               user.getLastName(),
-               user.getStreet(),
-               user.getZipCode(),
-               user.getCity(),
-               user.getEmail(),
-               user.getPhoneNumber(),
-               user.getRole()
-       );
+        return new UserDTO(
+                user.getUserId(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getStreet(),
+                user.getZipCode(),
+                user.getCity(),
+                user.getEmail(),
+                user.getPhoneNumber(),
+                user.getRole()
+        );
     }
 
     private CustomerOfferDTO buildAndGetCustomerOfferDTO(Order order, Carport carport, User customer, User seller)

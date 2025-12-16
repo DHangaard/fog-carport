@@ -14,9 +14,9 @@ import java.util.*;
 public class BomService implements IBomService
 {
     private MaterialVariantMapper variantMapper;
-    private static final int BUFFER_TOLERANCE_CM = 30;
     private static final int BOARDS_PER_SIDE_OR_ENDS = 2;
     private static final int ONLY_FRONT_END = 1;
+    private static final int BOARD_BUFFER_TOLERANCE_CM = AppProperties.getRequiredInt("carport.board.buffer.tolerance.cm");
     private final int STANDARD_POST_LENGTH = AppProperties.getRequiredInt("post.standard.length.cm");
     private final double COVERAGE_PERCENTAGE = AppProperties.getRequiredDouble("coverage.percentage");
 
@@ -192,8 +192,8 @@ public class BomService implements IBomService
         final int NUMBER_OF_BEAM_ROWS = 2;
         final int MAX_VARIANT_lENGTH = getMaxVariantLength(beamVariants);
         int distanceToCenterPost = PostPlacementCalculatorUtil.calculateCenterPostPlacement(carport);
-        int centerPostDefaultPlacement = 410;
-        int postEdgeInsetCm = 30;
+        int centerPostDefaultPlacement = AppProperties.getRequiredInt("carport.center.post.default.placement.cm");
+        int postEdgeInsetCm = AppProperties.getRequiredInt("carport.end.post.inset.cm");
         int shedPostPlacement = 0;
 
         if(carport.getShed() != null)
@@ -285,9 +285,9 @@ public class BomService implements IBomService
 
     private MaterialLine calculateNumberOfStripRolls(Carport carport) throws DatabaseException, MaterialNotFoundException
     {
-        List<MaterialVariant> stripRoolVariants = variantMapper.getAllVariantsByType(MaterialType.METAL_STRAP);
+        List<MaterialVariant> stripRollVariants = variantMapper.getAllVariantsByType(MaterialType.METAL_STRAP);
 
-        MaterialVariant stripRoolVariant = stripRoolVariants.stream()
+        MaterialVariant stripRoolVariant = stripRollVariants.stream()
                 .filter(materialVariant -> materialVariant != null)
                 .findFirst()
                 .orElseThrow(() -> new MaterialNotFoundException("Kunne ikke finde hulbånd"));
@@ -300,7 +300,7 @@ public class BomService implements IBomService
     private List<MaterialLine> calculateNumberOfCarriageBoltsAndWashers(Carport carport) throws DatabaseException, MaterialNotFoundException
     {
         final String CARRIAGE_BOLT_NAME = "bræddebolt";
-        final int CARRIAGE_BOLT_LENGTH_CM = 12;
+        final int CARRIAGE_BOLT_LENGTH_CM = AppProperties.getRequiredInt("carriage.bolt.length.cm");
 
         final String WASHER_NAME = "firkantskiver";
 
@@ -336,7 +336,7 @@ public class BomService implements IBomService
     private MaterialLine calculateBracketScrews(Carport carport) throws DatabaseException, MaterialNotFoundException
     {
         final String BRACKET_SCREW_NAME = "Beslagskruer";
-        final int BRACKET_SCREW_LENGTH_CM = 5;
+        final int BRACKET_SCREW_LENGTH_CM = AppProperties.getRequiredInt("bracket.screw.length.cm");
 
         List<MaterialVariant> fastenerVariants = variantMapper.getAllVariantsByType(MaterialType.FASTENER);
 
@@ -428,7 +428,7 @@ public class BomService implements IBomService
 
     private MaterialLine calculateBoards(List<MaterialVariant> variants, int carportDimensionInCm, int maxVariantLength, int numberOfSidesOrEnds) throws MaterialNotFoundException
     {
-        int dimensionToCover = carportDimensionInCm + BUFFER_TOLERANCE_CM;
+        int dimensionToCover = carportDimensionInCm + BOARD_BUFFER_TOLERANCE_CM;
 
         if (dimensionToCover <= maxVariantLength)
         {
@@ -437,7 +437,7 @@ public class BomService implements IBomService
         }
         else
         {
-            int halfDimension = (carportDimensionInCm / 2) + BUFFER_TOLERANCE_CM;
+            int halfDimension = (carportDimensionInCm / 2) + BOARD_BUFFER_TOLERANCE_CM;
             MaterialVariant splitBoardVariant = findOptimalVariantLength(variants, halfDimension);
 
             return new MaterialLine(splitBoardVariant, numberOfSidesOrEnds * 2);

@@ -162,7 +162,7 @@ public class PartCalculator
 
         if(carport.getShed() == null)
         {
-           totalStripFixPointScrews = numberOfRafters * screwsPerStripFixPoint;
+            totalStripFixPointScrews = numberOfRafters * screwsPerStripFixPoint;
         }
         else
         {

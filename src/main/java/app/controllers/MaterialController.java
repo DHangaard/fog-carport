@@ -263,8 +263,8 @@ public class MaterialController
         }
     }
 
-    private double parseDoubleOrThrow(String value, String fieldName) {
-
+    private double parseDoubleOrThrow(String value, String fieldName)
+    {
         try
         {
             return Double.parseDouble(value);

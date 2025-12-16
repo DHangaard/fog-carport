@@ -246,7 +246,6 @@ public class SellerController
             ctx.attribute("errorMessage", "Kunne ikke hente forespørgsler");
             ctx.redirect("/");
         }
-
     }
 
     private boolean userIsAdmin(Context ctx)

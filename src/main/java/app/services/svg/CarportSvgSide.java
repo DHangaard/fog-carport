@@ -150,7 +150,7 @@ public class CarportSvgSide
         double lastPostSvgX = INNER_SVG_X_START + lastPostX;
         double carportEndX = INNER_SVG_X_START + carport.getLength();
 
-        carportSideSvg. addLineWithArrows(lastPostSvgX, arrowYBottomMargin, carportEndX, arrowYBottomMargin);
+        carportSideSvg.addLineWithArrows(lastPostSvgX, arrowYBottomMargin, carportEndX, arrowYBottomMargin);
         carportSideSvg.addLine(lastPostSvgX, arrowYBottomMargin - tickLength, lastPostSvgX, arrowYBottomMargin + tickLengthLeft, BASE_STYLE);
         carportSideSvg.addLine(carportEndX, arrowYBottomMargin - tickLength, carportEndX, arrowYBottomMargin + tickLengthLeft, BASE_STYLE);
 

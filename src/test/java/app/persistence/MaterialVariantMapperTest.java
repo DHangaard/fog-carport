@@ -111,48 +111,50 @@ class MaterialVariantMapperTest
     @Test
     void testConnection() throws SQLException
     {
-        assertNotNull(connectionPool.getConnection());
+        try (Connection connection = connectionPool.getConnection())
+        {
+            assertNotNull(connection);
+        }
     }
 
     @Test
     void testCreateMaterialVariant() throws DatabaseException, SQLException
     {
-        Connection connection = connectionPool.getConnection();
-        connection.setAutoCommit(false);
+        try(Connection connection = connectionPool.getConnection())
+        {
+            connection.setAutoCommit(false);
 
-        MaterialVariant variant = materialVariantMapper.createMaterialVariant(connection, 1, 480, 350.50, 1);
+            MaterialVariant variant = materialVariantMapper.createMaterialVariant(connection, 1, 480, 350.50, 1);
 
-        connection.commit();
+            connection.commit();
 
-        assertNotNull(variant);
-        assertEquals(7, variant.getMaterialVariantId());
-        assertEquals(1, variant.getMaterialId());
-        assertEquals(480, variant.getVariantLength());
-        assertEquals(350.50, variant.getUnitPrice());
-        assertEquals(1, variant.getPiecesPerUnit());
-        assertNull(variant.getMaterial());
-
-        connection.close();
-
+            assertNotNull(variant);
+            assertEquals(7, variant.getMaterialVariantId());
+            assertEquals(1, variant.getMaterialId());
+            assertEquals(480, variant.getVariantLength());
+            assertEquals(350.50, variant.getUnitPrice());
+            assertEquals(1, variant.getPiecesPerUnit());
+            assertNull(variant.getMaterial());
+        }
     }
 
     @Test
     void testCreateMaterialVariantWithoutLength() throws DatabaseException, SQLException
     {
-        Connection connection = connectionPool.getConnection();
-        connection.setAutoCommit(false);
+        try(Connection connection = connectionPool.getConnection())
+        {
+            connection.setAutoCommit(false);
 
-        MaterialVariant variant = materialVariantMapper.createMaterialVariant(connection, 3, null, 199.00, 1);
+            MaterialVariant variant = materialVariantMapper.createMaterialVariant(connection, 3, null, 199.00, 1);
 
-        connection.commit();
+            connection.commit();
 
-        assertNotNull(variant);
-        assertEquals(7, variant.getMaterialVariantId());
-        assertEquals(3, variant.getMaterialId());
-        assertNull(variant.getVariantLength());
-        assertEquals(199.00, variant.getUnitPrice());
-
-        connection.close();
+            assertNotNull(variant);
+            assertEquals(7, variant.getMaterialVariantId());
+            assertEquals(3, variant.getMaterialId());
+            assertNull(variant.getVariantLength());
+            assertEquals(199.00, variant.getUnitPrice());
+        }
     }
 
     @Test
@@ -180,23 +182,21 @@ class MaterialVariantMapperTest
     @Test
     void testCreateVariantWithMultiplePiecies() throws DatabaseException, SQLException
     {
-        Connection connection = connectionPool.getConnection();
-        connection.setAutoCommit(false);
+        try(Connection connection = connectionPool.getConnection())
+        {
+            connection.setAutoCommit(false);
 
-        MaterialVariant variant = materialVariantMapper.createMaterialVariant(connection, 3, null, 149.00, 300);
+            MaterialVariant variant = materialVariantMapper.createMaterialVariant(connection, 3, null, 149.00, 300);
 
-        connection.commit();
+            connection.commit();
 
-        assertNotNull(variant);
-        assertEquals(7, variant.getMaterialVariantId());
-        assertEquals(3, variant.getMaterialId());
-        assertNull(variant.getVariantLength());
-        assertEquals(149.00, variant.getUnitPrice());
-        assertEquals(300, variant.getPiecesPerUnit());
-
-        connection.close();
-
-
+            assertNotNull(variant);
+            assertEquals(7, variant.getMaterialVariantId());
+            assertEquals(3, variant.getMaterialId());
+            assertNull(variant.getVariantLength());
+            assertEquals(149.00, variant.getUnitPrice());
+            assertEquals(300, variant.getPiecesPerUnit());
+        }
     }
 
     @Test
@@ -215,11 +215,9 @@ class MaterialVariantMapperTest
         assertEquals(360, variants.get(1).getVariantLength());
         assertEquals(266.21, variants.get(1).getUnitPrice());
 
-        for (MaterialVariant variant : variants)
-        {
-            assertNotNull(variant.getMaterial());
-            assertEquals("trykimp. Stolpe", variant.getMaterial().getName());
-        }
+        assertNotNull(variants.get(0).getMaterial());
+        assertEquals("trykimp. Stolpe", variants.get(0).getMaterial().getName());
+        assertEquals("trykimp. Stolpe", variants.get(1).getMaterial().getName());
     }
 
     @Test
@@ -262,16 +260,16 @@ class MaterialVariantMapperTest
         MaterialVariant variant = materialVariantMapper.getVariantWithMaterialById(1);
         assertEquals(221.85, variant.getUnitPrice());
 
-        Connection connection = connectionPool.getConnection();
-        connection.setAutoCommit(false);
+        try(Connection connection = connectionPool.getConnection())
+        {
+            connection.setAutoCommit(false);
 
-        variant.setUnitPrice(249.95);
-        boolean updated = materialVariantMapper.updateMaterialVariant(connection, variant);
+            variant.setUnitPrice(249.95);
+            boolean updated = materialVariantMapper.updateMaterialVariant(connection, variant);
 
-        connection.commit();
-        assertTrue(updated);
-
-        connection.close();
+            connection.commit();
+            assertTrue(updated);
+        }
 
         MaterialVariant updatedVariant = materialVariantMapper.getVariantWithMaterialById(1);
         assertEquals(249.95, updatedVariant.getUnitPrice());
@@ -283,16 +281,16 @@ class MaterialVariantMapperTest
         MaterialVariant variant = materialVariantMapper.getVariantWithMaterialById(1);
         assertEquals(300, variant.getVariantLength());
 
-        Connection connection = connectionPool.getConnection();
-        connection.setAutoCommit(false);
+        try(Connection connection = connectionPool.getConnection())
+        {
+            connection.setAutoCommit(false);
 
-        variant.setVariantLength(330);
-        boolean updated = materialVariantMapper.updateMaterialVariant(connection, variant);
+            variant.setVariantLength(330);
+            boolean updated = materialVariantMapper.updateMaterialVariant(connection, variant);
 
-        connection.commit();
-        assertTrue(updated);
-
-        connection.close();
+            connection.commit();
+            assertTrue(updated);
+        }
 
         MaterialVariant updatedVariant = materialVariantMapper.getVariantWithMaterialById(1);
         assertEquals(330, updatedVariant.getVariantLength());
@@ -327,5 +325,26 @@ class MaterialVariantMapperTest
         assertEquals(2, materialVariants.size());
 
         assertFalse(materialVariants.get(0).getVariantLength() == materialVariants.get(1).getVariantLength());
+    }
+
+    @Test
+    void testGetAllMaterialVariants() throws DatabaseException
+    {
+        List<MaterialVariant> allVariants = materialVariantMapper. getAllMaterialVariants();
+
+        assertNotNull(allVariants);
+        assertEquals(6, allVariants.size());
+    }
+
+    @Test
+    void testSearchByMaterialVariantId() throws DatabaseException
+    {
+        List<MaterialVariant> results = materialVariantMapper.searchByMaterialVariantId(1);
+
+        assertNotNull(results);
+        assertEquals(1, results.size());
+        assertEquals(1, results.get(0).getMaterialVariantId());
+        assertEquals(300, results.get(0).getVariantLength());
+        assertNotNull(results.get(0).getMaterial());
     }
 }
