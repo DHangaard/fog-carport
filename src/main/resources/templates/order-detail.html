@@ -168,36 +168,36 @@
             <h2>Pris oversigt</h2>
             <div class="price-overview-grid">
 
-            <div class="price-summary-box">
-             <h3>Total pris med og uden moms</h3>
-                <div class="price-row">
-                    <span class="price-label">Pris uden moms:</span>
-                    <div class="price-amount">
+                <div class="price-summary-box">
+                    <h3>Total pris med og uden moms</h3>
+                    <div class="price-row">
+                        <span class="price-label">Pris uden moms:</span>
+                        <div class="price-amount">
                         <span class="price-display"
                               th:text="${formattedPriceWithoutVat}"></span>
-                        <span class="unit">kr.</span>
+                            <span class="unit">kr.</span>
+                        </div>
                     </div>
-                </div>
 
-                <hr class="horizontal-line">
-                <div class="price-row">
-                    <span class="price-label">Total pris:</span>
-                    <div class="price-amount">
+                    <hr class="horizontal-line">
+                    <div class="price-row">
+                        <span class="price-label">Total pris:</span>
+                        <div class="price-amount">
                         <span class="price-display"
                               th:text="${formattedTotalPrice}"></span>
-                        <span class="unit">kr.</span>
+                            <span class="unit">kr.</span>
+                        </div>
                     </div>
                 </div>
-            </div>
 
                 <div th:if="${session.currentUser.role.name() == 'SALESREP'}" class="price-summary-box">
-                <h3>Dækningsgrad og fortjeneste</h3>
+                    <h3>Dækningsgrad og fortjeneste</h3>
                     <div class="price-row">
                         <span class="price-label">Kostpris:</span>
                         <div class="price-amount">
                         <span class="price-display"
                               th:text="${formattedCostPrice}"></span>
-                        <span class="unit">kr.</span>
+                            <span class="unit">kr.</span>
                         </div>
                     </div>
 
@@ -205,7 +205,7 @@
                         <span class="price-label">Dækningsgrad:</span>
                         <div class="price-amount">
                           <span class="price-display"
-                          th:text="${formattedCoveragePercentage}"></span>
+                                th:text="${formattedCoveragePercentage}"></span>
                             <span class="unit">%</span>
                         </div>
                     </div>

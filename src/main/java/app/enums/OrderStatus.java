@@ -10,7 +10,6 @@ public enum OrderStatus
     PAID("Betalt"),
     CANCELLED("Annulleret");
 
-
     private final String displayName;
 
     OrderStatus(String displayName) {

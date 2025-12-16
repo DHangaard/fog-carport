@@ -36,35 +36,20 @@ class MaterialLineMapperTest
 
                 stmt.execute("CREATE TABLE test.material AS (SELECT * FROM public.material) WITH NO DATA");
                 stmt.execute("CREATE SEQUENCE test.material_material_id_seq");
-                stmt.execute(
-                        "ALTER TABLE test.material " +
-                                "ALTER COLUMN material_id SET DEFAULT nextval('test.material_material_id_seq')"
-                );
+                stmt.execute("ALTER TABLE test.material " + "ALTER COLUMN material_id SET DEFAULT nextval('test.material_material_id_seq')");
                 stmt.execute("ALTER TABLE test.material ADD PRIMARY KEY (material_id)");
 
                 stmt.execute("CREATE TABLE test.material_variant AS (SELECT * FROM public.material_variant) WITH NO DATA");
                 stmt.execute("CREATE SEQUENCE test.material_variant_material_variant_id_seq");
-                stmt.execute(
-                        "ALTER TABLE test.material_variant " +
-                                "ALTER COLUMN material_variant_id SET DEFAULT nextval('test.material_variant_material_variant_id_seq')"
-                );
+                stmt.execute("ALTER TABLE test.material_variant " + "ALTER COLUMN material_variant_id SET DEFAULT nextval('test.material_variant_material_variant_id_seq')");
                 stmt.execute("ALTER TABLE test.material_variant ADD PRIMARY KEY (material_variant_id)");
-                stmt.execute(
-                        "ALTER TABLE test.material_variant ADD CONSTRAINT material_variant_material_fk " +
-                                "FOREIGN KEY (material_id) REFERENCES test.material (material_id) ON DELETE CASCADE"
-                );
+                stmt.execute("ALTER TABLE test.material_variant ADD CONSTRAINT material_variant_material_fk " + "FOREIGN KEY (material_id) REFERENCES test.material (material_id) ON DELETE CASCADE");
 
                 stmt.execute("CREATE TABLE test.material_line AS (SELECT * FROM public.material_line) WITH NO DATA");
                 stmt.execute("CREATE SEQUENCE test.material_line_material_line_id_seq");
-                stmt.execute(
-                        "ALTER TABLE test.material_line " +
-                                "ALTER COLUMN material_line_id SET DEFAULT nextval('test.material_line_material_line_id_seq')"
-                );
+                stmt.execute("ALTER TABLE test.material_line " + "ALTER COLUMN material_line_id SET DEFAULT nextval('test.material_line_material_line_id_seq')");
                 stmt.execute("ALTER TABLE test.material_line ADD PRIMARY KEY (material_line_id)");
-                stmt.execute(
-                        "ALTER TABLE test.material_line ADD CONSTRAINT material_line_variant_fk " +
-                                "FOREIGN KEY (material_variant_id) REFERENCES test.material_variant (material_variant_id) ON DELETE CASCADE"
-                );
+                stmt.execute("ALTER TABLE test.material_line ADD CONSTRAINT material_line_variant_fk " + "FOREIGN KEY (material_variant_id) REFERENCES test.material_variant (material_variant_id) ON DELETE CASCADE");
             }
         }
         catch (SQLException e)
@@ -138,26 +123,29 @@ class MaterialLineMapperTest
     @Test
     void testConnection() throws SQLException
     {
-        assertNotNull(connectionPool.getConnection());
+        try (Connection connection = connectionPool.getConnection())
+        {
+            assertNotNull(connection);
+        }
     }
 
     @Test
     void testCreateMaterialLine() throws DatabaseException, SQLException
     {
-        Connection connection = connectionPool.getConnection();
-        connection.setAutoCommit(false);
+        try(Connection connection = connectionPool.getConnection())
+        {
+            connection.setAutoCommit(false);
 
-        MaterialLine line = materialLineMapper.createMaterialLine(connection, 1, 6, 10);
+            MaterialLine line = materialLineMapper.createMaterialLine(connection, 1, 6, 10);
 
-        connection.commit();
+            connection.commit();
 
-        assertNotNull(line);
-        assertEquals(6, line.getMaterialLineId());
-        assertEquals(1, line.getOrderId());
-        assertNull(line.getMaterialVariant());
-        assertEquals(10, line.getQuantity());
-
-        connection.close();
+            assertNotNull(line);
+            assertEquals(6, line.getMaterialLineId());
+            assertEquals(1, line.getOrderId());
+            assertNull(line.getMaterialVariant());
+            assertEquals(10, line.getQuantity());
+        }
     }
 
     @Test
@@ -219,17 +207,19 @@ class MaterialLineMapperTest
         MaterialLine line = materialLineMapper.getMaterialLineById(1);
         assertEquals(8, line.getQuantity());
 
-        Connection connection = connectionPool.getConnection();
-        connection.setAutoCommit(false);
+        try(Connection connection = connectionPool.getConnection())
+        {
+            connection.setAutoCommit(false);
 
-        line.setQuantity(12);
-        boolean updated = materialLineMapper.updateMaterialLine(connection, line);
+            line.setQuantity(12);
+            boolean updated = materialLineMapper.updateMaterialLine(connection, line);
 
-        connection.commit();
+            connection.commit();
 
-        assertTrue(updated);
-        MaterialLine updatedLine = materialLineMapper.getMaterialLineById(1);
-        assertEquals(12, updatedLine.getQuantity());
+            assertTrue(updated);
+            MaterialLine updatedLine = materialLineMapper.getMaterialLineById(1);
+            assertEquals(12, updatedLine.getQuantity());
+        }
     }
 
     @Test
@@ -238,17 +228,17 @@ class MaterialLineMapperTest
         MaterialLine line = materialLineMapper.getMaterialLineById(1);
         assertEquals(1, line.getMaterialVariant().getMaterialVariantId());
 
-        Connection connection = connectionPool.getConnection();
-        connection.setAutoCommit(false);
+        try(Connection connection = connectionPool.getConnection())
+        {
+            connection.setAutoCommit(false);
 
-        line.getMaterialVariant().setMaterialVariantId(2);
-        line.setQuantity(10);
+            line.getMaterialVariant().setMaterialVariantId(2);
+            line.setQuantity(10);
 
-        boolean updated = materialLineMapper.updateMaterialLine(connection, line);
-        connection.commit();
-        assertTrue(updated);
-
-        connection.close();
+            boolean updated = materialLineMapper.updateMaterialLine(connection, line);
+            connection.commit();
+            assertTrue(updated);
+        }
 
         MaterialLine result = materialLineMapper.getMaterialLineById(1);
         assertEquals(2, result.getMaterialVariant().getMaterialVariantId());
@@ -292,18 +282,78 @@ class MaterialLineMapperTest
     void testCascadeDeleteMaterial() throws DatabaseException, SQLException
     {
         List<MaterialLine> linesBefore = materialLineMapper.getMaterialLinesByOrderId(1);
-        assertEquals(3, linesBefore.size());
+        assertEquals(3, linesBefore. size());
 
-        Connection connection = connectionPool.getConnection();
-        connection.setAutoCommit(false);
-
-        Statement stmt = connection.createStatement();
-        stmt.execute("DELETE FROM test.material WHERE material_id = 1");
-        connection.commit();
-
-        connection.close();
+        try (Connection connection = connectionPool.getConnection();
+             Statement stmt = connection.createStatement())
+        {
+            connection.setAutoCommit(false);
+            stmt.execute("DELETE FROM test.material WHERE material_id = 1");
+            connection.commit();
+        }
 
         List<MaterialLine> linesAfter = materialLineMapper.getMaterialLinesByOrderId(1);
         assertEquals(2, linesAfter.size());
+    }
+
+    @Test
+    void testUpdateMaterialLineQuantity() throws DatabaseException
+    {
+        MaterialLine line = materialLineMapper.getMaterialLineById(1);
+        assertEquals(8, line.getQuantity());
+
+        boolean updated = materialLineMapper.updateMaterialLineQuantity(1, 15);
+
+        assertTrue(updated);
+
+        MaterialLine updatedLine = materialLineMapper.getMaterialLineById(1);
+        assertEquals(15, updatedLine.getQuantity());
+    }
+
+    @Test
+    void testUpdateMaterialLineQuantityNotFound() throws DatabaseException
+    {
+        boolean updated = materialLineMapper.updateMaterialLineQuantity(999, 10);
+
+        assertFalse(updated);
+    }
+
+    @Test
+    void testDeleteAllMaterialLinesByOrderId() throws DatabaseException, SQLException
+    {
+        List<MaterialLine> linesBefore = materialLineMapper.getMaterialLinesByOrderId(1);
+        assertEquals(3, linesBefore.size());
+
+        try (Connection connection = connectionPool.getConnection())
+        {
+            connection.setAutoCommit(false);
+
+            boolean deleted = materialLineMapper.deleteAllMaterialLinesByOrderId(connection, 1);
+
+            connection.commit();
+
+            assertTrue(deleted);
+        }
+
+        List<MaterialLine> linesAfter = materialLineMapper.getMaterialLinesByOrderId(1);
+        assertEquals(0, linesAfter.size());
+
+        List<MaterialLine> order2Lines = materialLineMapper.getMaterialLinesByOrderId(2);
+        assertEquals(2, order2Lines.size());
+    }
+
+    @Test
+    void testDeleteAllMaterialLinesByOrderIdNotFound() throws DatabaseException, SQLException
+    {
+        try (Connection connection = connectionPool.getConnection())
+        {
+            connection.setAutoCommit(false);
+
+            boolean deleted = materialLineMapper.deleteAllMaterialLinesByOrderId(connection, 999);
+
+            connection.commit();
+
+            assertFalse(deleted);
+        }
     }
 }

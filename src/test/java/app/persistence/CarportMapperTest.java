@@ -92,53 +92,59 @@ class CarportMapperTest
     @Test
     void testConnection() throws SQLException
     {
-        assertNotNull(connectionPool.getConnection());
+        try (Connection connection = connectionPool.getConnection())
+        {
+            assertNotNull(connection);
+        }
     }
 
     @Test
     void testCreateCarportWithoutShed() throws DatabaseException, SQLException
     {
-        Connection connection = connectionPool.getConnection();
-        connection.setAutoCommit(false);
+        try(Connection connection = connectionPool.getConnection())
+        {
+            connection.setAutoCommit(false);
 
-        Carport createdCarport = carportMapper.createCarport(connection,600,500, null, RoofType.FLAT);
+            Carport createdCarport = carportMapper.createCarport(connection, 600, 500, null, RoofType.FLAT);
 
-        connection.commit();
-        connection.close();
+            connection.commit();
 
-        assertNotNull(createdCarport);
-        assertTrue(createdCarport.getCarportId() == 3);
-        assertEquals(600, createdCarport.getLength());
-        assertEquals(500, createdCarport.getWidth());
-        assertNull(createdCarport.getShed());
-        assertEquals(RoofType.FLAT, createdCarport.getRoofType());
+            assertNotNull(createdCarport);
+            assertTrue(createdCarport.getCarportId() == 3);
+            assertEquals(600, createdCarport.getLength());
+            assertEquals(500, createdCarport.getWidth());
+            assertNull(createdCarport.getShed());
+            assertEquals(RoofType.FLAT, createdCarport.getRoofType());
+        }
     }
 
     @Test
     void testCreateCarportWithShed() throws DatabaseException, SQLException
     {
-        Connection connection = connectionPool.getConnection();
-        connection.setAutoCommit(false);
-        Shed createdShed = shedMapper.createShed(connection, 250, 500, ShedPlacement.LEFT);
-        Carport createdCarport = carportMapper.createCarport(connection,690,600, null, RoofType.FLAT);
+        try(Connection connection = connectionPool.getConnection())
+        {
+            connection.setAutoCommit(false);
+            Shed createdShed = shedMapper.createShed(connection, 250, 500, ShedPlacement.LEFT);
+            Carport createdCarport = carportMapper.createCarport(connection, 690, 600, null, RoofType.FLAT);
 
-        connection.commit();
-        connection.close();
+            connection.commit();
 
-        assertNotNull(createdShed);
-        assertNotNull(createdCarport);
-        createdCarport.setShed(createdShed);
+            assertNotNull(createdShed);
+            assertNotNull(createdCarport);
+            createdCarport.setShed(createdShed);
 
-        assertTrue(createdCarport.getCarportId() == 3);
-        assertEquals(690, createdCarport.getLength());
-        assertEquals(600, createdCarport.getWidth());
-        assertEquals(RoofType.FLAT, createdCarport.getRoofType());
+            assertTrue(createdCarport.getCarportId() == 3);
+            assertEquals(690, createdCarport.getLength());
+            assertEquals(600, createdCarport.getWidth());
+            assertEquals(RoofType.FLAT, createdCarport.getRoofType());
 
-        assertNotNull(createdCarport.getShed());
-        assertTrue(createdCarport.getShed().getShedId() > 0);
-        assertEquals(250, createdCarport.getShed().getLength());
-        assertEquals(500, createdCarport.getShed().getWidth());
-        assertEquals(ShedPlacement.LEFT, createdCarport.getShed().getShedPlacement());
+            assertNotNull(createdCarport.getShed());
+            assertTrue(createdCarport.getShed().getShedId() > 0);
+            assertEquals(250, createdCarport.getShed().getLength());
+            assertEquals(500, createdCarport.getShed().getWidth());
+            assertEquals(ShedPlacement.LEFT, createdCarport.getShed().getShedPlacement());
+
+        }
     }
 
     @Test
@@ -188,22 +194,23 @@ class CarportMapperTest
         carport.setWidth(800);
         carport.setRoofType(RoofType.FLAT);
 
-        Connection connection = connectionPool.getConnection();
-        connection.setAutoCommit(false);
+        try(Connection connection = connectionPool.getConnection())
+        {
+            connection.setAutoCommit(false);
 
-        boolean updated = carportMapper.updateCarport(connection, carport);
+            boolean updated = carportMapper.updateCarport(connection, carport);
 
-        connection.commit();
-        connection.close();
+            connection.commit();
 
-        assertTrue(updated);
+            assertTrue(updated);
 
-        Carport updatedCarport = carportMapper.getCarportById(1);
-        assertEquals(650, updatedCarport.getLength());
-        assertEquals(800, updatedCarport.getWidth());
-        assertEquals(RoofType.FLAT, updatedCarport.getRoofType());
-        assertNotNull(updatedCarport.getShed());
-        assertEquals(1, updatedCarport.getShed().getShedId());
+            Carport updatedCarport = carportMapper.getCarportById(1);
+            assertEquals(650, updatedCarport.getLength());
+            assertEquals(800, updatedCarport.getWidth());
+            assertEquals(RoofType.FLAT, updatedCarport.getRoofType());
+            assertNotNull(updatedCarport.getShed());
+            assertEquals(1, updatedCarport.getShed().getShedId());
+        }
     }
 
     @Test
@@ -211,25 +218,27 @@ class CarportMapperTest
     {
         Carport carport = carportMapper.getCarportById(2);
 
-        Connection connection = connectionPool.getConnection();
-        connection.setAutoCommit(false);
+        try(Connection connection = connectionPool.getConnection())
+        {
+            connection.setAutoCommit(false);
 
-        Shed newShed = shedMapper.createShed(connection, 200, 400, ShedPlacement.LEFT);
+            Shed newShed = shedMapper.createShed(connection, 200, 400, ShedPlacement.LEFT);
 
-        connection.commit();
-        connection.close();
+            connection.commit();
 
-        carport.setShed(newShed);
+            carport.setShed(newShed);
+        }
 
-        Connection newConnection = connectionPool.getConnection();
-        newConnection.setAutoCommit(false);
+        try(Connection newConnection = connectionPool.getConnection())
+        {
+            newConnection.setAutoCommit(false);
 
-        boolean updated = carportMapper.updateCarport(newConnection, carport);
+            boolean updated = carportMapper.updateCarport(newConnection, carport);
 
-        newConnection.commit();
-        newConnection.close();
+            newConnection.commit();
 
-        assertTrue(updated);
+            assertTrue(updated);
+        }
 
         Carport updatedCarport = carportMapper.getCarportById(2);
         assertNotNull(updatedCarport.getShed());
@@ -244,15 +253,15 @@ class CarportMapperTest
         Carport carport = carportMapper.getCarportById(1);
         carport.setShed(null);
 
-        Connection connection = connectionPool.getConnection();
-        connection.setAutoCommit(false);
+        try(Connection connection = connectionPool.getConnection())
+        {
+            connection.setAutoCommit(false);
 
-        boolean updated = carportMapper.updateCarport(connection, carport);
+            boolean updated = carportMapper.updateCarport(connection, carport);
 
-        connection.commit();
-        connection.close();
-
-        assertTrue(updated);
+            connection.commit();
+            assertTrue(updated);
+        }
         Carport updatedCarport = carportMapper.getCarportById(1);
         assertNull(updatedCarport.getShed());
     }
@@ -262,14 +271,14 @@ class CarportMapperTest
     {
         Carport carport = new Carport(999, 600, 500, RoofType.FLAT, null);
 
-        Connection connection = connectionPool.getConnection();
-        connection.setAutoCommit(false);
+        try(Connection connection = connectionPool.getConnection())
+        {
+            connection.setAutoCommit(false);
 
-        boolean updated = carportMapper.updateCarport(connection, carport);
+            boolean updated = carportMapper.updateCarport(connection, carport);
 
-        connection.commit();
-        connection.close();
-
-        assertFalse(updated);
+            connection.commit();
+            assertFalse(updated);
+        }
     }
 }

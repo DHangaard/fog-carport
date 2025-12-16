@@ -11,6 +11,5 @@ import java.util.List;
 public interface IBomService
 {
     public List<MaterialLine> getBillOfMaterialByCarport(Carport carport) throws DatabaseException, MaterialNotFoundException;
-
     public PricingDetails calculateCarportPrice(List<MaterialLine> billOfMaterial);
 }

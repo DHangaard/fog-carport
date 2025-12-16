@@ -24,99 +24,99 @@
 
         <section class="order-section">
 
-        <h2>Afventer sælger</h2>
-        <div th:if="${pendingOrders != null and !pendingOrders.isEmpty()}" class="orders-table customer-pending-orders orders-table--compact">
-            <table>
-                <thead>
-                <tr>
-                    <th>Ordre-nr.</th>
-                    <th>Oprettet</th>
-                    <th>Status</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="pendingOrder : ${pendingOrders}">
-                    <td data-label="Ordre-nr." th:text="${pendingOrder.orderId}"></td>
-                    <td data-label="Oprettet" th:text="${pendingOrder.relativeTime}"></td>
-                    <td data-label="Status"><span th:text="${pendingOrder.orderStatus.displayName}"></span></td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-        <p th:if="${pendingOrders == null or pendingOrders.isEmpty()}">
-            Ingen forespørgsler
-        </p>
+            <h2>Afventer sælger</h2>
+            <div th:if="${pendingOrders != null and !pendingOrders.isEmpty()}" class="orders-table customer-pending-orders orders-table--compact">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Ordre-nr.</th>
+                        <th>Oprettet</th>
+                        <th>Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="pendingOrder : ${pendingOrders}">
+                        <td data-label="Ordre-nr." th:text="${pendingOrder.orderId}"></td>
+                        <td data-label="Oprettet" th:text="${pendingOrder.relativeTime}"></td>
+                        <td data-label="Status"><span th:text="${pendingOrder.orderStatus.displayName}"></span></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p th:if="${pendingOrders == null or pendingOrders.isEmpty()}">
+                Ingen forespørgsler
+            </p>
         </section>
 
 
         <section class="order-section">
-        <h2>Afventer godkendelse</h2>
-        <div th:if="${readyOrders != null and !readyOrders.isEmpty()}" class="orders-table orders-table--compact">
-            <table>
-                <thead>
-                <tr>
-                    <th>Ordre-nr.</th>
-                    <th>Oprettet</th>
-                    <th>Status</th>
-                    <th>Handlinger</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="readyOrder : ${readyOrders}">
-                    <td data-label="Ordre-nr." th:text="${readyOrder.orderId}"></td>
-                    <td data-label="Oprettet" th:text="${readyOrder.relativeTime}"></td>
-                    <td data-label="Status"> <span th:text="${readyOrder.orderStatus.displayName}"></span></td>
-                    <td data-label="Se detaljer">
-                        <div class="table-actions">
-                            <a th:href="@{/customer-offer/details/{id}(id=${readyOrder.orderId})}"
-                               class="btn-table btn-view"
-                               title="Se detajler">
-                                <img th:src="@{/images/view.svg}" alt="Se detaljer"/> <!-- Change hyperlink -->
-                            </a>
-                        </div>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-        <p th:if="${readyOrders == null or readyOrders.isEmpty()}">
-            Ingen tilbud
-        </p>
+            <h2>Afventer godkendelse</h2>
+            <div th:if="${readyOrders != null and !readyOrders.isEmpty()}" class="orders-table orders-table--compact">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Ordre-nr.</th>
+                        <th>Oprettet</th>
+                        <th>Status</th>
+                        <th>Handlinger</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="readyOrder : ${readyOrders}">
+                        <td data-label="Ordre-nr." th:text="${readyOrder.orderId}"></td>
+                        <td data-label="Oprettet" th:text="${readyOrder.relativeTime}"></td>
+                        <td data-label="Status"> <span th:text="${readyOrder.orderStatus.displayName}"></span></td>
+                        <td data-label="Se detaljer">
+                            <div class="table-actions">
+                                <a th:href="@{/customer-offer/details/{id}(id=${readyOrder.orderId})}"
+                                   class="btn-table btn-view"
+                                   title="Se detajler">
+                                    <img th:src="@{/images/view.svg}" alt="Se detaljer"/> <!-- Change hyperlink -->
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p th:if="${readyOrders == null or readyOrders.isEmpty()}">
+                Ingen tilbud
+            </p>
         </section>
 
         <section class="order-section">
-        <h2>Ordrer</h2>
-        <div th:if="${paidOrders != null and !paidOrders.isEmpty()}" class="orders-table orders-table--compact">
-            <table>
-                <thead>
-                <tr>
-                    <th>Ordre-nr.</th>
-                    <th>Oprettet</th>
-                    <th>Status</th>
-                    <th>Handlinger</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="paidOrder : ${paidOrders}">
-                    <td data-label="Ordre-nr." th:text="${paidOrder.orderId}"></td>
-                    <td data-label="Oprettet" th:text="${paidOrder.relativeTime}"></td>
-                    <td data-label="Status"><span th:text="${paidOrder.orderStatus.displayName}"></span></td>
-                    <td data-label="Se detaljer">
-                        <div class="table-actions">
-                            <a th:href="@{/carport/details/view/{id}(id=${paidOrder.orderId})}"
-                               class="btn-table btn-view"
-                               title="Se detajler">
-                                <img th:src="@{/images/view.svg}" alt="Se detaljer"/>
-                            </a>
-                        </div>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-        <p th:if="${paidOrders == null or paidOrders.isEmpty()}">
-            Ingen ordrer
-        </p>
+            <h2>Ordrer</h2>
+            <div th:if="${paidOrders != null and !paidOrders.isEmpty()}" class="orders-table orders-table--compact">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Ordre-nr.</th>
+                        <th>Oprettet</th>
+                        <th>Status</th>
+                        <th>Handlinger</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="paidOrder : ${paidOrders}">
+                        <td data-label="Ordre-nr." th:text="${paidOrder.orderId}"></td>
+                        <td data-label="Oprettet" th:text="${paidOrder.relativeTime}"></td>
+                        <td data-label="Status"><span th:text="${paidOrder.orderStatus.displayName}"></span></td>
+                        <td data-label="Se detaljer">
+                            <div class="table-actions">
+                                <a th:href="@{/carport/details/view/{id}(id=${paidOrder.orderId})}"
+                                   class="btn-table btn-view"
+                                   title="Se detajler">
+                                    <img th:src="@{/images/view.svg}" alt="Se detaljer"/>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p th:if="${paidOrders == null or paidOrders.isEmpty()}">
+                Ingen ordrer
+            </p>
         </section>
     </div>
 </main>
